@@ -1,6 +1,6 @@
 <template>
   <div class="anime-card" @click="goToAnimeDetail">
-    <img :src="anime.main_picture.medium" :alt="anime.title" class="anime-image" />
+    <img :src="anime.main_picture.large" :alt="anime.title" class="anime-image" />
     <div class="anime-info">
       <h3>{{ anime.title }}</h3>
       <div class="anime-stats">
