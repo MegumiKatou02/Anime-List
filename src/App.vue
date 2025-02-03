@@ -10,11 +10,11 @@ import { RouterLink, RouterView } from 'vue-router'
           <img
             alt="Anime Search Logo"
             class="logo"
-            src="@/assets/logo.svg"
+            src="@/assets/logo.jpg"
             width="40"
             height="40"
           />
-          <h1>Anime Search</h1>
+          <h1>Anime List</h1>
         </div>
 
         <div class="nav-links">
