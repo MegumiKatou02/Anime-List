@@ -6,20 +6,22 @@ import { RouterLink, RouterView } from 'vue-router'
   <div class="app-container">
     <header>
       <nav class="navbar">
-        <div class="nav-brand">
-          <img
-            alt="Anime Search Logo"
-            class="logo"
-            src="@/assets/logo.jpg"
-            width="40"
-            height="40"
-          />
-          <h1>Anime List</h1>
-        </div>
+        <router-link to="/">
+          <div class="nav-brand">
+            <img
+              alt="Anime Search Logo"
+              class="logo"
+              src="@/assets/logo.jpg"
+              width="40"
+              height="40"
+            />
+            <h1>Anime List</h1>
+          </div>
+        </router-link>
 
         <div class="nav-links">
-          <RouterLink to="/" class="nav-link">Home</RouterLink>
-          <RouterLink to="/about" class="nav-link">About</RouterLink>
+          <router-link to="/" class="nav-link">Home</router-link>
+          <router-link to="/about" class="nav-link">About</router-link>
         </div>
       </nav>
     </header>
@@ -37,7 +39,6 @@ import { RouterLink, RouterView } from 'vue-router'
 <style scoped>
 .app-container {
   min-height: 100vh;
-  /* min-width: 100%; */
   display: flex;
   flex-direction: column;
   background-color: #f5f5f5;
@@ -56,6 +57,7 @@ import { RouterLink, RouterView } from 'vue-router'
   display: flex;
   align-items: center;
   gap: 1rem;
+  cursor: pointer;
 }
 
 .nav-brand h1 {
