@@ -1,5 +1,23 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
+import { onMounted, onUnmounted } from 'vue'
+
+const handleScroll = () => {
+  const navbar = document.querySelector('.navbar')
+  if (window.scrollY > 50) {
+    navbar?.classList.add('scrolled')
+  } else {
+    navbar?.classList.remove('scrolled')
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
 </script>
 
 <template>
@@ -57,13 +75,32 @@ import { RouterLink, RouterView } from 'vue-router'
 
 <style scoped>
 .navbar {
-  background-color: #2c3e50;
+  background-color: rgba(44, 62, 80, 0.9);
+  backdrop-filter: blur(5px);
   padding: 1rem 5%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.navbar.scrolled {
+  background-color: rgba(44, 62, 80, 0.5);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  padding: 0.55rem 5%;
+}
+
+main {
+  flex: 1;
+  width: 100%;
+  margin-top: 5rem;
 }
 
 .nav-brand {
