@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://api.jikan.moe/v4/:path*"
+      "destination": "https://api.myanimelist.net/v2/:path*"
     },
     {
       "source": "/(.*)",
