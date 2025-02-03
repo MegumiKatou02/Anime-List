@@ -39,7 +39,7 @@ export default defineComponent({
     const loadTopAnime = async () => {
       try {
         loading.value = true
-        animeList.value = await animeService.getTopAnime()
+        animeList.value = await animeService.getShuffledAnimeListFromAPI()
       } catch (error) {
         console.error('Error loading top anime:', error)
       } finally {
