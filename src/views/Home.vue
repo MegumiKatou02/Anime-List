@@ -6,7 +6,7 @@
           v-model="searchQuery"
           @input="handleSearch"
           type="text"
-          placeholder="Search anime..."
+          placeholder="Tìm kiếm anime..."
           class="search-input"
         />
         <svg class="search-icon" viewBox="0 0 24 24">
@@ -20,7 +20,7 @@
 
     <div v-if="loading" class="loading">
       <div class="spinner"></div>
-      <p>Finding awesome anime...</p>
+      <p>Đang tải danh sách...</p>
     </div>
 
     <div v-else class="anime-grid">
