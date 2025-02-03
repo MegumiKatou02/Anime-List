@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/:path*",
+      "destination": "https://api.jikan.moe/v4/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
