@@ -45,6 +45,7 @@
 import { defineComponent, ref, onMounted } from 'vue'
 import { AnimeService } from '@/services/animeApi'
 import AnimeCard from '@/components/AnimeCard.vue'
+import { debounce } from 'lodash'
 import type { Anime } from '@/types/anime'
 
 export default defineComponent({
@@ -57,6 +58,7 @@ export default defineComponent({
     const animeList = ref<Anime[]>([])
     const loading = ref(true)
     const searchQuery = ref('')
+    const searchCache = new Map<string, Anime[]>()
 
     const loadTopAnime = async () => {
       try {
@@ -70,13 +72,20 @@ export default defineComponent({
     }
 
     const handleSearch = async () => {
-      if (!searchQuery.value.trim()) {
+      if (!searchQuery.value.trim() || searchQuery.value.length < 3) {
+        return
+      }
+
+      if (searchCache.has(searchQuery.value.trim())) {
+        animeList.value = searchCache.get(searchQuery.value.trim())!
         return
       }
 
       try {
         loading.value = true
         animeList.value = await animeService.searchAnime(searchQuery.value)
+
+        searchCache.set(searchQuery.value.trim(), animeList.value)
       } catch (error) {
         console.error('Error searching anime:', error)
       } finally {
@@ -84,13 +93,15 @@ export default defineComponent({
       }
     }
 
+    const debouncedSearch = debounce(handleSearch, 300)
+
     onMounted(loadTopAnime)
 
     return {
       animeList,
       loading,
       searchQuery,
-      handleSearch,
+      handleSearch: debouncedSearch,
     }
   },
 })
