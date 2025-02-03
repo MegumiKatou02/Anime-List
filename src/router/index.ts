@@ -9,6 +9,11 @@ const router = createRouter({
       component: () => import('../views/Home.vue'),
     },
     {
+      path: '/anime/:id',
+      name: 'anime-detail',
+      component: () => import('../views/AnimeDetail.vue'),
+    },
+    {
       path: '/about',
       name: 'about',
       // route level code-splitting

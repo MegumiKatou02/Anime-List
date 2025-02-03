@@ -1,5 +1,5 @@
 <template>
-  <div class="anime-card">
+  <div class="anime-card" @click="goToAnimeDetail">
     <img :src="anime.main_picture.medium" :alt="anime.title" class="anime-image" />
     <div class="anime-info">
       <h3>{{ anime.title }}</h3>
@@ -17,31 +17,33 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from 'vue'
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import type { PropType } from 'vue'
 import type { Anime } from '@/types/anime'
 
-export default defineComponent({
-  name: 'AnimeCard',
-  props: {
-    anime: {
-      type: Object as PropType<Anime>,
-      required: true,
-    },
-  },
-  setup(props) {
-    const truncatedSynopsis = computed(() => {
-      return props.anime.synopsis?.length > 150
-        ? `${props.anime.synopsis.substring(0, 150)}...`
-        : props.anime.synopsis
-    })
+const router = useRouter()
 
-    return {
-      truncatedSynopsis,
-    }
+const props = defineProps({
+  anime: {
+    type: Object as PropType<Anime>,
+    required: true,
   },
 })
+
+const truncatedSynopsis = computed(() => {
+  return props.anime.synopsis?.length > 150
+    ? `${props.anime.synopsis.substring(0, 150)}...`
+    : props.anime.synopsis
+})
+
+const goToAnimeDetail = () => {
+  router.push({
+    name: 'anime-detail',
+    params: { id: props.anime.id },
+  })
+}
 </script>
 
 <style scoped>
