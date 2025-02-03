@@ -68,7 +68,7 @@ onUnmounted(() => {
           >
         </div>
       </div>
-      <p class="copyright">&copy; 2024 Anime List. All rights reserved.</p>
+      <p class="copyright">&copy; 2025 Anime List. All rights reserved.</p>
     </footer>
   </div>
 </template>
