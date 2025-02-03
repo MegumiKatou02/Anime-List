@@ -12,3 +12,7 @@ a,
   transition: 0.4s;
   padding: 3px;
 }
+
+* {
+  forced-color-adjust: none;
+}
