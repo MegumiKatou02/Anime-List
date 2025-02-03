@@ -162,7 +162,7 @@ export default defineComponent({
   transform: translateY(-50%);
   padding: 0.75rem 1.5rem;
   border: none;
-  background-color: #4a90e2;
+  background-color: rgba(88, 122, 156, 0.9);
   color: #fff;
   border-radius: 50px;
   cursor: pointer;
@@ -170,7 +170,7 @@ export default defineComponent({
 }
 
 .search-button:hover {
-  background-color: #357ab8;
+  background-color: rgba(66, 93, 119, 0.9);
   transform: translateY(-50%) scale(1.05);
   box-shadow: 0 3px 15px rgba(58, 130, 238, 0.4);
 }
