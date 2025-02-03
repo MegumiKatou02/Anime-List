@@ -71,7 +71,6 @@ export default defineComponent({
 
     const handleSearch = async () => {
       if (!searchQuery.value.trim()) {
-        await loadTopAnime()
         return
       }
 
