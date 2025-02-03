@@ -38,8 +38,8 @@ onUnmounted(() => {
         </router-link>
 
         <div class="nav-links">
-          <router-link to="/" class="nav-link">Home</router-link>
-          <router-link to="/about" class="nav-link">About</router-link>
+          <router-link to="/" class="nav-link">Trang chủ</router-link>
+          <router-link to="/about" class="nav-link">Thông tin</router-link>
         </div>
       </nav>
     </header>
@@ -51,7 +51,7 @@ onUnmounted(() => {
     <footer>
       <div class="footer-content">
         <div class="footer-text">
-          <p>Powered by</p>
+          <p>Được hỗ trợ bởi</p>
           <div class="api-brand">
             <img src="@/assets/mal_logo.png" alt="MyAnimeList Logo" class="api-logo" />
             <span>MyAnimeList API</span>
@@ -64,7 +64,7 @@ onUnmounted(() => {
           <a
             href="https://myanimelist.net/static/pdf/about/privacy_policy_20230227.pdf"
             class="footer-link"
-            >Privacy Policy</a
+            >Chính sách bảo mật</a
           >
         </div>
       </div>

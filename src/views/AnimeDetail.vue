@@ -28,12 +28,12 @@
     </div>
 
     <div class="anime-synopsis">
-      <h3>Synopsis</h3>
+      <h2>Synopsis</h2>
       <p>{{ anime.synopsis }}</p>
     </div>
 
     <div class="characters-section">
-      <h3>Main Characters</h3>
+      <h2>Main Characters</h2>
       <div v-if="loading" class="loading">Loading characters...</div>
       <div v-else-if="characters.length === 0" class="no-characters">
         No character information available
@@ -58,11 +58,27 @@
         </div>
       </div>
     </div>
+
+    <div class="youtube-trailer">
+      <h3>Trailer</h3>
+      <div v-if="trailerVideoId" class="video-container">
+        <iframe
+          width="560"
+          height="315"
+          :src="youtubeTrailerUrl"
+          title="YouTube video player"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </div>
+      <h3 v-else>Anime này không có trailer</h3>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
 import type { AnimeJikan, Character } from '@/types/anime'
@@ -73,12 +89,18 @@ const characters = ref<Character[]>([])
 const loading = ref(true)
 const error = ref('')
 
+const trailerVideoId = ref('XBNWo25izJ8')
+
+const youtubeTrailerUrl = computed(() => `https://www.youtube.com/embed/${trailerVideoId.value}`)
+
 onMounted(async () => {
   try {
     const animeId = route.params.id
 
     const animeResponse = await axios.get(`https://api.jikan.moe/v4/anime/${animeId}`)
     anime.value = animeResponse.data.data
+    console.log('what', animeResponse.data.data.trailer.youtube_id)
+    trailerVideoId.value = animeResponse.data.data.trailer.youtube_id
 
     const charactersResponse = await axios.get(
       `https://api.jikan.moe/v4/anime/${animeId}/characters`,
@@ -98,6 +120,10 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+h2 {
+  margin-bottom: 1rem;
+}
+
 .anime-detail-container {
   max-width: 100%;
   margin: 0 auto;
@@ -207,5 +233,37 @@ onMounted(async () => {
   padding: 2rem;
   font-size: 1.2rem;
   color: #666;
+}
+
+.youtube-trailer {
+  margin: 2rem auto 0;
+  max-width: 700px;
+  min-width: 300px;
+  text-align: center;
+}
+
+.youtube-trailer h3 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #1a365d;
+}
+
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  max-width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 </style>
