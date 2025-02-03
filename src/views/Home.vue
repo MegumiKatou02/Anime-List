@@ -4,11 +4,12 @@
       <div class="search-wrapper">
         <input
           v-model="searchQuery"
-          @input="handleSearch"
           type="text"
+          @keyup.enter="handleSearch"
           placeholder="Tìm kiếm anime..."
           class="search-input"
         />
+        <button class="search-button" @click="handleSearch">Tìm kiếm</button>
         <svg class="search-icon" viewBox="0 0 24 24">
           <path
             fill="currentColor"
@@ -45,7 +46,6 @@ import { defineComponent, ref, onMounted } from 'vue'
 import { AnimeService } from '@/services/animeApi'
 import AnimeCard from '@/components/AnimeCard.vue'
 import type { Anime } from '@/types/anime'
-import debounce from 'lodash/debounce'
 
 export default defineComponent({
   name: 'HomePage',
@@ -69,8 +69,8 @@ export default defineComponent({
       }
     }
 
-    const handleSearch = debounce(async () => {
-      if (!searchQuery.value) {
+    const handleSearch = async () => {
+      if (!searchQuery.value.trim()) {
         await loadTopAnime()
         return
       }
@@ -83,7 +83,7 @@ export default defineComponent({
       } finally {
         loading.value = false
       }
-    }, 300)
+    }
 
     onMounted(loadTopAnime)
 
@@ -143,6 +143,45 @@ export default defineComponent({
 
 .search-input:focus + .search-icon {
   color: #4a90e2;
+}
+
+.search-button {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0.75rem 1.5rem;
+  border: none;
+  background-color: #4a90e2;
+  color: #fff;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+  background-color: #357ab8;
+  transform: translateY(-50%) scale(1.05);
+  box-shadow: 0 3px 15px rgba(58, 130, 238, 0.4);
+}
+
+.search-button:active {
+  transform: translateY(-50%) scale(0.98);
+}
+
+.search-button:focus {
+  outline: none;
+  box-shadow:
+    0 0 0 3px rgba(74, 144, 226, 0.3),
+    0 3px 15px rgba(58, 130, 238, 0.4);
+}
+
+@media (max-width: 480px) {
+  .search-button {
+    padding: 0.6rem 1rem;
+    font-size: 0.95rem;
+    right: 0.5rem;
+  }
 }
 
 .anime-grid {
