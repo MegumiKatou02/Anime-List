@@ -99,7 +99,7 @@ onMounted(async () => {
 
 <style scoped>
 .anime-detail-container {
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 2rem;
   background-color: #f4f4f4;
