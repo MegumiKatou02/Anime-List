@@ -1,0 +1,93 @@
+<template>
+  <div class="anime-card">
+    <img :src="anime.main_picture.medium" :alt="anime.title" class="anime-image" />
+    <div class="anime-info">
+      <h3>{{ anime.title }}</h3>
+      <div class="anime-stats">
+        <span>Rank: #{{ anime.rank }}</span>
+        <span>Score: {{ anime.mean }}</span>
+      </div>
+      <p class="anime-synopsis">{{ truncatedSynopsis }}</p>
+      <div class="anime-genres">
+        <span v-for="genre in anime.genres" :key="genre.id" class="genre-tag">
+          {{ genre.name }}
+        </span>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, computed } from 'vue'
+import type { PropType } from 'vue'
+import type { Anime } from '@/types/anime'
+
+export default defineComponent({
+  name: 'AnimeCard',
+  props: {
+    anime: {
+      type: Object as PropType<Anime>,
+      required: true,
+    },
+  },
+  setup(props) {
+    const truncatedSynopsis = computed(() => {
+      return props.anime.synopsis?.length > 150
+        ? `${props.anime.synopsis.substring(0, 150)}...`
+        : props.anime.synopsis
+    })
+
+    return {
+      truncatedSynopsis,
+    }
+  },
+})
+</script>
+
+<style scoped>
+.anime-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 1rem;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.anime-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.anime-info {
+  padding: 1rem;
+}
+
+.anime-stats {
+  display: flex;
+  gap: 1rem;
+  margin: 0.5rem 0;
+  color: #666;
+}
+
+.anime-synopsis {
+  font-size: 0.9rem;
+  color: #444;
+  margin: 0.5rem 0;
+}
+
+.anime-genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.genre-tag {
+  background: #f0f0f0;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+</style>
