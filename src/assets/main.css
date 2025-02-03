@@ -13,6 +13,16 @@ a,
   padding: 3px;
 }
 
-* {
-  forced-color-adjust: none;
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #eee;
+    background-color: #1a1a1a;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  body {
+    color: #333;
+    background-color: #fff;
+  }
 }
