@@ -31,7 +31,26 @@ import { RouterLink, RouterView } from 'vue-router'
     </main>
 
     <footer>
-      <p>Powered by MyAnimeList API</p>
+      <div class="footer-content">
+        <div class="footer-text">
+          <p>Powered by</p>
+          <div class="api-brand">
+            <img src="@/assets/mal_logo.png" alt="MyAnimeList Logo" class="api-logo" />
+            <span>MyAnimeList API</span>
+          </div>
+        </div>
+        <div class="footer-links">
+          <a href="https://myanimelist.net/static/apiagreement.html" class="footer-link"
+            >API License</a
+          >
+          <a
+            href="https://myanimelist.net/static/pdf/about/privacy_policy_20230227.pdf"
+            class="footer-link"
+            >Privacy Policy</a
+          >
+        </div>
+      </div>
+      <p class="copyright">&copy; 2024 Anime List. All rights reserved.</p>
     </footer>
   </div>
 </template>
@@ -119,7 +138,6 @@ import { RouterLink, RouterView } from 'vue-router'
   background: #42b883;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .navbar {
     padding: 1rem 5%;
@@ -146,6 +164,114 @@ import { RouterLink, RouterView } from 'vue-router'
 
   .nav-links {
     gap: 0.8rem;
+  }
+}
+
+footer {
+  background: linear-gradient(145deg, #2c3e50, #34495e);
+  color: white;
+  padding: 2rem 5%;
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-text {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.api-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  transition: transform 0.3s ease;
+}
+
+.api-brand:hover {
+  transform: translateY(-2px);
+}
+
+.api-logo {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.footer-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.footer-link {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.footer-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: #42b883;
+  transition: width 0.3s ease;
+}
+
+.footer-link:hover {
+  color: white;
+}
+
+.footer-link:hover::after {
+  width: 100%;
+}
+
+.copyright {
+  text-align: center;
+  padding-top: 1.5rem;
+  margin: 1rem auto 0;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 1200px;
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+    padding-bottom: 1rem;
+  }
+
+  .footer-text {
+    flex-direction: column;
+  }
+
+  .footer-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  .copyright {
+    font-size: 0.8rem;
   }
 }
 </style>
