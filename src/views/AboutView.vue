@@ -135,6 +135,7 @@ const apis = [
   border-radius: 1rem;
   border: 1px solid #e2e8f0;
   text-align: center;
+  color: #1a365d;
   transition: background 0.3s ease;
 }
 
