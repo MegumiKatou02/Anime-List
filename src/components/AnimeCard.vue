@@ -110,15 +110,15 @@ const goToAnimeDetail = () => {
   }
 
   .anime-title {
-    color: #fff;
+    color: #2d3748;
   }
 
   .anime-stats {
-    color: #fff;
+    color: #2d3748;
   }
 
   .anime-synopsis {
-    color: #fff;
+    color: #2d3748;
   }
 
   .genre-tag {
