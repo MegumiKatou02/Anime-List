@@ -42,7 +42,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { AnimeService } from '@/services/animeApi'
 import AnimeCard from '@/components/AnimeCard.vue'
 import { debounce } from 'lodash'
@@ -54,10 +55,12 @@ export default defineComponent({
     AnimeCard,
   },
   setup() {
+    const router = useRouter()
+    const route = useRoute()
     const animeService = new AnimeService()
     const animeList = ref<Anime[]>([])
     const loading = ref(true)
-    const searchQuery = ref('')
+    const searchQuery = ref(route.query.q?.toString() || '')
     const searchCache = new Map<string, Anime[]>()
 
     const loadTopAnime = async () => {
@@ -71,21 +74,21 @@ export default defineComponent({
       }
     }
 
-    const handleSearch = async () => {
-      if (!searchQuery.value.trim() || searchQuery.value.length < 3) {
+    const performSearch = async (query: string) => {
+      if (!query.trim() || query.length < 3) {
+        await loadTopAnime()
         return
       }
 
-      if (searchCache.has(searchQuery.value.trim())) {
-        animeList.value = searchCache.get(searchQuery.value.trim())!
+      if (searchCache.has(query.trim())) {
+        animeList.value = searchCache.get(query.trim())!
         return
       }
 
       try {
         loading.value = true
-        animeList.value = await animeService.searchAnime(searchQuery.value)
-
-        searchCache.set(searchQuery.value.trim(), animeList.value)
+        animeList.value = await animeService.searchAnime(query)
+        searchCache.set(query.trim(), animeList.value)
       } catch (error) {
         console.error('Error searching anime:', error)
       } finally {
@@ -93,15 +96,41 @@ export default defineComponent({
       }
     }
 
-    const debouncedSearch = debounce(handleSearch, 300)
+    const handleSearch = async () => {
+      await router.push({
+        query: {
+          ...route.query,
+          q: searchQuery.value || undefined,
+        },
+      })
+    }
 
-    onMounted(loadTopAnime)
+    watch(
+      () => route.query.q,
+      async (newQuery) => {
+        searchQuery.value = newQuery?.toString() || ''
+        if (newQuery) {
+          await performSearch(newQuery.toString())
+        } else {
+          await loadTopAnime()
+        }
+      },
+    )
+
+    onMounted(async () => {
+      window.scrollTo(0, 0)
+      if (route.query.q) {
+        await performSearch(route.query.q.toString())
+      } else {
+        await loadTopAnime()
+      }
+    })
 
     return {
       animeList,
       loading,
       searchQuery,
-      handleSearch: debouncedSearch,
+      handleSearch: debounce(handleSearch, 300),
     }
   },
 })
