@@ -1,15 +1,19 @@
 <template>
-  <div class="anime-card" @click="goToAnimeDetail">
+  <div class="anime-card dark:bg-gray-800 dark:border-gray-700" @click="goToAnimeDetail">
     <img :src="anime.main_picture.large" :alt="anime.title" class="anime-image" />
     <div class="anime-info">
-      <h3>{{ anime.title }}</h3>
-      <div class="anime-stats">
+      <h3 class="dark:text-white">{{ anime.title }}</h3>
+      <div class="anime-stats dark:text-gray-300">
         <span>Rank: #{{ anime.rank }}</span>
         <span>Score: {{ anime.mean }}</span>
       </div>
-      <p class="anime-synopsis">{{ truncatedSynopsis }}</p>
+      <p class="anime-synopsis dark:text-gray-300">{{ truncatedSynopsis }}</p>
       <div class="anime-genres">
-        <span v-for="genre in anime.genres" :key="genre.id" class="genre-tag">
+        <span
+          v-for="genre in anime.genres"
+          :key="genre.id"
+          class="genre-tag dark:bg-gray-700 dark:text-gray-200"
+        >
           {{ genre.name }}
         </span>
       </div>
@@ -54,6 +58,12 @@ const goToAnimeDetail = () => {
   margin: 1rem;
   background: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.anime-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .anime-image {
@@ -91,5 +101,29 @@ const goToAnimeDetail = () => {
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-size: 0.8rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .anime-card {
+    background: #1a202c;
+    border-color: #2d3748;
+  }
+
+  .anime-info h3 {
+    color: #fff;
+  }
+
+  .anime-stats {
+    color: #cbd5e0;
+  }
+
+  .anime-synopsis {
+    color: #cbd5e0;
+  }
+
+  .genre-tag {
+    background: #2d3748;
+    color: #e2e8f0;
+  }
 }
 </style>
