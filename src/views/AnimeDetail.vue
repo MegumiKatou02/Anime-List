@@ -103,6 +103,7 @@ const trailerVideoId = ref('XBNWo25izJ8')
 const youtubeTrailerUrl = computed(() => `https://www.youtube.com/embed/${trailerVideoId.value}`)
 
 onMounted(async () => {
+  window.scrollTo(0, 0)
   try {
     const animeId = route.params.id
 
