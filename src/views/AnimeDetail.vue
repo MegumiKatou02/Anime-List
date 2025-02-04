@@ -1,5 +1,9 @@
 <template>
-  <div v-if="loading" class="loading">Loading anime details...</div>
+  <!-- <div v-if="loading" class="loading">Loading anime details...</div> -->
+  <div v-if="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Đang tải anime...</p>
+  </div>
 
   <div v-else-if="error" class="error">
     {{ error }}
@@ -126,7 +130,7 @@ h2 {
 
 .anime-detail-container {
   max-width: 100%;
-  margin: 0 auto;
+  /* margin: 0 auto; */
   padding: 2rem;
   background-color: #f4f4f4;
 }
@@ -226,13 +230,39 @@ h2 {
   font-size: 0.8rem;
 }
 
-.loading,
 .error,
 .no-characters {
   text-align: center;
   padding: 2rem;
   font-size: 1.2rem;
   color: #666;
+}
+
+.loading {
+  text-align: center;
+  padding: 4rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #2d5996;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .youtube-trailer {
@@ -265,5 +295,22 @@ h2 {
   width: 100%;
   height: 100%;
   border: 0;
+}
+
+@media (max-width: 480px) {
+  .anime-header {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .anime-poster {
+    max-width: 200px;
+    margin-bottom: 1rem;
+  }
+
+  .characters-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.5rem;
+  }
 }
 </style>
