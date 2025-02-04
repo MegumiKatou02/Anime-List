@@ -128,7 +128,10 @@ export default defineComponent({
 
     onBeforeRouteUpdate((to, from, next) => {
       if (to.name === from.name) {
-        window.scrollTo(0, 0)
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth',
+        })
       }
       next()
     })
