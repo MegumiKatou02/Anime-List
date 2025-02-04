@@ -1,5 +1,4 @@
 <template>
-  <!-- <div v-if="loading" class="loading">Loading anime details...</div> -->
   <div v-if="loading" class="loading">
     <div class="spinner"></div>
     <p>Đang tải anime...</p>
@@ -9,18 +8,26 @@
     {{ error }}
   </div>
 
-  <div v-else-if="anime" class="anime-detail-container">
+  <div v-else-if="anime" class="anime-detail-container dark:bg-gray-800">
     <div class="anime-header">
       <img :src="anime.images.webp.large_image_url" :alt="anime.title" class="anime-poster" />
       <div class="anime-header-info">
-        <h1>{{ anime.title }}</h1>
-        <h2>{{ anime.title_japanese }}</h2>
+        <h1 class="dark:text-white">{{ anime.title }}</h1>
+        <h2 class="dark:text-gray-300">{{ anime.title_japanese }}</h2>
 
         <div class="anime-meta">
-          <div class="meta-item"><strong>Status:</strong> {{ anime.status }}</div>
-          <div class="meta-item"><strong>Type:</strong> {{ anime.type }}</div>
-          <div class="meta-item"><strong>Episodes:</strong> {{ anime.episodes || 'Unknown' }}</div>
-          <div class="meta-item"><strong>Score:</strong> {{ anime.score }} / 10</div>
+          <div class="meta-item dark:bg-gray-700 dark:text-white">
+            <strong>Status:</strong> {{ anime.status }}
+          </div>
+          <div class="meta-item dark:bg-gray-700 dark:text-white">
+            <strong>Type:</strong> {{ anime.type }}
+          </div>
+          <div class="meta-item dark:bg-gray-700 dark:text-white">
+            <strong>Episodes:</strong> {{ anime.episodes || 'Unknown' }}
+          </div>
+          <div class="meta-item dark:bg-gray-700 dark:text-white">
+            <strong>Score:</strong> {{ anime.score }} / 10
+          </div>
         </div>
 
         <div class="anime-genres">
@@ -32,21 +39,21 @@
     </div>
 
     <div class="anime-synopsis">
-      <h2>Synopsis</h2>
-      <p>{{ anime.synopsis }}</p>
+      <h2 class="dark:text-white">Synopsis</h2>
+      <p class="dark:text-gray-300">{{ anime.synopsis }}</p>
     </div>
 
     <div class="characters-section">
-      <h2>Main Characters</h2>
-      <div v-if="loading" class="loading">Loading characters...</div>
-      <div v-else-if="characters.length === 0" class="no-characters">
+      <h2 class="dark:text-white">Main Characters</h2>
+      <div v-if="loading" class="loading dark:text-white">Loading characters...</div>
+      <div v-else-if="characters.length === 0" class="no-characters dark:text-gray-300">
         No character information available
       </div>
       <div v-else class="characters-grid">
         <div
           v-for="character in characters"
           :key="character.character.mal_id"
-          class="character-card"
+          class="character-card dark:bg-gray-700"
         >
           <img
             :src="character.character.images.webp.image_url"
@@ -54,17 +61,15 @@
             class="character-image"
           />
           <div class="character-info">
-            <div class="character-name">{{ character.character.name }}</div>
-            <div class="character-role">
-              {{ character.role }}
-            </div>
+            <div class="character-name dark:text-white">{{ character.character.name }}</div>
+            <div class="character-role dark:text-gray-300">{{ character.role }}</div>
           </div>
         </div>
       </div>
     </div>
 
     <div class="youtube-trailer">
-      <h3>Trailer</h3>
+      <h3 class="dark:text-white">Trailer</h3>
       <div v-if="trailerVideoId" class="video-container">
         <iframe
           width="560"
@@ -76,7 +81,7 @@
           allowfullscreen
         ></iframe>
       </div>
-      <h3 v-else>Anime này không có trailer</h3>
+      <h3 v-else class="dark:text-white">Anime này không có trailer</h3>
     </div>
   </div>
 </template>
@@ -311,6 +316,43 @@ h2 {
   .characters-grid {
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     gap: 0.5rem;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .anime-detail-container {
+    background-color: #1a202c;
+  }
+
+  .meta-item {
+    background-color: #2d3748;
+    color: #fff;
+  }
+
+  .character-card {
+    background-color: #2d3748;
+  }
+
+  .character-name {
+    color: #fff;
+  }
+
+  .character-role {
+    color: #cbd5e0;
+  }
+
+  .error,
+  .no-characters {
+    color: #cbd5e0;
+  }
+
+  .loading {
+    color: #fff;
+  }
+
+  .spinner {
+    border: 4px solid #4a5568;
+    border-top: 4px solid #90cdf4;
   }
 }
 </style>
