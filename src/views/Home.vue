@@ -43,7 +43,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, watch } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter, useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { AnimeService } from '@/services/animeApi'
 import AnimeCard from '@/components/AnimeCard.vue'
 import { debounce } from 'lodash'
@@ -124,6 +124,13 @@ export default defineComponent({
       } else {
         await loadTopAnime()
       }
+    })
+
+    onBeforeRouteUpdate((to, from, next) => {
+      if (to.name === from.name) {
+        window.scrollTo(0, 0)
+      }
+      next()
     })
 
     return {
