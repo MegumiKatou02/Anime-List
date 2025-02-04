@@ -39,6 +39,7 @@ export class AnimeService {
     })
     return response.data.data.map((item: { node: Anime }) => item.node)
   }
+
   async getShuffledAnimeListFromAPI(): Promise<Anime[]> {
     try {
       const response = await axios.get(`${BASE_URL}/anime/ranking`, {
