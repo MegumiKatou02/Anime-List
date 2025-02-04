@@ -44,6 +44,7 @@ export interface AnimeJikan {
     mal_id: number
     name: string
   }>
+  rank: number
 }
 
 export interface Anime {

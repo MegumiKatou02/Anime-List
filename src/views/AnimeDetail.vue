@@ -26,6 +26,9 @@
             <strong>Episodes:</strong> {{ anime.episodes || 'Unknown' }}
           </div>
           <div class="meta-item dark:bg-gray-700 dark:text-white">
+            <strong>Rank:</strong> #{{ anime.rank }}
+          </div>
+          <div class="meta-item dark:bg-gray-700 dark:text-white">
             <strong>Score:</strong> {{ anime.score }} / 10
           </div>
         </div>
@@ -130,12 +133,17 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+* {
+  overflow: hidden;
+}
+
 h2 {
   margin-bottom: 1rem;
 }
 
 .anime-detail-container {
   max-width: 100%;
+  width: 100%;
   /* margin: 0 auto; */
   padding: 2rem;
   background-color: #f4f4f4;
@@ -172,6 +180,7 @@ h2 {
   display: flex;
   gap: 1rem;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
 
 .meta-item {
@@ -281,7 +290,7 @@ h2 {
 .youtube-trailer h3 {
   font-size: 1.8rem;
   margin-bottom: 1rem;
-  color: #1a365d;
+  /* color: #1a365d; */
 }
 
 .video-container {
@@ -303,7 +312,7 @@ h2 {
   border: 0;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 630px) {
   .anime-header {
     display: grid;
     grid-template-columns: 1fr;
