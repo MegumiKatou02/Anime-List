@@ -45,6 +45,12 @@ export interface AnimeJikan {
     name: string
   }>
   rank: number
+  broadcast: {
+    day: string
+    time: string
+    timezone: string
+    string: string
+  }
 }
 
 export interface Anime {

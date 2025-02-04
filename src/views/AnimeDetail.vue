@@ -33,6 +33,15 @@
           </div>
         </div>
 
+        <div class="broadcast-info">
+          <div class="broadcast-item dark:bg-gray-700 dark:text-white">
+            <strong>Broadcast (Japan):</strong> {{ anime.broadcast?.string || 'Unknown' }}
+          </div>
+          <div class="broadcast-item dark:bg-gray-700 dark:text-white">
+            <strong>Broadcast (Vietnam):</strong> {{ vietnamBroadcastTime }}
+          </div>
+        </div>
+
         <div class="anime-genres">
           <span v-for="genre in anime.genres" :key="genre.mal_id" class="genre-tag">
             {{ genre.name }}
@@ -93,6 +102,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
+import moment from 'moment-timezone'
 import type { AnimeJikan, Character } from '@/types/anime'
 
 const route = useRoute()
@@ -104,6 +114,30 @@ const error = ref('')
 const trailerVideoId = ref('XBNWo25izJ8')
 
 const youtubeTrailerUrl = computed(() => `https://www.youtube.com/embed/${trailerVideoId.value}`)
+
+const vietnamBroadcastTime = computed(() => {
+  if (!anime.value?.broadcast?.time || !anime.value?.broadcast?.day) return 'Unknown'
+
+  try {
+    const timeParts = anime.value.broadcast.time.split(':')
+    const hours = parseInt(timeParts[0])
+    const minutes = timeParts[1] ? parseInt(timeParts[1]) : 0
+
+    const jstTime = moment()
+      .tz('Asia/Tokyo')
+      .day(anime.value.broadcast.day.substring(0, 3))
+      .hour(hours)
+      .minute(minutes)
+      .second(0)
+
+    const vnTime = jstTime.clone().tz('Asia/Ho_Chi_Minh')
+
+    return `${vnTime.format('dddd')} at ${vnTime.format('HH:mm')} (UTC+7)`
+  } catch (e) {
+    console.error('Lỗi chuyển đổi thời gian:', e)
+    return 'Unknown'
+  }
+})
 
 onMounted(async () => {
   window.scrollTo(0, 0)
@@ -176,14 +210,16 @@ h2 {
   font-size: 1.5rem;
 }
 
-.anime-meta {
+.anime-meta,
+.broadcast-info {
   display: flex;
   gap: 1rem;
   margin-bottom: 1rem;
   flex-wrap: wrap;
 }
 
-.meta-item {
+.meta-item,
+.broadcast-item {
   background-color: #e9ecef;
   padding: 0.5rem;
   border-radius: 4px;
@@ -334,7 +370,8 @@ h2 {
     background-color: #1a202c;
   }
 
-  .meta-item {
+  .meta-item,
+  .broadcast-item {
     background-color: #2d3748;
     color: #fff;
   }
