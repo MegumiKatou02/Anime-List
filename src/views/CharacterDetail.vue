@@ -180,5 +180,17 @@ onMounted(async () => {
   .character-detail-container {
     background-color: #1a202c;
   }
+
+  .anime-card {
+    background-color: #2d3748;
+  }
+
+  .anime-title {
+    color: #fff;
+  }
+
+  .anime-role {
+    color: #cbd5e0;
+  }
 }
 </style>
