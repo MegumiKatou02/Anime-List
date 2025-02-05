@@ -175,4 +175,10 @@ onMounted(async () => {
     gap: 0.5rem;
   }
 }
+
+@media (prefers-color-scheme: dark) {
+  .character-detail-container {
+    background-color: #1a202c;
+  }
+}
 </style>
