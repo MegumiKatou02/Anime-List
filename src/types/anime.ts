@@ -20,6 +20,22 @@ export interface Character {
   role: string
 }
 
+export interface CharacterJikan {
+  name: string
+  name_kanji: string
+  images: {
+    webp: {
+      image_url: string
+    }
+    jpg: {
+      image_url: string
+    }
+  }
+  nicknames: Array<string>
+  favorites: number
+  about: string
+}
+
 export interface AnimeJikan {
   images: {
     webp: {
@@ -51,6 +67,7 @@ export interface AnimeJikan {
     timezone: string
     string: string
   }
+  mal_id: string
 }
 
 export interface Anime {

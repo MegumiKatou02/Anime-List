@@ -19,6 +19,11 @@ const router = createRouter({
 
       component: () => import('../views/AboutView.vue'),
     },
+    {
+      path: '/character/:id',
+      name: 'CharacterDetail',
+      component: () => import('../views/CharacterDetail.vue'),
+    },
   ],
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {

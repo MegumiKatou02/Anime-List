@@ -66,6 +66,7 @@
           v-for="character in characters"
           :key="character.character.mal_id"
           class="character-card dark:bg-gray-700"
+          @click="navigateToCharacter(character.character.mal_id)"
         >
           <img
             :src="character.character.images.webp.image_url"
@@ -100,12 +101,13 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
 import moment from 'moment-timezone'
 import type { AnimeJikan, Character } from '@/types/anime'
 
 const route = useRoute()
+const router = useRouter()
 const anime = ref<AnimeJikan | null>(null)
 const characters = ref<Character[]>([])
 const loading = ref(true)
@@ -138,6 +140,10 @@ const vietnamBroadcastTime = computed(() => {
     return 'Unknown'
   }
 })
+
+const navigateToCharacter = (characterId: number) => {
+  router.push({ name: 'CharacterDetail', params: { id: characterId } })
+}
 
 onMounted(async () => {
   window.scrollTo(0, 0)
