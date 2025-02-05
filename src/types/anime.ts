@@ -67,7 +67,7 @@ export interface AnimeJikan {
     timezone: string
     string: string
   }
-  mal_id: string
+  mal_id: number
 }
 
 export interface Anime {

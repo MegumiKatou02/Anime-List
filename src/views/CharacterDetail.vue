@@ -43,6 +43,7 @@
           v-for="anime in animeAppearances"
           :key="anime.anime.mal_id"
           class="anime-card dark:bg-gray-700"
+          @click="goToAnimeDetail(anime.anime.mal_id)"
         >
           <img
             :src="anime.anime.images.webp.image_url"
@@ -61,15 +62,23 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
 import type { CharacterJikan, AnimeJikan } from '@/types/anime'
 
 const route = useRoute()
+const router = useRouter()
 const character = ref<CharacterJikan | null>(null)
 const animeAppearances = ref<{ anime: AnimeJikan; role: string }[]>([])
 const loading = ref(true)
 const error = ref('')
+
+const goToAnimeDetail = (anime_id: number) => {
+  router.push({
+    name: 'anime-detail',
+    params: { id: anime_id },
+  })
+}
 
 onMounted(async () => {
   window.scrollTo(0, 0)
@@ -83,7 +92,6 @@ onMounted(async () => {
       `https://api.jikan.moe/v4/characters/${characterId}/anime`,
     )
     animeAppearances.value = appearancesResponse.data.data
-    console.log(animeAppearances.value)
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {
       error.value = err.response?.data?.message || 'Failed to load character details'
@@ -129,6 +137,7 @@ onMounted(async () => {
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s;
+  cursor: pointer;
 }
 
 .anime-card:hover {
