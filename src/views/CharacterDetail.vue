@@ -27,14 +27,14 @@
     </div>
 
     <div class="character-about">
-      <h2 class="dark:text-white">About</h2>
+      <h2 class="dark:text-white" style="margin-bottom: 1rem">About</h2>
       <p class="dark:text-gray-300 character-about-text">
         {{ character.about || 'No description available' }}
       </p>
     </div>
 
     <div class="anime-appearances">
-      <h2 class="dark:text-white">Anime Appearances</h2>
+      <h2 class="dark:text-white" style="margin-bottom: 1rem">Anime Appearances</h2>
       <div v-if="animeAppearances.length === 0" class="no-appearances dark:text-gray-300">
         No anime appearances found
       </div>
@@ -176,6 +176,33 @@ onMounted(async () => {
   }
 }
 
+.loading {
+  text-align: center;
+  padding: 4rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #2d5996;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   .character-detail-container {
     background-color: #1a202c;
@@ -191,6 +218,15 @@ onMounted(async () => {
 
   .anime-role {
     color: #cbd5e0;
+  }
+
+  .loading {
+    color: #fff;
+  }
+
+  .spinner {
+    border: 4px solid #4a5568;
+    border-top: 4px solid #90cdf4;
   }
 }
 </style>
