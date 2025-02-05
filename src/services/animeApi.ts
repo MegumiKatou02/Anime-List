@@ -39,6 +39,7 @@ export class AnimeService {
     })
     return response.data.data.map((item: { node: Anime }) => item.node)
   }
+
   async getShuffledAnimeListFromAPI(): Promise<Anime[]> {
     try {
       const response = await axios.get(`${BASE_URL}/anime/ranking`, {
@@ -62,5 +63,16 @@ export class AnimeService {
       console.error('Error fetching and shuffling anime list:', error)
       throw error
     }
+  }
+  async getAnimeByGenre(genreId: string): Promise<Anime[]> {
+    const response = await axios.get(`${BASE_URL}/anime`, {
+      headers: this.getHeaders(),
+      params: {
+        genres: genreId,
+        limit: 20,
+        fields: 'id,title,main_picture,mean,rank,popularity,synopsis,start_date,end_date,genres',
+      },
+    })
+    return response.data.data.map((item: { node: Anime }) => item.node)
   }
 }
