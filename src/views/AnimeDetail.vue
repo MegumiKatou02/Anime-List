@@ -146,7 +146,6 @@ onMounted(async () => {
 
     const animeResponse = await axios.get(`https://api.jikan.moe/v4/anime/${animeId}`)
     anime.value = animeResponse.data.data
-    console.log('what', animeResponse.data.data.trailer.youtube_id)
     trailerVideoId.value = animeResponse.data.data.trailer.youtube_id
 
     const charactersResponse = await axios.get(

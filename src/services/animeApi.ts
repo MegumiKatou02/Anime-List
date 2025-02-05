@@ -64,4 +64,15 @@ export class AnimeService {
       throw error
     }
   }
+  async getAnimeByGenre(genreId: string): Promise<Anime[]> {
+    const response = await axios.get(`${BASE_URL}/anime`, {
+      headers: this.getHeaders(),
+      params: {
+        genres: genreId,
+        limit: 20,
+        fields: 'id,title,main_picture,mean,rank,popularity,synopsis,start_date,end_date,genres',
+      },
+    })
+    return response.data.data.map((item: { node: Anime }) => item.node)
+  }
 }
