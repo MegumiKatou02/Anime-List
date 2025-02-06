@@ -1,5 +1,7 @@
 <template>
   <div class="home">
+    <MediaTypeSwitcher @change="handleMediaTypeChange" />
+
     <div class="search-container">
       <div class="search-actions">
         <div class="search-wrapper">
@@ -7,7 +9,7 @@
             v-model="searchQuery"
             type="text"
             @keyup.enter="handleSearch"
-            placeholder="Tìm kiếm anime..."
+            :placeholder="mediaType === 'anime' ? 'Tìm kiếm anime...' : 'Tìm kiếm manga...'"
             class="search-input"
           />
           <button class="search-button" @click="handleSearch">Tìm kiếm</button>
@@ -18,7 +20,7 @@
             />
           </svg>
         </div>
-        <AnimeFilter @filter="handleFilter" />
+        <AnimeFilter v-if="mediaType === 'anime'" @filter="handleFilter" />
       </div>
     </div>
 
@@ -28,18 +30,21 @@
     </div>
 
     <div v-else class="anime-grid">
-      <AnimeCard v-for="anime in animeList" :key="anime.id" :anime="anime" class="anime-card" />
+      <template v-for="item in mediaList" :key="item.id">
+        <AnimeCard v-if="mediaType === 'anime'" :anime="item as Anime" class="media-card" />
+        <MangaCard v-else :manga="item as Manga" class="media-card" />
+      </template>
     </div>
 
-    <div v-if="!loading && animeList.length === 0" class="empty-state">
+    <div v-if="!loading && mediaList.length === 0" class="empty-state">
       <svg class="empty-icon" viewBox="0 0 24 24">
         <path
           fill="currentColor"
           d="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z"
         />
       </svg>
-      <h3>No results found</h3>
-      <p>Try different keywords</p>
+      <h3>Không tìm thấy kết quả</h3>
+      <p>Hãy thử từ khóa khác</p>
     </div>
   </div>
 </template>
@@ -48,69 +53,98 @@
 import { defineComponent, ref, onMounted, watch } from 'vue'
 import { useRouter, useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { AnimeService } from '@/services/animeApi'
+import { MangaService } from '@/services/mangaApi'
 import AnimeCard from '@/components/AnimeCard.vue'
+import MangaCard from '@/components/MangaCard.vue'
 import AnimeFilter from '@/components/AnimeFilter.vue'
+import MediaTypeSwitcher from '@/components/MediaTypeSwitcher.vue'
 import { debounce } from 'lodash'
 import type { Anime } from '@/types/anime'
+import type { Manga } from '@/types/manga'
+
+type MediaItem = Anime | Manga
 
 export default defineComponent({
   name: 'HomePage',
   components: {
     AnimeCard,
+    MangaCard,
     AnimeFilter,
+    MediaTypeSwitcher,
   },
   setup() {
     const router = useRouter()
     const route = useRoute()
     const animeService = new AnimeService()
-    const animeList = ref<Anime[]>([])
-    const animeListTotal = ref<Anime[]>([])
+    const mangaService = new MangaService()
+    const mediaList = ref<MediaItem[]>([])
+    const mediaListTotal = ref<MediaItem[]>([])
     const loading = ref(true)
     const searchQuery = ref(route.query.q?.toString() || '')
-    const searchCache = new Map<string, Anime[]>()
+    const mediaType = ref<'anime' | 'manga'>((route.query.type as 'anime' | 'manga') || 'anime')
+    const searchCache = new Map<string, MediaItem[]>()
 
     const loadInitialData = async () => {
       try {
         loading.value = true
-        animeListTotal.value = await animeService.getShuffledAnimeListFromAPI()
-        animeList.value = animeListTotal.value
+        mediaListTotal.value = []
+        mediaList.value = []
+
+        if (mediaType.value === 'anime') {
+          mediaListTotal.value = await animeService.getShuffledAnimeListFromAPI()
+        } else {
+          mediaListTotal.value = await mangaService.getTopManga()
+        }
+        mediaList.value = [...mediaListTotal.value]
       } catch (error) {
-        console.error('Error loading top anime:', error)
+        console.error('Error loading initial data:', error)
       } finally {
         loading.value = false
       }
     }
 
-    const handleFilter = async (filter: { status: string; genres: number[] }) => {
-      const { status, genres } = filter
-      const query = route.query
-      if (!query.q) {
-        animeListTotal.value = await animeService.getShuffledAnimeListFromAPI(status)
-        animeList.value = animeListTotal.value
-      }
+    const handleMediaTypeChange = async (type: 'anime' | 'manga') => {
+      if (type === mediaType.value) return
 
-      animeList.value = animeService.searchAnimeWithFilter(animeListTotal.value, status, genres)
+      mediaType.value = type
+      searchQuery.value = ''
+      mediaList.value = []
+      mediaListTotal.value = []
+
+      await router.push({
+        query: {
+          type,
+        },
+      })
     }
 
     const performSearch = async (query: string) => {
       if (!query.trim() || query.length < 3) {
-        await loadTopAnime()
+        await loadInitialData()
         return
       }
 
-      if (searchCache.has(query.trim())) {
-        animeListTotal.value = searchCache.get(query.trim())!
-        animeList.value = animeListTotal.value
+      const cacheKey = `${mediaType.value}-${query.trim()}`
+      if (searchCache.has(cacheKey)) {
+        mediaListTotal.value = [...(searchCache.get(cacheKey) || [])]
+        mediaList.value = [...mediaListTotal.value]
         return
       }
 
       try {
         loading.value = true
-        animeListTotal.value = await animeService.searchAnime(query)
-        animeList.value = animeListTotal.value
-        searchCache.set(query.trim(), animeList.value)
+        mediaListTotal.value = []
+        mediaList.value = []
+
+        if (mediaType.value === 'anime') {
+          mediaListTotal.value = await animeService.searchAnime(query)
+        } else {
+          mediaListTotal.value = await mangaService.searchManga(query)
+        }
+        mediaList.value = [...mediaListTotal.value]
+        searchCache.set(cacheKey, mediaList.value)
       } catch (error) {
-        console.error('Error searching anime:', error)
+        console.error('Error searching:', error)
       } finally {
         loading.value = false
       }
@@ -121,20 +155,47 @@ export default defineComponent({
         query: {
           ...route.query,
           q: searchQuery.value || undefined,
+          type: mediaType.value,
         },
       })
     }
 
+    const handleFilter = async (filter: { status: string; genres: number[] }) => {
+      if (mediaType.value !== 'anime') return
+
+      const { status, genres } = filter
+      const query = route.query
+
+      if (!query.q) {
+        mediaListTotal.value = await animeService.getShuffledAnimeListFromAPI(status)
+        mediaList.value = [...mediaListTotal.value]
+      }
+
+      if (mediaType.value === 'anime') {
+        mediaList.value = animeService.searchAnimeWithFilter(
+          mediaListTotal.value as Anime[],
+          status,
+          genres,
+        )
+      }
+    }
+
     watch(
-      () => route.query.q,
+      () => route.query,
       async (newQuery) => {
-        searchQuery.value = newQuery?.toString() || ''
-        if (newQuery) {
-          await performSearch(newQuery.toString())
+        const newType = (newQuery.type as 'anime' | 'manga') || 'anime'
+        if (newType !== mediaType.value) {
+          mediaType.value = newType
+        }
+
+        searchQuery.value = newQuery.q?.toString() || ''
+        if (newQuery.q) {
+          await performSearch(newQuery.q.toString())
         } else {
-          await loadTopAnime()
+          await loadInitialData()
         }
       },
+      { deep: true },
     )
 
     onMounted(async () => {
@@ -142,7 +203,7 @@ export default defineComponent({
       if (route.query.q) {
         await performSearch(route.query.q.toString())
       } else {
-        await loadTopAnime()
+        await loadInitialData()
       }
     })
 
@@ -157,11 +218,15 @@ export default defineComponent({
     })
 
     return {
-      handleFilter,
-      animeList,
+      AnimeCard,
+      MangaCard,
+      mediaType,
+      mediaList,
       loading,
       searchQuery,
       handleSearch: debounce(handleSearch, 300),
+      handleFilter,
+      handleMediaTypeChange,
     }
   },
 })
