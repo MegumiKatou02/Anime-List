@@ -87,4 +87,10 @@ export interface Anime {
     id: number
     name: string
   }>
+  status: string
+}
+
+export interface Genres {
+  mal_id: number
+  name: string
 }
