@@ -30,6 +30,7 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/mangadex-covers/, ''),
         headers: {
+          Referer: 'https://mangadex.org',
           'Cache-Control': 'no-cache',
         },
       },
