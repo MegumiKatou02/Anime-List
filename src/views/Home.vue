@@ -69,9 +69,7 @@ export default defineComponent({
     const searchQuery = ref(route.query.q?.toString() || '')
     const searchCache = new Map<string, Anime[]>()
 
-    const loadTopAnime = async () => {
-      console.log('call')
-
+    const loadInitialData = async () => {
       try {
         loading.value = true
         animeListTotal.value = await animeService.getShuffledAnimeListFromAPI()
