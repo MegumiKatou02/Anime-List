@@ -1,13 +1,17 @@
 import type { Manga, MangaData, Relationship, Tag } from '@/types/manga'
 
 export class MangaService {
-  private baseUrl = 'https://api.mangadex.org'
+  private baseUrl = '/mangadex-api'
 
   async searchManga(query: string): Promise<Manga[]> {
     try {
       const response = await fetch(
         `${this.baseUrl}/manga?limit=20&title=${encodeURIComponent(query)}&includes[]=cover_art`,
       )
+      console.log(
+        `${this.baseUrl}/manga?limit=20&title=${encodeURIComponent(query)}&includes[]=cover_art`,
+      )
+
       const data = await response.json()
 
       return this.transformMangaData(data.data)
