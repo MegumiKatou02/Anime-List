@@ -44,31 +44,53 @@ export class MangaService {
     }
   }
 
-  private transformMangaData(data: MangaData[]): Manga[] {
-    return data.map((manga) => {
-      const coverFile = manga.relationships.find((rel: Relationship) => rel.type === 'cover_art')
-        ?.attributes?.fileName
+  private async transformMangaData(data: MangaData[]): Promise<Manga[]> {
+    const mangaList = await Promise.all(
+      data.map(async (manga) => {
+        const coverFile = manga.relationships.find((rel: Relationship) => rel.type === 'cover_art')
+          ?.attributes?.fileName
 
-      const title =
-        manga.attributes.title.en ||
-        Object.values(manga.attributes.title).find((t) => t !== undefined) ||
-        'Unknown Title'
+        const title =
+          manga.attributes.title.en ||
+          Object.values(manga.attributes.title).find((t) => t !== undefined) ||
+          'Unknown Title'
 
-      // const coverImage = coverFile
-      //   ? `/mangadex-covers/covers/${manga.id}/${coverFile}`
-      //   : 'https://via.placeholder.com/200x300'
+        const getCoverImage = async (mangaId: string, fileName: string) => {
+          try {
+            const response = await fetch(
+              `https://uploads.mangadex.org/covers/${mangaId}/${fileName}`,
+              {
+                headers: {
+                  Referer: 'https://mangadex.org',
+                },
+              },
+            )
+            if (response.ok) {
+              return response.url
+            }
+          } catch (error) {
+            console.error('Error fetching cover image:', error)
+          }
+          return 'https://via.placeholder.com/200x300'
+        }
 
-      return {
-        id: manga.id,
-        title,
-        description: manga.attributes.description.en || 'No description available',
-        status: manga.attributes.status,
-        coverImage: coverFile ? `https://uploads.mangadex.org/covers/${manga.id}/${coverFile}` : '',
-        rating: manga.attributes.rating?.average || 0,
-        genres: manga.attributes.tags
-          .filter((tag: Tag) => tag.attributes.group === 'genre')
-          .map((tag: Tag) => tag.attributes.name.en),
-      }
-    })
+        const coverImage = coverFile
+          ? await getCoverImage(manga.id, coverFile)
+          : 'https://via.placeholder.com/200x300'
+
+        return {
+          id: manga.id,
+          title,
+          description: manga.attributes.description.en || 'No description available',
+          status: manga.attributes.status,
+          coverImage,
+          rating: manga.attributes.rating?.average || 0,
+          genres: manga.attributes.tags
+            .filter((tag: Tag) => tag.attributes.group === 'genre')
+            .map((tag: Tag) => tag.attributes.name.en),
+        }
+      }),
+    )
+    return mangaList
   }
 }
