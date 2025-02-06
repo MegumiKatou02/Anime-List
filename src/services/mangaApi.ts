@@ -55,16 +55,15 @@ export class MangaService {
         'Unknown Title'
 
       // const coverImage = coverFile
-      //   ? `https://uploads.mangadex.org/covers/${manga.id}/${coverFile}`
-      //   : ''
-      // console.log('Cover Image URL:', coverImage)
+      //   ? `/mangadex-covers/covers/${manga.id}/${coverFile}`
+      //   : 'https://via.placeholder.com/200x300'
 
       return {
         id: manga.id,
         title,
         description: manga.attributes.description.en || 'No description available',
         status: manga.attributes.status,
-        coverImage: coverFile ? `/mangadex-covers/covers/${manga.id}/${coverFile}` : '',
+        coverImage: coverFile ? `https://uploads.mangadex.org/covers/${manga.id}/${coverFile}` : '',
         rating: manga.attributes.rating?.average || 0,
         genres: manga.attributes.tags
           .filter((tag: Tag) => tag.attributes.group === 'genre')
