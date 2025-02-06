@@ -22,7 +22,8 @@ export class AnimeService {
       params: {
         ranking_type: 'all',
         limit,
-        fields: 'id,title,main_picture,mean,rank,popularity,synopsis,start_date,end_date,genres',
+        fields:
+          'status,id,title,main_picture,mean,rank,popularity,synopsis,start_date,end_date,genres',
       },
     })
     return response.data.data.map((item: { node: Anime }) => item.node)
@@ -34,20 +35,41 @@ export class AnimeService {
       params: {
         q: query,
         limit: 20,
-        fields: 'id,title,main_picture,mean,rank,popularity,synopsis,start_date,end_date,genres',
+        fields:
+          'status,id,title,main_picture,mean,rank,popularity,synopsis,start_date,end_date,genres',
       },
     })
     return response.data.data.map((item: { node: Anime }) => item.node)
   }
 
-  async getShuffledAnimeListFromAPI(): Promise<Anime[]> {
+  searchAnimeWithFilter(animeList: Anime[], status: string, genres: number[]) {
+    const filteredAnime = animeList.filter((anime) => {
+      const isStatusMatching = status.length === 0 || anime.status === status
+      const isGenreMatching =
+        genres.length === 0 || anime.genres.some((genre) => genres.includes(genre.id))
+
+      return isStatusMatching && isGenreMatching
+    })
+    return filteredAnime
+  }
+
+  async getShuffledAnimeListFromAPI(type: string = 'all'): Promise<Anime[]> {
+    if (type === 'currently_airing') {
+      type = 'airing'
+    } else if (type === 'not_yet_aired') {
+      type = 'upcoming'
+    } else {
+      type = 'all'
+    }
+
     try {
       const response = await axios.get(`${BASE_URL}/anime/ranking`, {
         headers: this.getHeaders(),
         params: {
-          ranking_type: 'all',
+          ranking_type: type,
           limit: 100,
-          fields: 'id,title,main_picture,mean,rank,popularity,synopsis,start_date,end_date,genres',
+          fields:
+            'status,id,title,main_picture,mean,rank,popularity,synopsis,start_date,end_date,genres',
         },
       })
 

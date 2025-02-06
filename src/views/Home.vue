@@ -1,21 +1,24 @@
 <template>
   <div class="home">
     <div class="search-container">
-      <div class="search-wrapper">
-        <input
-          v-model="searchQuery"
-          type="text"
-          @keyup.enter="handleSearch"
-          placeholder="Tìm kiếm anime..."
-          class="search-input"
-        />
-        <button class="search-button" @click="handleSearch">Tìm kiếm</button>
-        <svg class="search-icon" viewBox="0 0 24 24">
-          <path
-            fill="currentColor"
-            d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"
+      <div class="search-actions">
+        <div class="search-wrapper">
+          <input
+            v-model="searchQuery"
+            type="text"
+            @keyup.enter="handleSearch"
+            placeholder="Tìm kiếm anime..."
+            class="search-input"
           />
-        </svg>
+          <button class="search-button" @click="handleSearch">Tìm kiếm</button>
+          <svg class="search-icon" viewBox="0 0 24 24">
+            <path
+              fill="currentColor"
+              d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"
+            />
+          </svg>
+        </div>
+        <AnimeFilter @filter="handleFilter" />
       </div>
     </div>
 
@@ -46,6 +49,7 @@ import { defineComponent, ref, onMounted, watch } from 'vue'
 import { useRouter, useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { AnimeService } from '@/services/animeApi'
 import AnimeCard from '@/components/AnimeCard.vue'
+import AnimeFilter from '@/components/AnimeFilter.vue'
 import { debounce } from 'lodash'
 import type { Anime } from '@/types/anime'
 
@@ -53,25 +57,41 @@ export default defineComponent({
   name: 'HomePage',
   components: {
     AnimeCard,
+    AnimeFilter,
   },
   setup() {
     const router = useRouter()
     const route = useRoute()
     const animeService = new AnimeService()
     const animeList = ref<Anime[]>([])
+    const animeListTotal = ref<Anime[]>([])
     const loading = ref(true)
     const searchQuery = ref(route.query.q?.toString() || '')
     const searchCache = new Map<string, Anime[]>()
 
     const loadTopAnime = async () => {
+      console.log('call')
+
       try {
         loading.value = true
-        animeList.value = await animeService.getShuffledAnimeListFromAPI()
+        animeListTotal.value = await animeService.getShuffledAnimeListFromAPI()
+        animeList.value = animeListTotal.value
       } catch (error) {
         console.error('Error loading top anime:', error)
       } finally {
         loading.value = false
       }
+    }
+
+    const handleFilter = async (filter: { status: string; genres: number[] }) => {
+      const { status, genres } = filter
+      const query = route.query
+      if (!query.q) {
+        animeListTotal.value = await animeService.getShuffledAnimeListFromAPI(status)
+        animeList.value = animeListTotal.value
+      }
+
+      animeList.value = animeService.searchAnimeWithFilter(animeListTotal.value, status, genres)
     }
 
     const performSearch = async (query: string) => {
@@ -81,13 +101,15 @@ export default defineComponent({
       }
 
       if (searchCache.has(query.trim())) {
-        animeList.value = searchCache.get(query.trim())!
+        animeListTotal.value = searchCache.get(query.trim())!
+        animeList.value = animeListTotal.value
         return
       }
 
       try {
         loading.value = true
-        animeList.value = await animeService.searchAnime(query)
+        animeListTotal.value = await animeService.searchAnime(query)
+        animeList.value = animeListTotal.value
         searchCache.set(query.trim(), animeList.value)
       } catch (error) {
         console.error('Error searching anime:', error)
@@ -137,6 +159,7 @@ export default defineComponent({
     })
 
     return {
+      handleFilter,
       animeList,
       loading,
       searchQuery,
@@ -161,6 +184,13 @@ export default defineComponent({
 
 .search-wrapper {
   position: relative;
+  width: 90%;
+}
+
+.search-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
 }
 
 .search-input {
