@@ -16,5 +16,20 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
+  ],
+  "headers": [
+    {
+      "source": "/mangadex-covers/:path*",
+      "headers": [
+        {
+          "key": "Referer",
+          "value": "https://mangadex.org"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
+      ]
+    }
   ]
 }
