@@ -57,7 +57,7 @@ export class MangaService {
         title,
         description: manga.attributes.description.en || 'No description available',
         status: manga.attributes.status,
-        coverImage: coverFile ? `https://uploads.mangadex.org/covers/${manga.id}/${coverFile}` : '',
+        coverImage: coverFile ? `/mangadex-covers/covers/${manga.id}/${coverFile}` : '',
         rating: manga.attributes.rating?.average || 0,
         genres: manga.attributes.tags
           .filter((tag: Tag) => tag.attributes.group === 'genre')

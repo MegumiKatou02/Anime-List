@@ -25,6 +25,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/mangadex-api/, ''),
       },
+      '/mangadex-covers': {
+        target: 'https://uploads.mangadex.org',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/mangadex-covers/, ''),
+      },
     },
   },
 })
