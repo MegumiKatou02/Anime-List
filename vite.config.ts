@@ -29,6 +29,9 @@ export default defineConfig({
         target: 'https://uploads.mangadex.org',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/mangadex-covers/, ''),
+        headers: {
+          'Cache-Control': 'no-cache',
+        },
       },
     },
   },

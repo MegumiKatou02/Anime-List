@@ -52,6 +52,11 @@ export class MangaService {
         Object.values(manga.attributes.title).find((t) => t !== undefined) ||
         'Unknown Title'
 
+      // const coverImage = coverFile
+      //   ? `https://uploads.mangadex.org/covers/${manga.id}/${coverFile}`
+      //   : ''
+      // console.log('Cover Image URL:', coverImage)
+
       return {
         id: manga.id,
         title,
