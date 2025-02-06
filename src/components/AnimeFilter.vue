@@ -194,7 +194,7 @@ onMounted(async () => {
 }
 
 .filter-body {
-  max-height: 400px;
+  max-height: 390px;
   overflow-y: auto;
   margin: 1rem 0;
 }
