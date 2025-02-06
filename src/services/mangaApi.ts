@@ -7,9 +7,11 @@ export class MangaService {
     try {
       const response = await fetch(
         `${this.baseUrl}/manga?limit=20&title=${encodeURIComponent(query)}&includes[]=cover_art`,
-      )
-      console.log(
-        `${this.baseUrl}/manga?limit=20&title=${encodeURIComponent(query)}&includes[]=cover_art`,
+        {
+          headers: {
+            'Cache-Control': 'no-cache',
+          },
+        },
       )
 
       const data = await response.json()
@@ -25,6 +27,11 @@ export class MangaService {
     try {
       const response = await fetch(
         `${this.baseUrl}/manga?limit=20&order[rating]=desc&includes[]=cover_art`,
+        {
+          headers: {
+            'Cache-Control': 'no-cache',
+          },
+        },
       )
       const data = await response.json()
 
