@@ -9,6 +9,7 @@ export class MangaService {
         `${this.baseUrl}/manga?limit=20&title=${encodeURIComponent(query)}&includes[]=cover_art`,
         {
           headers: {
+            Referer: 'https://mangadex.org',
             'Cache-Control': 'no-cache',
           },
         },
@@ -29,6 +30,7 @@ export class MangaService {
         `${this.baseUrl}/manga?limit=20&order[rating]=desc&includes[]=cover_art`,
         {
           headers: {
+            Referer: 'https://mangadex.org',
             'Cache-Control': 'no-cache',
           },
         },
