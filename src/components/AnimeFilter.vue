@@ -238,4 +238,43 @@ onMounted(async () => {
     max-height: 90vh;
   }
 }
+
+@media (prefers-color-scheme: dark) {
+  .filter-button {
+    background-color: #1f2937;
+    border-color: #374151;
+    color: #e5e7eb;
+  }
+
+  .filter-button:hover {
+    background-color: #374151;
+  }
+
+  .filter-content {
+    background: #1f2937;
+    color: #e5e7eb;
+  }
+
+  .filter-header h3 {
+    color: #e5e7eb;
+  }
+
+  .close-button {
+    color: #9ca3af;
+  }
+
+  .tab-button {
+    background: #374151;
+    color: #e5e7eb;
+  }
+
+  .filter-option {
+    color: #e5e7eb;
+  }
+
+  .clear-button {
+    border-color: #374151;
+    color: #9ca3af;
+  }
+}
 </style>
