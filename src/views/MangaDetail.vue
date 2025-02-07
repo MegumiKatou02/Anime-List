@@ -289,4 +289,11 @@ export default defineComponent({
     margin: 0 auto;
   }
 }
+
+@media (prefers-color-scheme: dark) {
+  .description,
+  .label {
+    color: #fff;
+  }
+}
 </style>
