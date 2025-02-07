@@ -49,7 +49,6 @@ export default defineComponent({
     const handleTabChange = (tabId: string) => {
       activeTab.value = tabId
       emit('change', tabId)
-      console.log(tabId)
       localStorage.setItem('activeTab', tabId)
     }
 
