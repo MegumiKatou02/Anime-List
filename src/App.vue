@@ -30,8 +30,8 @@ onUnmounted(() => {
               alt="Anime Search Logo"
               class="logo"
               src="@/assets/logo.jpg"
-              width="40"
-              height="40"
+              width="50"
+              height="50"
             />
             <h1 style="font-family: 'Playwrite IN', cursive">Anime List</h1>
           </div>
@@ -309,6 +309,10 @@ footer {
 
   .copyright {
     font-size: 0.8rem;
+  }
+  .logo {
+    width: 45px;
+    height: 45px;
   }
 }
 </style>
