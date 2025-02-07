@@ -60,10 +60,32 @@ export class MangaService {
     }
   }
 
+  async getStatisticsManga(
+    mangaId: string,
+  ): Promise<{ rating: number; follows: number; comments: number }> {
+    try {
+      const response = await this.api.get(`/statistics/manga/${mangaId}`)
+      const mangaStatistics = response.data.statistics[mangaId]
+
+      if (!mangaStatistics) {
+        throw new Error('Statistics not found for this manga')
+      }
+
+      return {
+        rating: mangaStatistics.rating,
+        follows: mangaStatistics.follows,
+        comments: mangaStatistics.comments,
+      }
+    } catch (error) {
+      console.error('Error fetching statistics manga:', error)
+      throw new Error('Just a Error')
+    }
+  }
+
   async searchManga(query: string): Promise<Manga[]> {
     try {
       const response = await fetch(
-        `${this.baseUrl}/manga?limit=20&title=${encodeURIComponent(query)}&includes[]=cover_art`,
+        `${this.baseUrl}/manga?limit=50&title=${encodeURIComponent(query)}&includes[]=cover_art`,
         {
           headers: {
             Referer: 'https://mangadex.org',
@@ -161,7 +183,7 @@ export class MangaService {
   async getTopManga(): Promise<Manga[]> {
     try {
       const response = await fetch(
-        `${this.baseUrl}/manga?limit=30&order[rating]=desc&includes[]=cover_art`,
+        `${this.baseUrl}/manga?limit=50&order[rating]=desc&includes[]=cover_art`,
         {
           headers: {
             Referer: 'https://mangadex.org',

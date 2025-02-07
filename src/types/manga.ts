@@ -36,6 +36,7 @@ interface MangaAttributes {
     [key: string]: string | undefined
   }
   description: {
+    vi?: string
     en?: string
   }
   status: 'ongoing' | 'completed' | 'hiatus' | 'cancelled'
