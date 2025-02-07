@@ -34,7 +34,7 @@ export class MangaService {
   async getMangaById(id: string): Promise<Manga> {
     try {
       const response = await this.api.get(`/manga/${id}`, {
-        params: { 'includes[]': 'cover_art' },
+        params: { 'includes[]': ['cover_art', 'author'] },
       })
       const mangaData = response.data.data
       return this.transformMangaDetail(mangaData)
@@ -249,7 +249,7 @@ export class MangaService {
       genres: mangaData.attributes.tags
         .filter((tag: Tag) => tag.attributes.group === 'genre')
         .map((tag: Tag) => tag.attributes.name.en),
-      author: 'Unknown Author',
+      author: mangaData.relationships[0].attributes?.name || 'Unknown Author',
       releaseYear: new Date(mangaData.attributes.createdAt).getFullYear(),
       mangaDexId: mangaData.id,
     }
