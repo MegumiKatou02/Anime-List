@@ -124,5 +124,8 @@ export default defineComponent({
     padding: 0.75rem 1.5rem;
     font-size: 0.9rem;
   }
+  .tabs-wrapper {
+    padding: 0;
+  }
 }
 </style>
