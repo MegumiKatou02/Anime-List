@@ -200,6 +200,10 @@ export default defineComponent({
 
     onMounted(async () => {
       window.scrollTo(0, 0)
+      // localStorage.setItem('activeTab', 'anime')
+      const mediaType = localStorage.getItem('activeTab')
+      handleMediaTypeChange(mediaType === 'anime' || mediaType === 'manga' ? mediaType : 'anime')
+
       if (route.query.q) {
         await performSearch(route.query.q.toString())
       } else {
