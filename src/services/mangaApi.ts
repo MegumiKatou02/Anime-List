@@ -161,7 +161,7 @@ export class MangaService {
   async getTopManga(): Promise<Manga[]> {
     try {
       const response = await fetch(
-        `${this.baseUrl}/manga?limit=20&order[rating]=desc&includes[]=cover_art`,
+        `${this.baseUrl}/manga?limit=30&order[rating]=desc&includes[]=cover_art`,
         {
           headers: {
             Referer: 'https://mangadex.org',
@@ -188,7 +188,7 @@ export class MangaService {
         'Unknown Title'
 
       const coverImage = coverFile
-        ? `https://uploads.mangadex.org/covers/${manga.id}/${coverFile}`
+        ? `/mangadex-covers/covers/${manga.id}/${coverFile}`
         : 'https://via.placeholder.com/200x300'
 
       return {
@@ -214,7 +214,7 @@ export class MangaService {
     const title = mangaData.attributes.title.en || 'Unknown Title'
 
     const coverImage = coverFile
-      ? `https://uploads.mangadex.org/covers/${mangaData.id}/${coverFile}`
+      ? `/mangadex-covers/covers/${mangaData.id}/${coverFile}`
       : 'https://via.placeholder.com/200x300'
 
     return {
