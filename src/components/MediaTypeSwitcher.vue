@@ -34,13 +34,13 @@ import { defineComponent, ref, computed } from 'vue'
 export default defineComponent({
   name: 'MediaTypeSwitcher',
   emits: ['change'],
-  setup(_, { emit }) {
+  setup(props, { emit }) {
     const tabs = [
       { id: 'anime', label: 'Anime' },
       { id: 'manga', label: 'Manga' },
     ]
 
-    const activeTab = ref('anime')
+    const activeTab = ref(localStorage.getItem('activeTab') || 'anime')
 
     const indicatorStyle = computed(() => ({
       transform: `translateX(${activeTab.value === 'anime' ? '0%' : '100%'})`,
@@ -49,6 +49,8 @@ export default defineComponent({
     const handleTabChange = (tabId: string) => {
       activeTab.value = tabId
       emit('change', tabId)
+      console.log(tabId)
+      localStorage.setItem('activeTab', tabId)
     }
 
     return {
