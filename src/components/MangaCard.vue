@@ -133,7 +133,8 @@ export default defineComponent({
   font-weight: 600;
   margin: 0 0 0.5rem;
   display: -webkit-box;
-  /* -webkit-line-clamp: 2; */
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -179,5 +180,11 @@ export default defineComponent({
 .manga-status.cancelled {
   background: #ffebee;
   color: #c62828;
+}
+
+@media (prefers-color-scheme: dark) {
+  .manga-title {
+    color: #2d3748;
+  }
 }
 </style>
