@@ -38,6 +38,15 @@
           "value": "GET, OPTIONS"
         }
       ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Referrer-Policy",
+          "value": "same-origin"
+        }
+      ]
     }
   ]
 }
