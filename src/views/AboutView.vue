@@ -75,6 +75,10 @@ const apis = [
     name: 'Jikan API',
     description: 'Cung cấp chi tiết anime, nhân vật và thông tin mở rộng',
   },
+  {
+    name: 'Mangadex API',
+    description: 'Cung cấp chi tiết dữ liệu manga, chapters',
+  },
 ]
 </script>
 
@@ -130,7 +134,7 @@ const apis = [
 }
 
 .api-card {
-  padding: 1.5rem;
+  padding: 0.75rem;
   background: #f8fafc;
   border-radius: 1rem;
   border: 1px solid #e2e8f0;
