@@ -188,7 +188,7 @@ export class MangaService {
         'Unknown Title'
 
       const coverImage = coverFile
-        ? `/mangadex-covers/covers/${manga.id}/${coverFile}`
+        ? `https://uploads.mangadex.org/covers/${manga.id}/${coverFile}`
         : 'https://via.placeholder.com/200x300'
 
       return {
@@ -214,7 +214,7 @@ export class MangaService {
     const title = mangaData.attributes.title.en || 'Unknown Title'
 
     const coverImage = coverFile
-      ? `/mangadex-covers/covers/${mangaData.id}/${coverFile}`
+      ? `https://uploads.mangadex.org/covers/${mangaData.id}/${coverFile}`
       : 'https://via.placeholder.com/200x300'
 
     return {
