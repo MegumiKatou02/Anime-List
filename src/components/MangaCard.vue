@@ -48,7 +48,7 @@ export default defineComponent({
     })
 
     const formatRating = (rating: number) => {
-      return rating.toFixed(1)
+      return typeof rating === 'number' ? rating.toFixed(1) : 'N/A'
     }
 
     const formatStatus = (status: string) => {
