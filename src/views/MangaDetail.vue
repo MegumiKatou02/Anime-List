@@ -111,10 +111,30 @@ export default defineComponent({
     const totalChapters = ref(0)
     const statistics = ref()
 
+    const cleanDescription = (text: string) => {
+      text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1')
+
+      text = text.replace(/[*_]{1,2}([^*_]+)[*_]{1,2}/g, '$1')
+
+      text = text.replace(/[*_]/g, '')
+
+      text = text.replace(/\s+/g, ' ')
+
+      text = text
+        .split('\n')
+        .filter((line) => !line.trim().startsWith('-') && !line.trim().startsWith('Links:'))
+        .join(' ')
+
+      return text.trim()
+    }
+
     const loadMangaData = async () => {
       try {
         const mangaId = route.params.id as string
         const mangaData = await mangaService.getMangaById(mangaId)
+        if (mangaData.description) {
+          mangaData.description = cleanDescription(mangaData.description)
+        }
         manga.value = mangaData
 
         statistics.value = await mangaService.getStatisticsManga(mangaId)
@@ -167,6 +187,7 @@ export default defineComponent({
   grid-template-columns: 300px 1fr;
   gap: 2rem;
   margin-bottom: 3rem;
+  width: 100%;
 }
 
 .manga-cover img {
@@ -193,6 +214,26 @@ export default defineComponent({
   gap: 0.5rem;
   align-items: center;
   display: flex;
+  flex-wrap: wrap;
+}
+
+.manga-statistics svg,
+.manga-statistics p {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+.manga-statistics > * {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.manga-statistics svg {
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .w-6 {
