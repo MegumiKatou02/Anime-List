@@ -27,6 +27,9 @@ export interface Relationship {
   attributes?: {
     fileName?: string
     name?: string
+    title?: {
+      en?: string
+    }
   }
 }
 
@@ -57,11 +60,53 @@ export interface MangaData {
 
 export interface Chapter {
   id: string
-  number: number
-  title: string
-  teamId: string
-  uploadDate: string
-  pages: string[]
+  number: string
+  volume: string | null
+  language: string
+  publishedAt: string
+  uploader: string
+  comments: number
+  mangaTitle?: string
+}
+
+export interface ChapterData {
+  id: string
+  attributes: {
+    chapter: string
+    volume: string
+    translatedLanguage: string
+    publishAt: string
+  }
+  relationships: Relationship[]
+}
+
+export interface ChapterPage {
+  url: string
+  index: number
+}
+
+export interface AdjacentChapters {
+  previous: Chapter | null
+  next: Chapter | null
+}
+
+export interface ChapterResponse {
+  data: {
+    id: string
+    attributes: {
+      chapter: string
+      volume: string | null
+      publishAt: string
+      pages: number
+    }
+    relationships: Array<{
+      type: string
+      id: string
+      attributes?: {
+        username?: string
+      }
+    }>
+  }[]
 }
 
 export interface TranslationTeam {

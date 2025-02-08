@@ -1,5 +1,14 @@
 import axios from 'axios'
-import type { Manga, MangaData, Relationship, Tag } from '@/types/manga'
+import type {
+  AdjacentChapters,
+  Chapter,
+  ChapterData,
+  ChapterResponse,
+  Manga,
+  MangaData,
+  Relationship,
+  Tag,
+} from '@/types/manga'
 
 export class MangaService {
   private baseUrl: string
@@ -165,6 +174,43 @@ export class MangaService {
     }
   }
 
+  async getMangaChapters(mangaId: string): Promise<Chapter[]> {
+    try {
+      const response = await this.api.get(`/manga/${mangaId}/feed`, {
+        params: {
+          'includes[]': ['user', 'scanlation_group'],
+          'order[chapter]': 'desc',
+          limit: '500',
+        },
+      })
+
+      const data: ChapterResponse = response.data
+      // console.log(data.data)
+
+      if (!data || !data.data || !Array.isArray(data.data)) {
+        throw new Error('No valid chapters found in response')
+      }
+
+      return data.data.map((chapter) => {
+        const uploader = chapter.relationships.find((rel) => rel.type === 'user')
+        const uploaderName = uploader?.attributes?.username || 'Unknown'
+
+        return {
+          id: chapter.id,
+          number: chapter.attributes.chapter || 'oneshot',
+          volume: chapter.attributes.volume,
+          language: 'en',
+          publishedAt: chapter.attributes.publishAt,
+          uploader: uploaderName,
+          comments: 0,
+        }
+      })
+    } catch (error) {
+      console.error('Error fetching manga chapters:', error)
+      throw error
+    }
+  }
+
   async getMangaStats(mangaId: string): Promise<{
     totalViews: number
     monthlyViews: number
@@ -199,6 +245,103 @@ export class MangaService {
       return []
     }
   }
+
+  async getChapter(chapterId: string): Promise<Chapter> {
+    try {
+      const response = await fetch(
+        `${this.baseUrl}/chapter/${chapterId}?includes[]=manga&includes[]=scanlation_group`,
+      )
+      if (!response.ok) throw new Error('Failed to fetch chapter')
+
+      const data = await response.json()
+      const chapter = data.data
+
+      const mangaTitle =
+        chapter.relationships.find((rel: Relationship) => rel.type === 'manga')?.attributes?.title
+          ?.en || 'Unknown'
+
+      return {
+        id: chapter.id,
+        number: chapter.attributes.chapter || '0',
+        volume: chapter.attributes.volume,
+        language: chapter.attributes.translatedLanguage,
+        publishedAt: chapter.attributes.publishAt,
+        uploader:
+          chapter.relationships.find((rel: Relationship) => rel.type === 'scanlation_group')
+            ?.attributes?.name || 'Unknown',
+        comments: 0,
+        mangaTitle,
+      }
+    } catch (error) {
+      console.error('Error fetching chapter:', error)
+      throw error
+    }
+  }
+
+  async getChapterPages(chapterId: string): Promise<string[]> {
+    try {
+      const response = await fetch(`${this.baseUrl}/at-home/server/${chapterId}`)
+      if (!response.ok) throw new Error('Failed to fetch chapter pages')
+
+      const data = await response.json()
+      const { baseUrl, chapter } = data
+
+      return chapter.dataSaver.map(
+        (page: string) => `${baseUrl}/data-saver/${chapter.hash}/${page}`,
+      )
+    } catch (error) {
+      console.error('Error fetching chapter pages:', error)
+      throw error
+    }
+  }
+  async getAdjacentChapters(mangaId: string, currentChapter: string): Promise<AdjacentChapters> {
+    try {
+      const response = await this.api.get(`/manga/${mangaId}/feed`, {
+        params: {
+          'translatedLanguage[]': ['en'],
+          'order[chapter]': 'asc',
+          'includes[]': ['scanlation_group'],
+        },
+      })
+
+      if (!response) throw new Error('Failed to fetch chapters')
+
+      const data = await response.data
+      const chapters = data.data
+
+      const currentIndex = chapters.findIndex(
+        (chapter: ChapterData) => chapter.attributes.chapter === currentChapter,
+      )
+
+      return {
+        previous: currentIndex > 0 ? this.formatChapter(chapters[currentIndex - 1]) : null,
+        next:
+          currentIndex < chapters.length - 1
+            ? this.formatChapter(chapters[currentIndex + 1])
+            : null,
+      }
+    } catch (error) {
+      console.error('Error fetching adjacent chapters:', error)
+      throw error
+    }
+  }
+  private formatChapter(chapterData: ChapterData): Chapter {
+    return {
+      id: chapterData.id,
+      number: chapterData.attributes.chapter || '0',
+      volume: chapterData.attributes.volume,
+      language: chapterData.attributes.translatedLanguage,
+      publishedAt: chapterData.attributes.publishAt,
+      uploader:
+        chapterData.relationships.find((rel: Relationship) => rel.type === 'scanlation_group')
+          ?.attributes?.name || 'Unknown',
+      comments: 0,
+      mangaTitle:
+        chapterData.relationships.find((rel: Relationship) => rel.type === 'manga')?.attributes
+          ?.title?.en || 'Unknown',
+    }
+  }
+
   private transformMangaData(data: MangaData[]): Manga[] {
     return data.map((manga) => {
       const coverFile = manga.relationships.find((rel: Relationship) => rel.type === 'cover_art')

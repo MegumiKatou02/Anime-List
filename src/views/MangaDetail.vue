@@ -83,14 +83,17 @@
             <span>{{ totalChapters }}</span>
           </div>
         </div>
-        <a
-          :href="getMangaDexUrl(manga.mangaDexId)"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="read-on-mangadex"
-        >
-          Đọc trên MangaDex
-        </a>
+        <div class="actions">
+          <a
+            :href="getMangaDexUrl(manga.mangaDexId)"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="read-on-mangadex"
+          >
+            Đọc trên MangaDex
+          </a>
+          <ChapterModal :chapters="chapters" />
+        </div>
       </div>
     </div>
   </div>
@@ -99,17 +102,32 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import type { Manga } from '@/types/manga'
+import type { Manga, Chapter } from '@/types/manga'
 import { MangaService } from '@/services/mangaApi'
+import ChapterModal from './ChapterModal.vue'
 
 export default defineComponent({
   name: 'MangaDetail',
+  components: {
+    ChapterModal,
+  },
   setup() {
     const route = useRoute()
     const mangaService = new MangaService()
     const manga = ref<Manga | null>(null)
     const totalChapters = ref(0)
     const statistics = ref()
+    const chapters = ref<Chapter[]>([])
+
+    const loadChapters = async () => {
+      try {
+        const mangaId = route.params.id as string
+        const chaptersData = await mangaService.getMangaChapters(mangaId)
+        chapters.value = chaptersData
+      } catch (error) {
+        console.error('Error loading chapters:', error)
+      }
+    }
 
     const cleanDescription = (text: string) => {
       text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1')
@@ -161,7 +179,10 @@ export default defineComponent({
       return `https://mangadex.org/title/${mangaDexId}`
     }
 
-    onMounted(loadMangaData)
+    onMounted(() => {
+      loadMangaData()
+      loadChapters()
+    })
 
     return {
       manga,
@@ -170,6 +191,7 @@ export default defineComponent({
       getMangaDexUrl,
       formatRating,
       statistics,
+      chapters,
     }
   },
 })
@@ -281,7 +303,7 @@ export default defineComponent({
 
 .read-on-mangadex {
   display: inline-block;
-  background: #2563eb;
+  background: #ff6740;
   color: white;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
@@ -291,7 +313,7 @@ export default defineComponent({
 }
 
 .read-on-mangadex:hover {
-  background: #1d4ed8;
+  background: #fa562d;
 }
 
 .status {
@@ -318,6 +340,13 @@ export default defineComponent({
 .status.cancelled {
   background: #ffebee;
   color: #c62828;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 @media (max-width: 768px) {
