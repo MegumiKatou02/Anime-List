@@ -47,7 +47,7 @@
         />
       </svg>
       <h3>Không tìm thấy kết quả</h3>
-      <p>Hãy thử từ khóa khác</p>
+      <p>Hãy thử từ khóa khác như `Hung gay`</p>
     </div>
   </div>
 </template>

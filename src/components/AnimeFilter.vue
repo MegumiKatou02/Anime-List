@@ -257,7 +257,16 @@ const isFilterActive = computed(() => {
   }
 
   .filter-button:hover {
-    background-color: #374151;
+    background-color: #fff;
+    color: black;
+  }
+
+  .filter-button.active-filter {
+    color: red;
+  }
+
+  .filter-button:hover {
+    background-color: #f5f5f5;
   }
 
   .filter-content {
