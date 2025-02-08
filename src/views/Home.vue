@@ -1,6 +1,9 @@
 <template>
   <div class="home">
-    <MediaTypeSwitcher @change="handleMediaTypeChange" />
+    <div style="display: flex; justify-content: center; align-items: center; gap: 0.5rem">
+      <MediaTypeSwitcher @change="handleMediaTypeChange" />
+      <AnimeFilter v-if="mediaType === 'anime'" @filter="handleFilter" />
+    </div>
 
     <div class="search-container">
       <div class="search-actions">
@@ -20,7 +23,7 @@
             />
           </svg>
         </div>
-        <AnimeFilter v-if="mediaType === 'anime'" @filter="handleFilter" />
+        <!-- <AnimeFilter v-if="mediaType === 'anime'" @filter="handleFilter" /> -->
       </div>
     </div>
 
@@ -251,7 +254,7 @@ export default defineComponent({
 
 .search-wrapper {
   position: relative;
-  width: 90%;
+  width: 100%;
 }
 
 .search-actions {

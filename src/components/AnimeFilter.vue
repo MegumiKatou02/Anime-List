@@ -1,6 +1,6 @@
 <template>
   <div class="filter-container">
-    <button @click="toggleFilter" class="filter-button">
+    <button @click="toggleFilter" :class="['filter-button', { 'active-filter': isFilterActive }]">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -12,10 +12,10 @@
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
-          d="M10.5 6h3M6.75 12h10.5m-7.5 6h4.5"
+          d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"
         />
       </svg>
-      <div>Bộ lọc</div>
+      <!-- <div>Bộ lọc</div> -->
     </button>
 
     <div v-if="isOpen" class="filter-modal">
@@ -66,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 import type { Genres } from '@/types/anime'
 
@@ -114,6 +114,10 @@ onMounted(async () => {
     console.error('Error fetching genres:', error)
   }
 })
+
+const isFilterActive = computed(() => {
+  return selectedStatus.value !== '' || selectedGenres.value.length > 0
+})
 </script>
 
 <style scoped>
@@ -125,13 +129,19 @@ onMounted(async () => {
 .filter-button {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
   background-color: #fff;
-  border: 1px solid #ddd;
+  border: none;
+  color: black;
   border-radius: 50px;
+  width: 3rem;
+  margin-bottom: 2rem;
+  height: 2rem;
   cursor: pointer;
   transition: all 0.3s ease;
+}
+
+.filter-button.active-filter {
+  color: red;
 }
 
 .filter-button:hover {
