@@ -174,11 +174,17 @@ export class MangaService {
     }
   }
 
+  /**
+   *
+   * @param mangaId id manga
+   * @returns Viet Nam language trans
+   */
   async getMangaChapters(mangaId: string): Promise<Chapter[]> {
     try {
       const response = await this.api.get(`/manga/${mangaId}/feed`, {
         params: {
           'includes[]': ['user', 'scanlation_group'],
+          'translatedLanguage[]': ['vi'],
           'order[chapter]': 'desc',
           limit: '500',
         },
@@ -199,7 +205,7 @@ export class MangaService {
           id: chapter.id,
           number: chapter.attributes.chapter || 'oneshot',
           volume: chapter.attributes.volume,
-          language: 'en',
+          language: chapter.attributes.translatedLanguage,
           publishedAt: chapter.attributes.publishAt,
           uploader: uploaderName,
           comments: 0,
@@ -284,6 +290,7 @@ export class MangaService {
       if (!response.ok) throw new Error('Failed to fetch chapter pages')
 
       const data = await response.json()
+      // console.log(data)
       const { baseUrl, chapter } = data
 
       return chapter.dataSaver.map(
@@ -294,6 +301,7 @@ export class MangaService {
       throw error
     }
   }
+
   async getAdjacentChapters(mangaId: string, currentChapter: string): Promise<AdjacentChapters> {
     try {
       const response = await this.api.get(`/manga/${mangaId}/feed`, {

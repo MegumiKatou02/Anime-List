@@ -30,7 +30,7 @@
                 <div class="chapter-info">
                   <div class="chapter-main">
                     <span class="language-flag">
-                      {{ chapter.language === 'en' ? '🇬🇧' : '🇻🇳' }}
+                      {{ chapter.language === 'vi' ? '🇻🇳' : '🇬🇧' }}
                     </span>
                     <span class="chapter-title">
                       {{ chapter.language === 'en' ? 'Ch.' : 'Chap' }} {{ chapter.number }}

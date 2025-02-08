@@ -98,6 +98,7 @@ export interface ChapterResponse {
       volume: string | null
       publishAt: string
       pages: number
+      translatedLanguage: string
     }
     relationships: Array<{
       type: string

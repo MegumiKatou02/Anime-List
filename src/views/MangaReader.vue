@@ -51,7 +51,6 @@
       </div>
     </div>
 
-    <!-- Bottom Navigation -->
     <div class="reader-footer" :class="{ 'footer-hidden': hideUI }">
       <div class="footer-content">
         <div class="reading-progress">Page {{ currentPage }} of {{ totalPages }}</div>
