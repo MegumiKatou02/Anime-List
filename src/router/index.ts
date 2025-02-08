@@ -29,6 +29,11 @@ const router = createRouter({
       name: 'MangaDetail',
       component: () => import('../views/MangaDetail.vue'),
     },
+    {
+      path: '/read/:id',
+      name: 'MangaReader',
+      component: () => import('../views/MangaReader.vue'),
+    },
   ],
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
