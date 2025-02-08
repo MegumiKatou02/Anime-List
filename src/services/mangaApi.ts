@@ -1,6 +1,5 @@
 import axios from 'axios'
 import type {
-  AdjacentChapters,
   Chapter,
   ChapterData,
   ChapterResponse,
@@ -191,7 +190,6 @@ export class MangaService {
       })
 
       const data: ChapterResponse = response.data
-      // console.log(data.data)
 
       if (!data || !data.data || !Array.isArray(data.data)) {
         throw new Error('No valid chapters found in response')
@@ -302,37 +300,101 @@ export class MangaService {
     }
   }
 
-  async getAdjacentChapters(mangaId: string, currentChapter: string): Promise<AdjacentChapters> {
+  async getNextChapters(chapterId: string): Promise<string | null> {
     try {
-      const response = await this.api.get(`/manga/${mangaId}/feed`, {
-        params: {
-          'translatedLanguage[]': ['en'],
-          'order[chapter]': 'asc',
-          'includes[]': ['scanlation_group'],
-        },
-      })
-
-      if (!response) throw new Error('Failed to fetch chapters')
-
-      const data = await response.data
-      const chapters = data.data
-
-      const currentIndex = chapters.findIndex(
-        (chapter: ChapterData) => chapter.attributes.chapter === currentChapter,
+      const response = await this.api.get(`/chapter/${chapterId}`)
+      if (!response?.data?.data) {
+        throw new Error('Failed to fetch chapter data')
+      }
+      const currentChapter = response.data.data
+      const mangaRelation = currentChapter.relationships.find(
+        (rel: Relationship) => rel.type === 'manga',
       )
 
-      return {
-        previous: currentIndex > 0 ? this.formatChapter(chapters[currentIndex - 1]) : null,
-        next:
-          currentIndex < chapters.length - 1
-            ? this.formatChapter(chapters[currentIndex + 1])
-            : null,
+      if (!mangaRelation) {
+        throw new Error('No manga found for this chapter')
       }
+      const mangaId = mangaRelation.id
+      const currentChapterNumber = parseFloat(currentChapter.attributes.chapter || '0')
+      const chaptersResponse = await this.api.get(`/manga/${mangaId}/feed`, {
+        params: {
+          'translatedLanguage[]': ['vi'],
+          'order[chapter]': 'asc',
+          limit: '500',
+        },
+      })
+      if (!chaptersResponse?.data?.data) {
+        throw new Error('Failed to fetch manga chapters')
+      }
+
+      const chapters = chaptersResponse.data.data
+      // console.log(chapters)
+      // console.log('============================')
+
+      const nextChapters: Chapter[] = chapters
+        .map((chapter: ChapterData) => ({
+          id: chapter.id,
+          number: parseFloat(chapter.attributes.chapter || '0'),
+          title: chapter.attributes.title || 'Untitled',
+          language: chapter.attributes.translatedLanguage,
+          publishedAt: chapter.attributes.publishAt,
+        }))
+        .filter((chapter: Chapter) => Number(chapter.number) > currentChapterNumber)
+        .sort((a: Chapter, b: Chapter) => Number(a.number) - Number(b.number))
+
+      return nextChapters.length > 0 ? nextChapters[0].id : null
     } catch (error) {
       console.error('Error fetching adjacent chapters:', error)
       throw error
     }
   }
+
+  async getPreviousChapter(chapterId: string): Promise<string | null> {
+    try {
+      const response = await this.api.get(`/chapter/${chapterId}`)
+      if (!response?.data?.data) {
+        throw new Error('Failed to fetch chapter data')
+      }
+      const currentChapter = response.data.data
+      const mangaRelation = currentChapter.relationships.find(
+        (rel: Relationship) => rel.type === 'manga',
+      )
+
+      if (!mangaRelation) {
+        throw new Error('No manga found for this chapter')
+      }
+      const mangaId = mangaRelation.id
+      const currentChapterNumber = parseFloat(currentChapter.attributes.chapter || '0')
+      const chaptersResponse = await this.api.get(`/manga/${mangaId}/feed`, {
+        params: {
+          'translatedLanguage[]': ['vi'],
+          'order[chapter]': 'desc',
+          limit: '500',
+        },
+      })
+      if (!chaptersResponse?.data?.data) {
+        throw new Error('Failed to fetch manga chapters')
+      }
+
+      const chapters = chaptersResponse.data.data
+      const previousChapters: Chapter[] = chapters
+        .map((chapter: ChapterData) => ({
+          id: chapter.id,
+          number: parseFloat(chapter.attributes.chapter || '0'),
+          title: chapter.attributes.title || 'Untitled',
+          language: chapter.attributes.translatedLanguage,
+          publishedAt: chapter.attributes.publishAt,
+        }))
+        .filter((chapter: Chapter) => Number(chapter.number) < currentChapterNumber)
+        .sort((a: Chapter, b: Chapter) => Number(b.number) - Number(a.number))
+
+      return previousChapters.length > 0 ? previousChapters[0].id : null
+    } catch (error) {
+      console.error('Error fetching previous chapter:', error)
+      throw error
+    }
+  }
+
   private formatChapter(chapterData: ChapterData): Chapter {
     return {
       id: chapterData.id,

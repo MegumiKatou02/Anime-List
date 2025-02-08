@@ -72,6 +72,7 @@ export interface Chapter {
 export interface ChapterData {
   id: string
   attributes: {
+    title?: string
     chapter: string
     volume: string
     translatedLanguage: string
