@@ -10,14 +10,14 @@
         </button>
         <div class="chapter-info">
           <h1>{{ mangaTitle }}</h1>
-          <!-- <p>Chapter {{ currentChapter?.number }}</p> -->
+          <p>Chapter {{ currentChapter }}</p>
         </div>
         <div class="chapter-navigation">
           <button class="nav-button" @click="loadPreviousChapter" :disabled="!hasPreviousChapter">
-            Previous Chapter
+            Chương trước
           </button>
           <button class="nav-button" @click="loadNextChapter" :disabled="!hasNextChapter">
-            Next Chapter
+            Chương tiếp
           </button>
         </div>
       </div>
@@ -51,7 +51,6 @@
       </div>
     </div>
 
-    <!-- Bottom Navigation -->
     <div class="reader-footer" :class="{ 'footer-hidden': hideUI }">
       <div class="footer-content">
         <div class="reading-progress">Page {{ currentPage }} of {{ totalPages }}</div>
@@ -89,12 +88,17 @@ export default defineComponent({
     const pageLoaded = ref<boolean[]>([])
     const currentPage = ref(1)
     const mangaTitle = ref('')
-    // const currentChapter = ref<any>(null)
+    const currentChapter = ref<string>('1')
     const readingDirection = ref('rtl')
     const { hideUI, handleKeyPress: handleKey } = useReader()
     const uiHideTimeout = ref<number | null>(null)
     const hasNextChapter = ref(false)
     const hasPreviousChapter = ref(false)
+
+    const adjacentChapters = ref<{
+      next: string | null
+      prev: string | null
+    }>({ next: null, prev: null })
 
     const totalPages = ref(0)
 
@@ -104,13 +108,10 @@ export default defineComponent({
         error.value = null
 
         const chapterData = await mangaService.getChapter(chapterId)
-        // currentChapter.value = chapterData
-        // console.log(currentChapter.value)
+        currentChapter.value = chapterData.number
         mangaTitle.value = chapterData.mangaTitle || 'Manga'
 
         const chapterPages = await mangaService.getChapterPages(chapterId)
-        // console.log(chapterPages)
-        // pages.value = chapterPages
         pages.value = chapterPages.map((url, index) => ({
           url,
           index,
@@ -118,12 +119,12 @@ export default defineComponent({
         totalPages.value = chapterPages.length
         pageLoaded.value = new Array(chapterPages.length).fill(false)
 
-        // const adjacentChapters = await mangaService.getAdjacentChapters(
-        //   chapterId,
-        //   currentChapter.value,
-        // )
-        // hasNextChapter.value = !!adjacentChapters.next
-        // hasPreviousChapter.value = !!adjacentChapters.previous
+        adjacentChapters.value.next = await mangaService.getNextChapters(chapterId)
+        adjacentChapters.value.prev = await mangaService.getPreviousChapter(chapterId)
+
+        hasNextChapter.value = !!adjacentChapters.value.next
+        hasPreviousChapter.value = !!adjacentChapters.value.prev
+        // console.log(hasNextChapter.value)
 
         loading.value = false
       } catch (err) {
@@ -182,17 +183,11 @@ export default defineComponent({
     }
 
     const loadNextChapter = async () => {
-      // const nextChapter = await mangaService.getAdjacentChapters(currentChapter.value.id)
-      // if (nextChapter.next) {
-      //   router.push(`/read/${nextChapter.next.id}`)
-      // }
+      loadChapter(adjacentChapters.value.next || (route.params.id as string))
     }
 
     const loadPreviousChapter = async () => {
-      // const prevChapter = await mangaService.getAdjacentChapters(currentChapter.value.id)
-      // if (prevChapter.previous) {
-      //   router.push(`/read/${prevChapter.previous.id}`)
-      // }
+      loadChapter(adjacentChapters.value.prev || (route.params.id as string))
     }
 
     const toggleReadingDirection = () => {
@@ -239,7 +234,6 @@ export default defineComponent({
       currentPage,
       totalPages,
       mangaTitle,
-      // currentChapter,
       readingDirection,
       hideUI,
       hasNextChapter,
@@ -252,6 +246,7 @@ export default defineComponent({
       toggleReadingDirection,
       goBack,
       retryLoading,
+      currentChapter,
     }
   },
 })

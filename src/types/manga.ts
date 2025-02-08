@@ -72,6 +72,7 @@ export interface Chapter {
 export interface ChapterData {
   id: string
   attributes: {
+    title?: string
     chapter: string
     volume: string
     translatedLanguage: string
@@ -98,6 +99,7 @@ export interface ChapterResponse {
       volume: string | null
       publishAt: string
       pages: number
+      translatedLanguage: string
     }
     relationships: Array<{
       type: string
