@@ -242,13 +242,6 @@ const isFilterActive = computed(() => {
   border: none;
 }
 
-@media (max-width: 768px) {
-  .filter-content {
-    width: 95%;
-    max-height: 90vh;
-  }
-}
-
 @media (prefers-color-scheme: dark) {
   .filter-button {
     background-color: #fff;
