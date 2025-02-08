@@ -251,12 +251,6 @@ const isFilterActive = computed(() => {
 
 @media (prefers-color-scheme: dark) {
   .filter-button {
-    background-color: #1f2937;
-    border-color: #374151;
-    color: #e5e7eb;
-  }
-
-  .filter-button:hover {
     background-color: #fff;
     color: black;
   }
