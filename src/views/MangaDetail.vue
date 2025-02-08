@@ -332,6 +332,10 @@ export default defineComponent({
 }
 
 @media (prefers-color-scheme: dark) {
+  .manga-detail-container {
+    background-color: #1a202c;
+  }
+
   .description,
   .label {
     color: #fff;
