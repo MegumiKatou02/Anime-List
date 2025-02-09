@@ -1,6 +1,6 @@
 <template>
   <div class="reader-container" @keydown="handleKeyPress" tabindex="0">
-    <div class="reader-header" :class="{ 'header-hidden': hideUI }">
+    <div class="reader-header" :class="{ 'header-hidden': hideHeader }">
       <div class="header-content">
         <button class="nav-button" @click="goBack">
           <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24">
@@ -51,7 +51,7 @@
       </div>
     </div>
 
-    <div class="reader-footer" :class="{ 'footer-hidden': hideUI }">
+    <div class="reader-footer" :class="{ 'footer-hidden': hideFooter }">
       <div class="footer-content">
         <div class="footer-left">
           <button class="icon-button" @click="toggleChapterList">
@@ -127,7 +127,7 @@ export default defineComponent({
     const mangaTitle = ref('')
     const currentChapter = ref<string>('1')
     const readingDirection = ref('ltr')
-    const { hideUI, handleKeyPress: handleKey } = useReader()
+    const { hideUI, handleKeyPress: handleKey, hideHeader, hideFooter } = useReader()
     const uiHideTimeout = ref<number | null>(null)
     const hasNextChapter = ref(false)
     const hasPreviousChapter = ref(false)
@@ -278,6 +278,8 @@ export default defineComponent({
       mangaTitle,
       readingDirection,
       hideUI,
+      hideHeader,
+      hideFooter,
       hasNextChapter,
       hasPreviousChapter,
       handleImageLoad,
