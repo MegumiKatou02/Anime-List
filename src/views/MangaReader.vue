@@ -53,10 +53,10 @@
 
     <div class="reader-footer" :class="{ 'footer-hidden': hideUI }">
       <div class="footer-content">
-        <div class="reading-progress">Page {{ currentPage }} of {{ totalPages }}</div>
+        <div class="reading-progress">Tổng số trang {{ totalPages }}</div>
         <div class="reader-settings">
           <button @click="toggleReadingDirection" class="settings-button">
-            {{ readingDirection === 'rtl' ? 'Right to Left' : 'Left to Right' }}
+            {{ readingDirection === 'ltr' ? 'Trái sang phải' : 'phải sang trái' }}
           </button>
         </div>
       </div>
@@ -86,10 +86,9 @@ export default defineComponent({
     const error = ref<string | null>(null)
     const pages = ref<Page[]>([])
     const pageLoaded = ref<boolean[]>([])
-    const currentPage = ref(1)
     const mangaTitle = ref('')
     const currentChapter = ref<string>('1')
-    const readingDirection = ref('rtl')
+    const readingDirection = ref('ltr')
     const { hideUI, handleKeyPress: handleKey } = useReader()
     const uiHideTimeout = ref<number | null>(null)
     const hasNextChapter = ref(false)
@@ -142,43 +141,27 @@ export default defineComponent({
       error.value = `Failed to load page ${index + 1}`
     }
 
-    const handleKeyPress = (e: KeyboardEvent) => {
+    const handleKeyPress = async (e: KeyboardEvent) => {
       const key = handleKey(e)
 
       switch (key) {
         case 'ArrowRight':
           if (readingDirection.value === 'ltr') {
-            nextPage()
+            loadNextChapter()
           } else {
-            previousPage()
+            loadPreviousChapter()
           }
           break
         case 'ArrowLeft':
           if (readingDirection.value === 'ltr') {
-            previousPage()
+            loadPreviousChapter()
           } else {
-            nextPage()
+            loadNextChapter()
           }
           break
         case ' ':
-          nextPage()
+          loadNextChapter()
           break
-      }
-    }
-
-    const nextPage = () => {
-      if (currentPage.value < totalPages.value) {
-        currentPage.value++
-      } else if (hasNextChapter.value) {
-        loadNextChapter()
-      }
-    }
-
-    const previousPage = () => {
-      if (currentPage.value > 1) {
-        currentPage.value--
-      } else if (hasPreviousChapter.value) {
-        loadPreviousChapter()
       }
     }
 
@@ -231,7 +214,6 @@ export default defineComponent({
       error,
       pages,
       pageLoaded,
-      currentPage,
       totalPages,
       mangaTitle,
       readingDirection,
@@ -447,6 +429,11 @@ export default defineComponent({
 
   .chapter-info h1 {
     font-size: 1rem;
+  }
+
+  .reading-progress,
+  .reader-settings {
+    display: none;
   }
 }
 </style>
