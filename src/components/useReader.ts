@@ -10,7 +10,7 @@ export function useReader() {
 
   const handleMouseMove = (e: MouseEvent) => {
     const mouseY = e.clientY
-    hideHeader.value = mouseY > 60
+    hideHeader.value = mouseY > 90
 
     resetAutoHideTimer()
   }
