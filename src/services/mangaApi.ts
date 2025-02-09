@@ -8,6 +8,7 @@ import type {
   Relationship,
   Tag,
 } from '@/types/manga'
+import { ArrayUtils } from '@/utils/array'
 
 export class MangaService {
   private baseUrl: string
@@ -230,10 +231,14 @@ export class MangaService {
     }
   }
 
+  /**
+   *
+   * @returns shuffle top manga array
+   */
   async getTopManga(): Promise<Manga[]> {
     try {
       const response = await fetch(
-        `${this.baseUrl}/manga?limit=50&order[rating]=desc&includes[]=cover_art`,
+        `${this.baseUrl}/manga?limit=100&order[rating]=desc&includes[]=cover_art`,
         {
           headers: {
             Referer: 'https://mangadex.org',
@@ -243,7 +248,9 @@ export class MangaService {
       )
       const data = await response.json()
 
-      return this.transformMangaData(data.data)
+      const topManga: Manga[] = this.transformMangaData(data.data)
+
+      return ArrayUtils.FisherYatesShuffle<Manga>(topManga)
     } catch (error) {
       console.error('Error fetching top manga:', error)
       return []

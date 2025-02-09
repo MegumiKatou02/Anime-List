@@ -1,5 +1,6 @@
 import axios from 'axios'
 import type { Anime } from '@/types/anime'
+import { ArrayUtils } from '@/utils/array'
 
 const BASE_URL = '/api'
 
@@ -73,12 +74,9 @@ export class AnimeService {
         },
       })
 
-      const animeList = response.data.data.map((item: { node: Anime }) => item.node)
+      let animeList = response.data.data.map((item: { node: Anime }) => item.node)
 
-      for (let i = animeList.length - 1; i > 0; i--) {
-        const randomIndex = Math.floor(Math.random() * (i + 1))
-        ;[animeList[i], animeList[randomIndex]] = [animeList[randomIndex], animeList[i]]
-      }
+      animeList = ArrayUtils.FisherYatesShuffle<Anime>(animeList)
 
       return animeList
     } catch (error) {
