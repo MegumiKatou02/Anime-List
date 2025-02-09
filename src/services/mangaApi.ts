@@ -300,6 +300,49 @@ export class MangaService {
     }
   }
 
+  async getChapterList(chapterId: string): Promise<
+    {
+      id: string
+      number: string
+    }[]
+  > {
+    try {
+      const response = await this.api.get(`/chapter/${chapterId}`)
+      if (!response?.data?.data) {
+        throw new Error('Failed to fetch chapter data')
+      }
+      const currentChapter = response.data.data
+      const mangaRelation = currentChapter.relationships.find(
+        (rel: Relationship) => rel.type === 'manga',
+      )
+
+      if (!mangaRelation) {
+        throw new Error('No manga found for this chapter')
+      }
+      const mangaId = mangaRelation.id
+      const chapterListResponse = await this.api.get(`/manga/${mangaId}/feed`, {
+        params: {
+          limit: 500,
+          'order[chapter]': 'desc',
+          'translatedLanguage[]': ['vi'],
+        },
+      })
+
+      const chapters = chapterListResponse?.data?.data
+      if (!chapters || !Array.isArray(chapters)) {
+        throw new Error('No chapters found for this manga')
+      }
+
+      return chapters.map((chapter) => ({
+        id: chapter.id,
+        number: chapter.attributes.chapter || 'oneshot',
+      }))
+    } catch (error) {
+      console.error('failed to fetch chapter list', error)
+      throw new Error('failed to fetch chapter list')
+    }
+  }
+
   async getNextChapters(chapterId: string): Promise<string | null> {
     try {
       const response = await this.api.get(`/chapter/${chapterId}`)
@@ -328,8 +371,6 @@ export class MangaService {
       }
 
       const chapters = chaptersResponse.data.data
-      // console.log(chapters)
-      // console.log('============================')
 
       const nextChapters: Chapter[] = chapters
         .map((chapter: ChapterData) => ({
