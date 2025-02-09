@@ -40,13 +40,14 @@ export class MangaService {
     )
   }
 
-  async getMangaById(id: string): Promise<Manga> {
+  async getMangaById(id: string): Promise<MangaData> {
     try {
       const response = await this.api.get(`/manga/${id}`, {
         params: { 'includes[]': ['cover_art', 'author'] },
       })
       const mangaData = response.data.data
-      return this.transformMangaDetail(mangaData)
+
+      return mangaData
     } catch (error) {
       console.error('Error fetching manga:', error)
       throw error
@@ -295,7 +296,6 @@ export class MangaService {
       if (!response.ok) throw new Error('Failed to fetch chapter pages')
 
       const data = await response.json()
-      // console.log(data)
       const { baseUrl, chapter } = data
 
       return chapter.dataSaver.map(
@@ -443,23 +443,6 @@ export class MangaService {
     }
   }
 
-  private formatChapter(chapterData: ChapterData): Chapter {
-    return {
-      id: chapterData.id,
-      number: chapterData.attributes.chapter || '0',
-      volume: chapterData.attributes.volume,
-      language: chapterData.attributes.translatedLanguage,
-      publishedAt: chapterData.attributes.publishAt,
-      uploader:
-        chapterData.relationships.find((rel: Relationship) => rel.type === 'scanlation_group')
-          ?.attributes?.name || 'Unknown',
-      comments: 0,
-      mangaTitle:
-        chapterData.relationships.find((rel: Relationship) => rel.type === 'manga')?.attributes
-          ?.title?.en || 'Unknown',
-    }
-  }
-
   private transformMangaData(data: MangaData[]): Manga[] {
     return data.map((manga) => {
       const coverFile = manga.relationships.find((rel: Relationship) => rel.type === 'cover_art')
@@ -490,7 +473,7 @@ export class MangaService {
       }
     })
   }
-  private transformMangaDetail(mangaData: MangaData): Manga {
+  transformMangaDetail(mangaData: MangaData): Manga {
     const coverRelationship = mangaData.relationships.find((rel) => rel.type === 'cover_art')
     const coverFile = coverRelationship?.attributes?.fileName
 

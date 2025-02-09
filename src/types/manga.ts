@@ -50,6 +50,7 @@ interface MangaAttributes {
   year?: number
   author?: string
   createdAt: string
+  lastChapter: string
 }
 
 export interface MangaData {
