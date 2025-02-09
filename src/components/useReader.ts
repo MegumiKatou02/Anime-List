@@ -6,38 +6,43 @@ export function useReader() {
   const hideFooter = ref(true)
   const uiHideTimeout = ref<number | null>(null)
   const lastScrollY = ref(0)
+  const isAtBottom = ref(false)
 
   const handleMouseMove = (e: MouseEvent) => {
     const mouseY = e.clientY
-    // const screenHeight = window.innerHeight
-
     hideHeader.value = mouseY > 60
 
+    resetAutoHideTimer()
+  }
+
+  const resetAutoHideTimer = () => {
     if (uiHideTimeout.value) {
       window.clearTimeout(uiHideTimeout.value)
     }
 
     uiHideTimeout.value = window.setTimeout(() => {
       hideHeader.value = true
-      hideFooter.value = true
+      if (!isAtBottom.value) {
+        hideFooter.value = true
+      }
     }, 3000)
   }
 
   const handleScroll = () => {
     const currentScrollY = window.scrollY
+    const windowHeight = window.innerHeight
+    const documentHeight = document.documentElement.scrollHeight
 
-    hideFooter.value = currentScrollY > lastScrollY.value
+    isAtBottom.value = windowHeight + currentScrollY >= documentHeight - 10
 
-    lastScrollY.value = currentScrollY
-
-    if (uiHideTimeout.value) {
-      window.clearTimeout(uiHideTimeout.value)
+    if (isAtBottom.value) {
+      hideFooter.value = false
+    } else {
+      hideFooter.value = currentScrollY > lastScrollY.value
     }
 
-    uiHideTimeout.value = window.setTimeout(() => {
-      hideHeader.value = true
-      hideFooter.value = true
-    }, 3000)
+    lastScrollY.value = currentScrollY
+    resetAutoHideTimer()
   }
 
   const handleKeyPress = (e: KeyboardEvent) => {
