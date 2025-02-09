@@ -159,6 +159,8 @@ export default defineComponent({
     }
 
     const loadChapter = async (chapterId: string): Promise<void> => {
+      window.scrollTo(0, 0)
+
       try {
         loading.value = true
         error.value = null
