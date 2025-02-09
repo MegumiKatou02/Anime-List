@@ -151,6 +151,7 @@ export default defineComponent({
         const mangaId = route.params.id as string
         const mangaById = await mangaService.getMangaById(mangaId)
         const mangaData = mangaService.transformMangaDetail(mangaById)
+
         if (mangaData.description) {
           mangaData.description = cleanDescription(mangaData.description)
         }
@@ -159,7 +160,7 @@ export default defineComponent({
         statistics.value = await mangaService.getStatisticsManga(mangaId)
 
         if (mangaById.attributes.lastChapter === '') {
-          newChapters.value = 'oneshot'
+          newChapters.value = 'unknown'
         } else {
           newChapters.value = mangaById.attributes.lastChapter
         }

@@ -46,6 +46,7 @@ export class MangaService {
         params: { 'includes[]': ['cover_art', 'author'] },
       })
       const mangaData = response.data.data
+      // console.log(mangaData)
 
       return mangaData
     } catch (error) {
@@ -491,7 +492,7 @@ export class MangaService {
       status: mangaData.attributes.status,
       rating: mangaData.attributes.rating?.average || 0,
       genres: mangaData.attributes.tags
-        .filter((tag: Tag) => tag.attributes.group === 'genre')
+        // .filter((tag: Tag) => tag.attributes.group === 'genre')
         .map((tag: Tag) => tag.attributes.name.en),
       author: mangaData.relationships[0].attributes?.name || 'Unknown Author',
       releaseYear: new Date(mangaData.attributes.createdAt).getFullYear(),
