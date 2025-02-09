@@ -12,21 +12,21 @@ export function useReader() {
     const mouseY = e.clientY
     hideHeader.value = mouseY > 90
 
-    resetAutoHideTimer()
+    // resetAutoHideTimer()
   }
 
-  const resetAutoHideTimer = () => {
-    if (uiHideTimeout.value) {
-      window.clearTimeout(uiHideTimeout.value)
-    }
+  // const resetAutoHideTimer = () => {
+  //   if (uiHideTimeout.value) {
+  //     window.clearTimeout(uiHideTimeout.value)
+  //   }
 
-    uiHideTimeout.value = window.setTimeout(() => {
-      hideHeader.value = true
-      if (!isAtBottom.value) {
-        hideFooter.value = true
-      }
-    }, 3000)
-  }
+  //   uiHideTimeout.value = window.setTimeout(() => {
+  //     hideHeader.value = true
+  //     if (!isAtBottom.value) {
+  //       hideFooter.value = true
+  //     }
+  //   }, 3000)
+  // }
 
   const handleScroll = () => {
     const currentScrollY = window.scrollY
@@ -42,7 +42,7 @@ export function useReader() {
     }
 
     lastScrollY.value = currentScrollY
-    resetAutoHideTimer()
+    // resetAutoHideTimer()
   }
 
   const handleKeyPress = (e: KeyboardEvent) => {
