@@ -13,6 +13,12 @@ const handleScroll = () => {
 
 const route = useRoute()
 const isReaderPage = computed(() => route.path.startsWith('/read'))
+const isStatusPage = computed(() => {
+  if (route.query.status && route.query.status === 'error') {
+    return true
+  }
+  return false
+})
 
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
@@ -51,7 +57,7 @@ onUnmounted(() => {
       <RouterView />
     </main>
 
-    <footer>
+    <footer :class="{ 'status-page': isStatusPage }">
       <div class="footer-content">
         <div class="footer-text">
           <p>Được hỗ trợ bởi</p>
@@ -98,6 +104,10 @@ onUnmounted(() => {
 
 .navbar.reader-page {
   z-index: 0;
+}
+
+.status-page {
+  display: none;
 }
 
 .navbar.scrolled {

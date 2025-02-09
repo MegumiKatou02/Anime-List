@@ -34,6 +34,11 @@ const router = createRouter({
       name: 'MangaReader',
       component: () => import('../views/MangaReader.vue'),
     },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      component: () => import('../views/NotFound.vue'),
+    },
   ],
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
