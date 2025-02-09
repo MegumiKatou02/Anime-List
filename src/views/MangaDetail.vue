@@ -79,8 +79,8 @@
             <span>{{ manga.releaseYear }}</span>
           </div>
           <div class="info-item">
-            <span class="label">Số chapter:</span>
-            <span>{{ totalChapters }}</span>
+            <span class="label">chapter mới nhất:</span>
+            <span>{{ newChapters }}</span>
           </div>
         </div>
         <div class="actions">
@@ -115,7 +115,7 @@ export default defineComponent({
     const route = useRoute()
     const mangaService = new MangaService()
     const manga = ref<Manga | null>(null)
-    const totalChapters = ref(0)
+    const newChapters = ref('oneshot')
     const statistics = ref()
     const chapters = ref<Chapter[]>([])
 
@@ -149,7 +149,8 @@ export default defineComponent({
     const loadMangaData = async () => {
       try {
         const mangaId = route.params.id as string
-        const mangaData = await mangaService.getMangaById(mangaId)
+        const mangaById = await mangaService.getMangaById(mangaId)
+        const mangaData = mangaService.transformMangaDetail(mangaById)
         if (mangaData.description) {
           mangaData.description = cleanDescription(mangaData.description)
         }
@@ -157,7 +158,11 @@ export default defineComponent({
 
         statistics.value = await mangaService.getStatisticsManga(mangaId)
 
-        totalChapters.value = await mangaService.getMangaChapterCount(mangaId)
+        if (mangaById.attributes.lastChapter === '') {
+          newChapters.value = 'oneshot'
+        } else {
+          newChapters.value = mangaById.attributes.lastChapter
+        }
       } catch (error) {
         console.error('Error loading manga data:', error)
       }
@@ -186,7 +191,7 @@ export default defineComponent({
 
     return {
       manga,
-      totalChapters,
+      newChapters,
       formatStatus,
       getMangaDexUrl,
       formatRating,

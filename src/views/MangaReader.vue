@@ -185,7 +185,6 @@ export default defineComponent({
 
         hasNextChapter.value = !!adjacentChapters.value.next
         hasPreviousChapter.value = !!adjacentChapters.value.prev
-        // console.log(hasNextChapter.value)
 
         loading.value = false
       } catch (err) {
