@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import { onMounted, onUnmounted } from 'vue'
+import { RouterLink, RouterView, useRoute } from 'vue-router'
+import { onMounted, onUnmounted, computed } from 'vue'
 
 const handleScroll = () => {
   const navbar = document.querySelector('.navbar')
@@ -10,6 +10,9 @@ const handleScroll = () => {
     navbar?.classList.remove('scrolled')
   }
 }
+
+const route = useRoute()
+const isReaderPage = computed(() => route.path.startsWith('/read'))
 
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
@@ -23,7 +26,7 @@ onUnmounted(() => {
 <template>
   <div class="app-container">
     <header>
-      <nav class="navbar">
+      <nav class="navbar" :class="{ 'reader-page': isReaderPage }">
         <router-link to="/">
           <div class="nav-brand">
             <img
@@ -91,6 +94,10 @@ onUnmounted(() => {
   z-index: 100;
   width: 100%;
   transition: all 0.3s ease;
+}
+
+.navbar.reader-page {
+  z-index: 0;
 }
 
 .navbar.scrolled {
