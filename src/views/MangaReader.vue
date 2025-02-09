@@ -158,7 +158,7 @@ export default defineComponent({
       loadChapter(chapterId)
     }
 
-    const loadChapter = async (chapterId: string) => {
+    const loadChapter = async (chapterId: string): Promise<void> => {
       try {
         loading.value = true
         error.value = null

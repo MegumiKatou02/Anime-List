@@ -55,6 +55,8 @@ onUnmounted(() => {
           <div class="api-brand">
             <img src="@/assets/mal_logo.png" alt="MyAnimeList Logo" class="api-logo" />
             <span>MyAnimeList API</span>
+            <img src="@/assets/mangadex_logo.png" alt="MyAnimeList Logo" class="api-logo" />
+            <span>Mangadex API</span>
           </div>
         </div>
         <div class="footer-links">
@@ -226,6 +228,7 @@ footer {
 
 .footer-text {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 1rem;
 }
