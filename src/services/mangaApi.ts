@@ -46,7 +46,6 @@ export class MangaService {
         params: { 'includes[]': ['cover_art', 'author'] },
       })
       const mangaData = response.data.data
-      // console.log(mangaData)
 
       return mangaData
     } catch (error) {
@@ -209,7 +208,6 @@ export class MangaService {
           language: chapter.attributes.translatedLanguage,
           publishedAt: chapter.attributes.publishAt,
           uploader: uploaderName,
-          comments: 0,
         }
       })
     } catch (error) {
@@ -282,7 +280,6 @@ export class MangaService {
         uploader:
           chapter.relationships.find((rel: Relationship) => rel.type === 'scanlation_group')
             ?.attributes?.name || 'Unknown',
-        comments: 0,
         mangaTitle,
       }
     } catch (error) {

@@ -66,7 +66,6 @@ export interface Chapter {
   language: string
   publishedAt: string
   uploader: string
-  comments: number
   mangaTitle?: string
 }
 
