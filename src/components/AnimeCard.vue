@@ -1,7 +1,11 @@
 <template>
-  <div class="anime-card dark:bg-gray-800 dark:border-gray-700" @click="goToAnimeDetail">
+  <div
+    class="anime-card dark:bg-gray-800 dark:border-gray-700"
+    :class="{ 'dark-mode': isDarkMode }"
+    @click="goToAnimeDetail"
+  >
     <img :src="anime.main_picture.large" :alt="anime.title" class="anime-image" />
-    <div class="anime-info">
+    <div class="anime-info" :class="{ 'dark-mode': isDarkMode }">
       <h3 class="anime-title dark:text-white">{{ anime.title }}</h3>
       <div class="anime-stats">
         <span class="dark:text-white">Rank: #{{ anime.rank }}</span>
@@ -26,6 +30,7 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import type { PropType } from 'vue'
 import type { Anime } from '@/types/anime'
+import { isDarkMode } from '@/utils/settings'
 
 const router = useRouter()
 
@@ -56,7 +61,7 @@ const goToAnimeDetail = () => {
   border-radius: 8px;
   overflow: hidden;
   margin: 1rem;
-  background: white;
+  background-color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
 }
@@ -101,6 +106,24 @@ const goToAnimeDetail = () => {
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-size: 0.8rem;
+}
+
+.anime-card.dark-mode {
+  /* background-color: #1a202c; */
+  border-color: #2d3748;
+  background-color: white;
+}
+
+.dark-mode .anime-title {
+  color: #2d3748;
+}
+
+.dark-mode .anime-stats {
+  color: #2d3748;
+}
+
+.dark-mode .anime-synopsis {
+  color: #2d3748;
 }
 
 @media (prefers-color-scheme: dark) {

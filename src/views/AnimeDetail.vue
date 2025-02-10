@@ -1,5 +1,5 @@
 <template>
-  <div v-if="loading" class="loading">
+  <div v-if="loading" class="loading" :class="{ 'dark-mode': isDarkMode }">
     <div class="spinner"></div>
     <p>Đang tải anime...</p>
   </div>
@@ -8,14 +8,20 @@
     {{ error }}
   </div>
 
-  <div v-else-if="anime" class="anime-detail-container dark:bg-gray-800">
+  <div
+    v-else-if="anime"
+    class="anime-detail-container dark:bg-gray-800"
+    :class="{ 'dark-mode': isDarkMode }"
+  >
     <div class="anime-header">
       <img :src="anime.images.webp.large_image_url" :alt="anime.title" class="anime-poster" />
       <div class="anime-header-info">
-        <h1 class="dark:text-white">{{ anime.title }}</h1>
-        <h2 class="dark:text-gray-300">{{ anime.title_japanese }}</h2>
+        <h1 class="dark:text-white" :class="{ 'dark-mode': isDarkMode }">{{ anime.title }}</h1>
+        <h2 class="dark:text-gray-300" :class="{ 'dark-mode': isDarkMode }">
+          {{ anime.title_japanese }}
+        </h2>
 
-        <div class="anime-meta">
+        <div class="anime-meta" :class="{ 'dark-mode': isDarkMode }">
           <div class="meta-item dark:bg-gray-700 dark:text-white">
             <strong>Status:</strong> {{ anime.status }}
           </div>
@@ -33,7 +39,7 @@
           </div>
         </div>
 
-        <div class="broadcast-info">
+        <div class="broadcast-info" :class="{ 'dark-mode': isDarkMode }">
           <div class="broadcast-item dark:bg-gray-700 dark:text-white">
             <strong>Broadcast (Japan):</strong> {{ anime.broadcast?.string || 'Unknown' }}
           </div>
@@ -50,13 +56,13 @@
       </div>
     </div>
 
-    <div class="anime-synopsis">
+    <div class="anime-synopsis" :class="{ 'dark-mode': isDarkMode }">
       <h2 class="dark:text-white">Synopsis</h2>
       <p class="dark:text-gray-300">{{ anime.synopsis }}</p>
     </div>
 
     <div class="characters-section">
-      <h2 class="dark:text-white">Main Characters</h2>
+      <h2 class="dark:text-white" :class="{ 'dark-mode': isDarkMode }">Main Characters</h2>
       <div v-if="loading" class="loading dark:text-white">Loading characters...</div>
       <div v-else-if="characters.length === 0" class="no-characters dark:text-gray-300">
         No character information available
@@ -66,6 +72,7 @@
           v-for="character in characters"
           :key="character.character.mal_id"
           class="character-card dark:bg-gray-700"
+          :class="{ 'dark-mode': isDarkMode }"
           @click="navigateToCharacter(character.character.mal_id)"
         >
           <img
@@ -73,7 +80,7 @@
             :alt="character.character.name"
             class="character-image"
           />
-          <div class="character-info">
+          <div class="character-info" :class="{ 'dark-mode': isDarkMode }">
             <div class="character-name dark:text-white">{{ character.character.name }}</div>
             <div class="character-role dark:text-gray-300">{{ character.role }}</div>
           </div>
@@ -82,7 +89,7 @@
     </div>
 
     <div class="youtube-trailer">
-      <h3 class="dark:text-white">Trailer</h3>
+      <h3 class="dark:text-white" :class="{ 'dark-mode': isDarkMode }">Trailer</h3>
       <div v-if="trailerVideoId" class="video-container">
         <iframe
           width="560"
@@ -105,6 +112,7 @@ import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
 import moment from 'moment-timezone'
 import type { AnimeJikan, Character } from '@/types/anime'
+import { isDarkMode } from '@/utils/settings'
 
 const route = useRoute()
 const router = useRouter()
@@ -352,6 +360,61 @@ h2 {
   width: 100%;
   height: 100%;
   border: 0;
+}
+
+.anime-detail-container.dark-mode {
+  background-color: #1a202c;
+}
+
+h1.dark-mode {
+  color: white;
+}
+
+h2.dark-mode {
+  color: #c4c4c4;
+}
+
+.dark-mode .meta-item,
+.dark-mode .broadcast-item {
+  background-color: #2d3748;
+  color: #fff;
+}
+
+.anime-synopsis.dark-mode {
+  color: white;
+}
+
+.characters-section .dark-mode {
+  color: white;
+}
+
+.character-card.dark-mode {
+  background-color: #2d3748;
+}
+
+.dark-mode .character-name {
+  color: #fff;
+}
+
+.dark-mode .character-role {
+  color: #cbd5e0;
+}
+
+.loading.dark-mode {
+  background-color: #1a202c;
+}
+
+.dark-mode p {
+  color: white;
+}
+
+.dark-mode .spinner {
+  border: 4px solid #4a5568;
+  border-top: 4px solid #90cdf4;
+}
+
+h3.dark-mode {
+  color: white;
 }
 
 @media (max-width: 630px) {

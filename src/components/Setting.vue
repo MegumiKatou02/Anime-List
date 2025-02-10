@@ -39,13 +39,15 @@
 </template>
 
 <script lang="ts">
-import { computed } from 'vue'
+import { isDarkMode } from '@/utils/settings'
+import { computed, watch } from 'vue'
 import { defineComponent, ref, onMounted } from 'vue'
 export default defineComponent({
   name: 'SettingPage',
   setup(_, { emit }) {
     const selectedLanguage = ref('0')
     const selectedTheme = ref('0')
+    const originDarkMode = ref(true)
 
     const settings = computed(() => ({
       lang: selectedLanguage.value,
@@ -57,20 +59,21 @@ export default defineComponent({
     }
 
     const closeDropDown = () => {
+      isDarkMode.value = originDarkMode.value
       emit('close')
     }
 
+    watch(selectedTheme, (value) => {
+      if (value === '0') {
+        isDarkMode.value = true
+      } else {
+        isDarkMode.value = false
+      }
+    })
+
     const handleSave = () => {
-      // const previousSettings = JSON.parse(
-      //   localStorage.getItem('setting') || `{"lang":"0","theme":"0"}`,
-      // )
-      // if (
-      //   previousSettings.lang !== selectedLanguage.value ||
-      //   previousSettings.theme !== selectedTheme.value
-      // ) {
       localStorage.setItem('setting', JSON.stringify(settings.value))
-      // window.location.reload()
-      // }
+      originDarkMode.value = isDarkMode.value
       closeDropDown()
     }
 
@@ -80,6 +83,7 @@ export default defineComponent({
       )
       selectedLanguage.value = savedSettings.lang
       selectedTheme.value = savedSettings.theme
+      originDarkMode.value = isDarkMode.value
     })
 
     return {

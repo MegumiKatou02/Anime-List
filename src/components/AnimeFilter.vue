@@ -1,6 +1,9 @@
 <template>
   <div class="filter-container">
-    <button @click="toggleFilter" :class="['filter-button', { 'active-filter': isFilterActive }]">
+    <button
+      @click="toggleFilter"
+      :class="['filter-button', { 'dark-mode': isDarkMode }, { 'active-filter': isFilterActive }]"
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -69,6 +72,7 @@
 import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 import type { Genres } from '@/types/anime'
+import { isDarkMode } from '@/utils/settings'
 
 const isOpen = ref(false)
 const activeTab = ref('status')
@@ -240,6 +244,15 @@ const isFilterActive = computed(() => {
   background: #2d5996;
   color: white;
   border: none;
+}
+
+.filter-button.dark-mode {
+  color: white;
+  background-color: #1a202c;
+}
+
+.filter-button.dark-mode:hover {
+  color: red;
 }
 
 @media (prefers-color-scheme: dark) {
