@@ -79,7 +79,7 @@
             <span>{{ manga.releaseYear }}</span>
           </div>
           <div class="info-item">
-            <span class="label">chapter mới nhất:</span>
+            <span class="label">Chương mới nhất:</span>
             <span>{{ newChapters }}</span>
           </div>
         </div>
