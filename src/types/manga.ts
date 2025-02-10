@@ -65,7 +65,7 @@ export interface Chapter {
   volume: string | null
   language: string
   publishedAt: string
-  uploader: string
+  scanlation_group: string
   mangaTitle?: string
 }
 
@@ -105,7 +105,7 @@ export interface ChapterResponse {
       type: string
       id: string
       attributes?: {
-        username?: string
+        name?: string
       }
     }>
   }[]

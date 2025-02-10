@@ -38,7 +38,7 @@
                   </div>
                   <div class="chapter-metadata">
                     <span class="upload-time">{{ formatTime(chapter.publishedAt) }}</span>
-                    <span class="uploader">{{ chapter.uploader }}</span>
+                    <span class="uploader">{{ chapter.scanlation_group }}</span>
                   </div>
                 </div>
               </div>
