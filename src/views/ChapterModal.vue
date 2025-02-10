@@ -38,8 +38,7 @@
                   </div>
                   <div class="chapter-metadata">
                     <span class="upload-time">{{ formatTime(chapter.publishedAt) }}</span>
-                    <span class="uploader">{{ chapter.uploader }}</span>
-                    <span class="comment-count"> 💬 {{ chapter.comments }} </span>
+                    <span class="uploader">{{ chapter.scanlation_group }}</span>
                   </div>
                 </div>
               </div>
@@ -54,16 +53,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-
-interface Chapter {
-  id: string
-  number: string
-  volume: string | null
-  language: string
-  publishedAt: string
-  uploader: string
-  comments: number
-}
+import type { Chapter } from '@/types/manga'
 
 export default defineComponent({
   name: 'ChapterModal',

@@ -46,7 +46,6 @@ export class MangaService {
         params: { 'includes[]': ['cover_art', 'author'] },
       })
       const mangaData = response.data.data
-      // console.log(mangaData)
 
       return mangaData
     } catch (error) {
@@ -199,8 +198,8 @@ export class MangaService {
       }
 
       return data.data.map((chapter) => {
-        const uploader = chapter.relationships.find((rel) => rel.type === 'user')
-        const uploaderName = uploader?.attributes?.username || 'Unknown'
+        const group = chapter.relationships.find((rel) => rel.type === 'scanlation_group')
+        const scanlation_group_name = group?.attributes?.name || 'Unknown'
 
         return {
           id: chapter.id,
@@ -208,8 +207,7 @@ export class MangaService {
           volume: chapter.attributes.volume,
           language: chapter.attributes.translatedLanguage,
           publishedAt: chapter.attributes.publishAt,
-          uploader: uploaderName,
-          comments: 0,
+          scanlation_group: scanlation_group_name,
         }
       })
     } catch (error) {
@@ -279,10 +277,9 @@ export class MangaService {
         volume: chapter.attributes.volume,
         language: chapter.attributes.translatedLanguage,
         publishedAt: chapter.attributes.publishAt,
-        uploader:
+        scanlation_group:
           chapter.relationships.find((rel: Relationship) => rel.type === 'scanlation_group')
             ?.attributes?.name || 'Unknown',
-        comments: 0,
         mangaTitle,
       }
     } catch (error) {
