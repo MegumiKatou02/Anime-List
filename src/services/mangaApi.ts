@@ -7,6 +7,7 @@ import type {
   MangaData,
   Relationship,
   Tag,
+  Title,
 } from '@/types/manga'
 import { ArrayUtils } from '@/utils/array'
 
@@ -449,8 +450,9 @@ export class MangaService {
         ?.attributes?.fileName
 
       const title =
+        manga.attributes.altTitles.find((title) => title.vi)?.vi ||
         manga.attributes.title.en ||
-        Object.values(manga.attributes.title).find((t) => t !== undefined) ||
+        manga.attributes.title['ja-ro'] ||
         'Unknown Title'
 
       const coverImage = coverFile
@@ -477,7 +479,28 @@ export class MangaService {
     const coverRelationship = mangaData.relationships.find((rel) => rel.type === 'cover_art')
     const coverFile = coverRelationship?.attributes?.fileName
 
-    const title = mangaData.attributes.title.en || 'Unknown Title'
+    const title =
+      mangaData.attributes.altTitles.find((title) => title.vi)?.vi ||
+      mangaData.attributes.title.en ||
+      mangaData.attributes.title['ja-ro'] ||
+      'Unknown Title'
+
+    const alternativeTitles: string[] = []
+    let keyAlt = ''
+    if (mangaData.attributes.altTitles.find((title) => title.vi)) {
+      keyAlt = 'vi'
+    } else if (mangaData.attributes.title.en) {
+      keyAlt = 'en'
+    }
+
+    mangaData.attributes.altTitles.forEach((title: Title) => {
+      const keys = Object.keys(title)
+      keys.forEach((lang) => {
+        if (lang !== keyAlt && (lang === 'en' || lang == 'ja') && title[lang]) {
+          alternativeTitles.push(title[lang]!)
+        }
+      })
+    })
 
     const coverImage = coverFile
       ? `https://mangadex.org/covers/${mangaData.id}/${coverFile}.256.jpg`
@@ -496,6 +519,7 @@ export class MangaService {
       author: mangaData.relationships[0].attributes?.name || 'Unknown Author',
       releaseYear: new Date(mangaData.attributes.createdAt).getFullYear(),
       mangaDexId: mangaData.id,
+      alternativeTitles,
     }
   }
 }
