@@ -25,7 +25,7 @@
 
     <div v-if="loading" class="loading-state">
       <div class="loading-spinner"></div>
-      <p>Loading chapter...</p>
+      <p>Đang tải chương...</p>
     </div>
 
     <div v-else-if="error" class="error-state">
@@ -431,23 +431,36 @@ export default defineComponent({
   margin: 0 auto;
 }
 
-.loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #3498db;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
 .loading-state {
   position: fixed;
   top: 50%;
   left: 50%;
+
   transform: translate(-50%, -50%);
-  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
 }
 
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 .error-state {
   position: fixed;
   top: 50%;
@@ -479,15 +492,6 @@ export default defineComponent({
   width: 24px;
   height: 24px;
   fill: currentColor;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 .footer-content {
