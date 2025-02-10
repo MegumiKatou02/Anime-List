@@ -3,7 +3,7 @@
     <button @click="showModal = true" class="read-here-button">Đọc tại đây (beta)</button>
 
     <div v-if="showModal" class="modal-overlay" @click="showModal = false">
-      <div class="modal-content" @click.stop>
+      <div class="modal-content" :class="{ 'dark-mode': isDarkMode }" @click.stop>
         <div class="modal-header">
           <h2>Danh sách chương</h2>
           <button class="close-button" @click="showModal = false">&times;</button>
@@ -20,7 +20,11 @@
             :key="volumeKey"
             class="volume-section"
           >
-            <div class="volume-header" @click="toggleVolume(volumeKey)">
+            <div
+              class="volume-header"
+              :class="{ 'dark-mode': isDarkMode }"
+              @click="toggleVolume(volumeKey)"
+            >
               <h3>{{ volumeKey === 'noVolume' ? 'No Volume' : `Volume ${volumeKey}` }}</h3>
               <span class="toggle-icon">{{ expandedVolumes[volumeKey] ? '▼' : '▶' }}</span>
             </div>
@@ -30,6 +34,7 @@
                 v-for="chapter in chapters"
                 :key="chapter.id"
                 class="chapter-item"
+                :class="{ 'dark-mode': isDarkMode }"
                 @click="handleChapterClick(chapter.id)"
               >
                 <div class="chapter-info">
@@ -54,7 +59,7 @@
                       {{ chapter.title }}
                     </span>
                   </div>
-                  <div class="chapter-metadata">
+                  <div class="chapter-metadata" :class="{ 'dark-mode': isDarkMode }">
                     <div class="upload-time">
                       <svg
                         data-v-9ba4cb7e=""
@@ -111,6 +116,7 @@
 import { defineComponent, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import type { Chapter } from '@/types/manga'
+import { isDarkMode } from '@/utils/settings'
 
 export default defineComponent({
   name: 'ChapterModal',
@@ -168,6 +174,7 @@ export default defineComponent({
       toggleVolume,
       formatTime,
       handleChapterClick,
+      isDarkMode,
     }
   },
 })
@@ -301,6 +308,23 @@ export default defineComponent({
   display: flex;
   align-items: center;
   width: 1.2rem;
+}
+
+.modal-content.dark-mode {
+  background: #1a202c;
+  color: white;
+}
+
+.volume-header.dark-mode {
+  background: #2d3748;
+}
+
+.chapter-item.dark-mode:hover {
+  background: #2d3748;
+}
+
+.chapter-metadata.dark-mode {
+  color: #9ca3af;
 }
 
 @media (prefers-color-scheme: dark) {

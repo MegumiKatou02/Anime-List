@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home" :class="{ 'dark-mode': isDarkMode }">
     <div style="display: flex; justify-content: center; align-items: center; gap: 0.5rem">
       <MediaTypeSwitcher @change="handleMediaTypeChange" />
       <AnimeFilter v-if="mediaType === 'anime'" @filter="handleFilter" />
@@ -29,7 +29,7 @@
 
     <div v-if="loading" class="loading">
       <div class="spinner"></div>
-      <p>Đang tải danh sách...</p>
+      <p :class="{ 'dark-mode': isDarkMode }">Đang tải danh sách...</p>
     </div>
 
     <div v-else class="anime-grid">
@@ -64,6 +64,7 @@ import MediaTypeSwitcher from '@/components/MediaTypeSwitcher.vue'
 import { debounce } from 'lodash'
 import type { Anime } from '@/types/anime'
 import type { Manga } from '@/types/manga'
+import { isDarkMode } from '@/utils/settings'
 
 type MediaItem = Anime | Manga
 
@@ -234,6 +235,7 @@ export default defineComponent({
       handleSearch: debounce(handleSearch, 300),
       handleFilter,
       handleMediaTypeChange,
+      isDarkMode,
     }
   },
 })
@@ -403,6 +405,14 @@ export default defineComponent({
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
   color: #444;
+}
+
+.dark-mode {
+  background-color: #1a202c;
+}
+
+p.dark-mode {
+  color: white;
 }
 
 @media (max-width: 768px) {

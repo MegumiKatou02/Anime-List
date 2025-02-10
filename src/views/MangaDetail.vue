@@ -1,16 +1,16 @@
 <template>
-  <div class="manga-detail-container" v-if="manga">
+  <div class="manga-detail-container" :class="{ 'dark-mode': isDarkMode }" v-if="manga">
     <div class="manga-header">
       <div class="manga-cover">
         <img :src="manga.coverImage" :alt="manga.title" />
       </div>
-      <div class="manga-info">
+      <div class="manga-info" :class="{ 'dark-mode': isDarkMode }">
         <h1 class="manga-title">{{ manga.title }}</h1>
         <h2 class="manga-title-alt" v-if="manga.alternativeTitles">
           {{ manga.alternativeTitles[0] }}
         </h2>
         <div class="manga-metadata" v-if="statistics">
-          <div class="manga-statistics">
+          <div class="manga-statistics" :class="{ 'dark-mode': isDarkMode }">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -71,8 +71,8 @@
             {{ genre }}
           </span>
         </div>
-        <div class="description">{{ manga.description }}</div>
-        <div class="additional-info">
+        <div class="description" :class="{ 'dark-mode': isDarkMode }">{{ manga.description }}</div>
+        <div class="additional-info" :class="{ 'dark-mode': isDarkMode }">
           <div class="info-item">
             <span class="label">Tác giả:</span>
             <span>{{ manga.author }}</span>
@@ -108,6 +108,7 @@ import { useRoute } from 'vue-router'
 import type { Manga, Chapter } from '@/types/manga'
 import { MangaService } from '@/services/mangaApi'
 import ChapterModal from '../components/ChapterModal.vue'
+import { isDarkMode } from '@/utils/settings'
 
 export default defineComponent({
   name: 'MangaDetail',
@@ -202,6 +203,7 @@ export default defineComponent({
       formatRating,
       statistics,
       chapters,
+      isDarkMode,
     }
   },
 })
@@ -209,7 +211,8 @@ export default defineComponent({
 
 <style scoped>
 .manga-detail-container {
-  max-width: 1200px;
+  /* max-width: 1200px; */
+  width: 100%;
   margin: 0 auto;
   padding: 2rem;
 }
@@ -362,6 +365,19 @@ export default defineComponent({
   gap: 1rem;
   align-items: center;
   flex-wrap: wrap;
+}
+
+.manga-detail-container.dark-mode {
+  background-color: #1a202c;
+}
+
+.dark-mode .manga-title,
+.dark-mode .manga-title-alt,
+.manga-statistics.dark-mode,
+.additional-info.dark-mode,
+.description.dark-mode,
+.dark-mode .label {
+  color: white;
 }
 
 @media (max-width: 768px) {
