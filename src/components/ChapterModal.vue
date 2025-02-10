@@ -10,6 +10,11 @@
         </div>
 
         <div class="chapters-container">
+          <div v-if="Object.keys(groupedChapters).length === 0">
+            <p class="no-chapters-message">
+              Không có chương nào. Hãy thử đổi ngôn ngữ trong phần cài đặt và tải lại trang.
+            </p>
+          </div>
           <div
             v-for="(chapters, volumeKey) in groupedChapters"
             :key="volumeKey"

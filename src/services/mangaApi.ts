@@ -182,11 +182,13 @@ export class MangaService {
    * @returns Viet Nam language trans
    */
   async getMangaChapters(mangaId: string): Promise<Chapter[]> {
+    const savedSettings = JSON.parse(localStorage.getItem('setting') || `{"lang":"0","theme":"0"}`)
+    const lang = savedSettings.lang === '0' ? 'vi' : 'en'
     try {
       const response = await this.api.get(`/manga/${mangaId}/feed`, {
         params: {
           'includes[]': ['user', 'scanlation_group'],
-          'translatedLanguage[]': ['vi'],
+          'translatedLanguage[]': [lang],
           'order[chapter]': 'desc',
           limit: '500',
         },
@@ -327,12 +329,16 @@ export class MangaService {
       if (!mangaRelation) {
         throw new Error('No manga found for this chapter')
       }
+      const savedSettings = JSON.parse(
+        localStorage.getItem('setting') || `{"lang":"0","theme":"0"}`,
+      )
+      const lang = savedSettings.lang === '0' ? 'vi' : 'en'
       const mangaId = mangaRelation.id
       const chapterListResponse = await this.api.get(`/manga/${mangaId}/feed`, {
         params: {
           limit: 500,
           'order[chapter]': 'desc',
-          'translatedLanguage[]': ['vi'],
+          'translatedLanguage[]': [lang],
         },
       })
 
@@ -365,11 +371,16 @@ export class MangaService {
       if (!mangaRelation) {
         throw new Error('No manga found for this chapter')
       }
+      const savedSettings = JSON.parse(
+        localStorage.getItem('setting') || `{"lang":"0","theme":"0"}`,
+      )
+      const lang = savedSettings.lang === '0' ? 'vi' : 'en'
+
       const mangaId = mangaRelation.id
       const currentChapterNumber = parseFloat(currentChapter.attributes.chapter || '0')
       const chaptersResponse = await this.api.get(`/manga/${mangaId}/feed`, {
         params: {
-          'translatedLanguage[]': ['vi'],
+          'translatedLanguage[]': [lang],
           'order[chapter]': 'asc',
           limit: '500',
         },
@@ -412,11 +423,15 @@ export class MangaService {
       if (!mangaRelation) {
         throw new Error('No manga found for this chapter')
       }
+      const savedSettings = JSON.parse(
+        localStorage.getItem('setting') || `{"lang":"0","theme":"0"}`,
+      )
+      const lang = savedSettings.lang === '0' ? 'vi' : 'en'
       const mangaId = mangaRelation.id
       const currentChapterNumber = parseFloat(currentChapter.attributes.chapter || '0')
       const chaptersResponse = await this.api.get(`/manga/${mangaId}/feed`, {
         params: {
-          'translatedLanguage[]': ['vi'],
+          'translatedLanguage[]': [lang],
           'order[chapter]': 'desc',
           limit: '500',
         },
