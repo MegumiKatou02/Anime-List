@@ -33,9 +33,17 @@ export interface Relationship {
   }
 }
 
+export interface Title {
+  [key: string]: string | undefined
+  en?: string
+  vi?: string
+  ja?: string
+}
+
 interface MangaAttributes {
   title: {
     en?: string
+    'ja-ro'?: string
     [key: string]: string | undefined
   }
   description: {
@@ -51,6 +59,7 @@ interface MangaAttributes {
   author?: string
   createdAt: string
   lastChapter: string
+  altTitles: Title[]
 }
 
 export interface MangaData {

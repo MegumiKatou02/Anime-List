@@ -6,6 +6,9 @@
       </div>
       <div class="manga-info">
         <h1 class="manga-title">{{ manga.title }}</h1>
+        <h2 class="manga-title-alt" v-if="manga.alternativeTitles">
+          {{ manga.alternativeTitles[0] }}
+        </h2>
         <div class="manga-metadata" v-if="statistics">
           <div class="manga-statistics">
             <svg
@@ -228,6 +231,11 @@ export default defineComponent({
 
 .manga-title {
   font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.manga-title-alt {
+  font-size: 1.5rem;
   margin-bottom: 1rem;
 }
 
