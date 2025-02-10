@@ -29,15 +29,47 @@
               >
                 <div class="chapter-info">
                   <div class="chapter-main">
-                    <span class="language-flag">
-                      {{ chapter.language === 'vi' ? '🇻🇳' : '🇬🇧' }}
-                    </span>
+                    <div class="language-flag">
+                      <!-- {{ chapter.language === 'vi' ? '🇻🇳' : '🇬🇧' }} -->
+                      <img
+                        v-if="chapter.language === 'vi'"
+                        class="flag_icon"
+                        src="@/assets/flags/vn.svg"
+                        alt="Vietnamese flag icon"
+                      />
+                      <img
+                        v-else
+                        class="flag_icon"
+                        src="@/assets/flags/gb.svg"
+                        alt="GB flag icon"
+                      />
+                    </div>
                     <span class="chapter-title">
-                      {{ chapter.language === 'en' ? 'Ch.' : 'Chap' }} {{ chapter.number }}
+                      {{ chapter.language === 'vi' ? 'Chương' : 'Ch.' }} {{ chapter.number }} -
+                      {{ chapter.title }}
                     </span>
                   </div>
                   <div class="chapter-metadata">
-                    <span class="upload-time">{{ formatTime(chapter.publishedAt) }}</span>
+                    <div class="upload-time">
+                      <svg
+                        data-v-9ba4cb7e=""
+                        data-v-c031ce93=""
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="17"
+                        height="17"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        class="feather feather-clock icon small text-icon-contrast text-undefined mr-1 sm:mr-1.5 md:mr-2"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 6v6l4 2"></path>
+                      </svg>
+                      <span class="time">{{ formatTime(chapter.publishedAt) }}</span>
+                    </div>
                     <div class="scanlation_group">
                       <svg
                         data-v-9ba4cb7e=""
@@ -253,14 +285,17 @@ export default defineComponent({
   justify-content: space-between;
 }
 
-.scanlation_group {
+.scanlation_group,
+.upload-time {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
 .language-flag {
-  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  width: 1.2rem;
 }
 
 @media (prefers-color-scheme: dark) {

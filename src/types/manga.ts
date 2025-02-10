@@ -67,6 +67,7 @@ export interface Chapter {
   publishedAt: string
   scanlation_group: string
   mangaTitle?: string
+  title: string
 }
 
 export interface ChapterData {
@@ -100,6 +101,7 @@ export interface ChapterResponse {
       publishAt: string
       pages: number
       translatedLanguage: string
+      title: string
     }
     relationships: Array<{
       type: string
