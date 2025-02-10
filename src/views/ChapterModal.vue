@@ -38,7 +38,27 @@
                   </div>
                   <div class="chapter-metadata">
                     <span class="upload-time">{{ formatTime(chapter.publishedAt) }}</span>
-                    <span class="uploader">{{ chapter.scanlation_group }}</span>
+                    <div class="scanlation_group">
+                      <svg
+                        data-v-9ba4cb7e=""
+                        data-v-c1ca7027=""
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="17"
+                        height="17"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        class="icon small text-icon-contrast text-undefined rounded mr-0.5 md:mr-1"
+                      >
+                        <path
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2m8-10a4 4 0 1 0 0-8 4 4 0 0 0 0 8m14 10v-2a4 4 0 0 0-3-3.87m-4-12a4 4 0 0 1 0 7.75"
+                        ></path>
+                      </svg>
+                      <span class="scanlation">{{ chapter.scanlation_group }}</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -228,6 +248,15 @@ export default defineComponent({
   gap: 1rem;
   font-size: 0.875rem;
   color: #6b7280;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.scanlation_group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .language-flag {
