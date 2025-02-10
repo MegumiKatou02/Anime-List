@@ -316,4 +316,11 @@ export default defineComponent({
     color: #9ca3af;
   }
 }
+
+@media (max-width: 675px) {
+  .flag_icon {
+    width: 19.19px;
+    height: 19.19px;
+  }
+}
 </style>
