@@ -203,6 +203,7 @@ export class MangaService {
 
         return {
           id: chapter.id,
+          title: chapter.attributes.title || 'Unknown Title',
           number: chapter.attributes.chapter || 'oneshot',
           volume: chapter.attributes.volume,
           language: chapter.attributes.translatedLanguage,
@@ -281,6 +282,7 @@ export class MangaService {
           chapter.relationships.find((rel: Relationship) => rel.type === 'scanlation_group')
             ?.attributes?.name || 'Unknown',
         mangaTitle,
+        title: chapter.attributes.title || 'Unknown Title',
       }
     } catch (error) {
       console.error('Error fetching chapter:', error)

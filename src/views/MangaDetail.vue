@@ -123,6 +123,7 @@ export default defineComponent({
       try {
         const mangaId = route.params.id as string
         const chaptersData = await mangaService.getMangaChapters(mangaId)
+
         chapters.value = chaptersData
       } catch (error) {
         console.error('Error loading chapters:', error)
