@@ -1,7 +1,10 @@
 <template>
-  <div class="settings-overlay">
-    <div class="settings-container">
-      <h3 class="settings-title">Tùy chỉnh</h3>
+  <div class="settings-overlay" @click="closeDropDown">
+    <div class="settings-container" @click.stop>
+      <div class="settings-header">
+        <h3 class="settings-title">Tùy chỉnh</h3>
+        <button @click="closeDropDown" class="close-button">&times;</button>
+      </div>
       <p class="settings-subtitle">Những tùy chỉnh này được lưu tại thiết bị hiện tại.</p>
 
       <div class="settings-section">
@@ -52,6 +55,11 @@ export default defineComponent({
       selectedLanguage.value = '0'
       selectedTheme.value = '0'
     }
+
+    const closeDropDown = () => {
+      emit('close')
+    }
+
     const handleSave = () => {
       // const previousSettings = JSON.parse(
       //   localStorage.getItem('setting') || `{"lang":"0","theme":"0"}`,
@@ -63,7 +71,7 @@ export default defineComponent({
       localStorage.setItem('setting', JSON.stringify(settings.value))
       // window.location.reload()
       // }
-      emit('close')
+      closeDropDown()
     }
 
     onMounted(() => {
@@ -79,6 +87,7 @@ export default defineComponent({
       handleSave,
       selectedTheme,
       selectedLanguage,
+      closeDropDown,
     }
   },
 })
@@ -107,6 +116,26 @@ export default defineComponent({
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
   color: white;
   z-index: 1000;
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.close-button {
+  font-size: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgb(122, 122, 122);
+  margin-bottom: 0.5rem;
+  transition: color 0.3 ease-in-out;
+}
+
+.close-button:hover {
+  color: #fff;
 }
 
 .settings-title {
@@ -138,7 +167,8 @@ export default defineComponent({
 }
 
 .slider-container input[type='range'] {
-  width: 2rem;
+  width: 2.3rem;
+  height: 2rem;
 }
 
 .save-button {
