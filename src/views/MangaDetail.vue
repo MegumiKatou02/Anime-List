@@ -107,7 +107,7 @@ import { defineComponent, ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import type { Manga, Chapter } from '@/types/manga'
 import { MangaService } from '@/services/mangaApi'
-import ChapterModal from './ChapterModal.vue'
+import ChapterModal from '../components/ChapterModal.vue'
 
 export default defineComponent({
   name: 'MangaDetail',

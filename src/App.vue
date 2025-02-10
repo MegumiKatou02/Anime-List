@@ -1,31 +1,52 @@
-<script setup lang="ts">
-import { RouterLink, RouterView, useRoute } from 'vue-router'
-import { onMounted, onUnmounted, computed } from 'vue'
+<script lang="ts">
+import { useRoute } from 'vue-router'
+import { onMounted, onUnmounted, computed, defineComponent, ref } from 'vue'
+import Setting from './components/Setting.vue'
 
-const handleScroll = () => {
-  const navbar = document.querySelector('.navbar')
-  if (window.scrollY > 50) {
-    navbar?.classList.add('scrolled')
-  } else {
-    navbar?.classList.remove('scrolled')
-  }
-}
+export default defineComponent({
+  components: {
+    Setting,
+  },
+  setup() {
+    const route = useRoute()
+    const isReaderPage = computed(() => route.path.startsWith('/read'))
+    const isStatusPage = computed(() => {
+      if (route.query.status && route.query.status === 'error') {
+        return true
+      }
+      return false
+    })
 
-const route = useRoute()
-const isReaderPage = computed(() => route.path.startsWith('/read'))
-const isStatusPage = computed(() => {
-  if (route.query.status && route.query.status === 'error') {
-    return true
-  }
-  return false
-})
+    const isOpenSetting = ref(false)
 
-onMounted(() => {
-  window.addEventListener('scroll', handleScroll)
-})
+    const closeSettings = () => {
+      isOpenSetting.value = false
+    }
 
-onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll)
+    const handleScroll = () => {
+      const navbar = document.querySelector('.navbar')
+      if (window.scrollY > 50) {
+        navbar?.classList.add('scrolled')
+      } else {
+        navbar?.classList.remove('scrolled')
+      }
+    }
+
+    onMounted(() => {
+      window.addEventListener('scroll', handleScroll)
+    })
+
+    onUnmounted(() => {
+      window.removeEventListener('scroll', handleScroll)
+    })
+
+    return {
+      isReaderPage,
+      isStatusPage,
+      isOpenSetting,
+      closeSettings,
+    }
+  },
 })
 </script>
 
@@ -49,11 +70,19 @@ onUnmounted(() => {
         <div class="nav-links">
           <router-link to="/" class="nav-link">Trang chủ</router-link>
           <router-link to="/about" class="nav-link">Thông tin</router-link>
+          <button class="icon-button" @click="isOpenSetting = !isOpenSetting">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24">
+              <path
+                d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"
+              />
+            </svg>
+          </button>
         </div>
       </nav>
     </header>
 
     <main>
+      <Setting v-if="isOpenSetting" @close="closeSettings" />
       <RouterView />
     </main>
 
@@ -85,6 +114,10 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+main {
+  position: relative;
+}
+
 .navbar {
   background-color: rgba(44, 62, 80, 0.9);
   backdrop-filter: blur(5px);
@@ -192,6 +225,30 @@ main {
   width: 100%;
   left: 0;
   background: #42b883;
+}
+
+.icon-button {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: color 0.3s ease;
+}
+
+.icon-button:hover {
+  color: red;
+}
+
+.icon-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.icon {
+  width: 2.3rem;
+  height: 2.3rem;
+  fill: currentColor;
 }
 
 @media (max-width: 768px) {
