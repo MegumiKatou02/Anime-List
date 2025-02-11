@@ -237,7 +237,7 @@ main {
 }
 
 .icon-button:hover {
-  color: red;
+  color: #cccbcb;
 }
 
 .icon-button:disabled {
