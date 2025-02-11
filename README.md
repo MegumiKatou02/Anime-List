@@ -6,9 +6,10 @@ A web app that allows users to search for anime, view detailed information, and 
 - 🌟 Characters: Explore the main characters of each anime
 - 🎥 Trailers: Watch YouTube trailers (if available)
 # Screenshots
-![image](https://github.com/user-attachments/assets/8387c963-0ba7-4e1b-9a12-255c9da9405e)
-![image](https://github.com/user-attachments/assets/0556922a-d31f-4c97-8853-b7166197a18f)
-![image](https://github.com/user-attachments/assets/62d442e8-77e9-4b4b-b285-2264173ef303)
+![Anime Home](https://github.com/user-attachments/assets/8387c963-0ba7-4e1b-9a12-255c9da9405e)
+![Anime Trailer](https://github.com/user-attachments/assets/0556922a-d31f-4c97-8853-b7166197a18f)
+![Manga Chapters](https://github.com/user-attachments/assets/fd9537e1-5168-4102-9694-86383be2f725)
+
 # Tech Stack
 - Frontend: Vue.js 3, TypeScript
 - Backend API: Jikan API, Myanimelist API
