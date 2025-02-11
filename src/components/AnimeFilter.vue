@@ -251,9 +251,12 @@ const isFilterActive = computed(() => {
   background-color: #1a202c;
 }
 
-.filter-button.dark-mode:hover {
+.filter-button.active-filter.dark-mode {
   color: red;
 }
+
+/* .filter-button.dark-mode:hover {
+} */
 
 @media (prefers-color-scheme: dark) {
   .filter-button {
