@@ -39,7 +39,11 @@
       </template>
     </div>
 
-    <div v-if="!loading && mediaList.length === 0" class="empty-state">
+    <div
+      v-if="!loading && mediaList.length === 0"
+      class="empty-state"
+      :class="{ 'dark-mode': isDarkMode }"
+    >
       <svg class="empty-icon" viewBox="0 0 24 24">
         <path
           fill="currentColor"
@@ -412,6 +416,12 @@ export default defineComponent({
 }
 
 p.dark-mode {
+  color: white;
+}
+
+.empty-state.dark-mode h3,
+.empty-state.dark-mode svg,
+.empty-state.dark-mode {
   color: white;
 }
 

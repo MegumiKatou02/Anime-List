@@ -22,8 +22,8 @@
         </h2>
 
         <div class="anime-meta" :class="{ 'dark-mode': isDarkMode }">
-          <div class="meta-item dark:bg-gray-700 dark:text-white">
-            <strong>Status:</strong> {{ anime.status }}
+          <div class="meta-item dark:bg-gray-700 dark:text-white" :class="statusClass">
+            {{ anime.status }}
           </div>
           <div class="meta-item dark:bg-gray-700 dark:text-white">
             <strong>Type:</strong> {{ anime.type }}
@@ -153,6 +153,19 @@ const navigateToCharacter = (characterId: number) => {
   router.push({ name: 'CharacterDetail', params: { id: characterId } })
 }
 
+const statusClass = computed(() => {
+  if (anime.value?.status === 'Currently Airing') {
+    return 'current-airing'
+  }
+  if (anime.value?.status === 'Not yet aired') {
+    return 'not-yet-aired'
+  }
+  if (anime.value?.status === 'Finished Airing') {
+    return 'finish-airing'
+  }
+  return ''
+})
+
 onMounted(async () => {
   window.scrollTo(0, 0)
   try {
@@ -193,7 +206,7 @@ h2 {
   width: 100%;
   /* margin: 0 auto; */
   padding: 2rem;
-  background-color: #f4f4f4;
+  background-color: #fff;
 }
 
 .anime-header {
@@ -231,6 +244,10 @@ h2 {
   flex-wrap: wrap;
 }
 
+.broadcast-info {
+  margin-bottom: 2rem;
+}
+
 .meta-item,
 .broadcast-item {
   background-color: #e9ecef;
@@ -245,8 +262,8 @@ h2 {
 }
 
 .genre-tag {
-  background-color: #007bff;
-  color: white;
+  background-color: #f0f0f0;
+  color: #666;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-size: 0.8rem;
@@ -374,7 +391,7 @@ h2.dark-mode {
   color: #c4c4c4;
 }
 
-.dark-mode .meta-item,
+.dark-mode .meta-item:not(:first-child),
 .dark-mode .broadcast-item {
   background-color: #2d3748;
   color: #fff;
@@ -415,6 +432,21 @@ h2.dark-mode {
 
 h3.dark-mode {
   color: white;
+}
+
+.finish-airing {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.current-airing {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.not-yet-aired {
+  background: #fff3e0;
+  color: #f57c00;
 }
 
 @media (max-width: 630px) {
