@@ -218,22 +218,12 @@ onMounted(async () => {
   }
 }
 
-.character-detail-container.dark-mode {
-  background-color: #1a202c;
-}
-
 .anime-card.dark-mode {
   background-color: #2d3748;
 }
 
-.character-header-info.dark-mode {
-  color: white;
-}
-
-.character-about.dark-mode {
-  color: white;
-}
-
+.character-header-info.dark-mode,
+.character-about.dark-mode,
 .anime-appearances.dark-mode {
   color: white;
 }
@@ -242,6 +232,7 @@ onMounted(async () => {
   color: #cbd5e0;
 }
 
+.character-detail-container.dark-mode,
 .loading.dark-mode {
   background-color: #1a202c;
 }
