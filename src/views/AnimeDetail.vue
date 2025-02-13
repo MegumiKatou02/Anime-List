@@ -101,7 +101,9 @@
           allowfullscreen
         ></iframe>
       </div>
-      <h3 v-else class="dark:text-white">Anime này không có trailer</h3>
+      <h3 v-else class="dark:text-white" :class="{ 'dark-mode': isDarkMode }">
+        Anime này không có trailer
+      </h3>
     </div>
   </div>
 </template>
