@@ -82,7 +82,7 @@
             <span>{{ manga.releaseYear }}</span>
           </div>
           <div class="info-item">
-            <span class="label">Chương mới nhất:</span>
+            <span class="label">Chương cuối:</span>
             <span>{{ newChapters }}</span>
           </div>
         </div>
@@ -119,7 +119,7 @@ export default defineComponent({
     const route = useRoute()
     const mangaService = new MangaService()
     const manga = ref<Manga | null>(null)
-    const newChapters = ref('oneshot')
+    const newChapters = ref('')
     const statistics = ref()
     const chapters = ref<Chapter[]>([])
 
@@ -165,7 +165,9 @@ export default defineComponent({
         statistics.value = await mangaService.getStatisticsManga(mangaId)
 
         if (mangaById.attributes.lastChapter === '') {
-          newChapters.value = 'unknown'
+          if (manga.value.status.toLowerCase() === 'completed') {
+            newChapters.value = 'oneshot'
+          } else newChapters.value = 'chưa có'
         } else {
           newChapters.value = mangaById.attributes.lastChapter
         }
