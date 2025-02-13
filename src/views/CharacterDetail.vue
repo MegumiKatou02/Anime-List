@@ -1,5 +1,5 @@
 <template>
-  <div v-if="loading" class="loading">
+  <div v-if="loading" class="loading" :class="{ 'dark-mode': isDarkMode }">
     <div class="spinner"></div>
     <p>Đang tải thông tin nhân vật...</p>
   </div>
@@ -8,10 +8,14 @@
     {{ error }}
   </div>
 
-  <div v-else-if="character" class="character-detail-container dark:bg-gray-800">
+  <div
+    v-else-if="character"
+    class="character-detail-container dark:bg-gray-800"
+    :class="{ 'dark-mode': isDarkMode }"
+  >
     <div class="character-header">
       <img :src="character.images.webp.image_url" :alt="character.name" class="character-poster" />
-      <div class="character-header-info">
+      <div class="character-header-info" :class="{ 'dark-mode': isDarkMode }">
         <h1 class="dark:text-white">{{ character.name }}</h1>
         <h2 class="dark:text-gray-300">{{ character.name_kanji }}</h2>
 
@@ -26,14 +30,14 @@
       </div>
     </div>
 
-    <div class="character-about">
+    <div class="character-about" :class="{ 'dark-mode': isDarkMode }">
       <h2 class="dark:text-white" style="margin-bottom: 1rem">About</h2>
       <p class="dark:text-gray-300 character-about-text">
         {{ character.about || 'No description available' }}
       </p>
     </div>
 
-    <div class="anime-appearances">
+    <div class="anime-appearances" :class="{ 'dark-mode': isDarkMode }">
       <h2 class="dark:text-white" style="margin-bottom: 1rem">Anime Appearances</h2>
       <div v-if="animeAppearances.length === 0" class="no-appearances dark:text-gray-300">
         No anime appearances found
@@ -43,6 +47,7 @@
           v-for="anime in animeAppearances"
           :key="anime.anime.mal_id"
           class="anime-card dark:bg-gray-700"
+          :class="{ 'dark-mode': isDarkMode }"
           @click="goToAnimeDetail(anime.anime.mal_id)"
         >
           <img
@@ -65,6 +70,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
 import type { CharacterJikan, AnimeJikan } from '@/types/anime'
+import { isDarkMode } from '@/utils/settings'
 
 const route = useRoute()
 const router = useRouter()
@@ -210,6 +216,43 @@ onMounted(async () => {
   100% {
     transform: rotate(360deg);
   }
+}
+
+.character-detail-container.dark-mode {
+  background-color: #1a202c;
+}
+
+.anime-card.dark-mode {
+  background-color: #2d3748;
+}
+
+.character-header-info.dark-mode {
+  color: white;
+}
+
+.character-about.dark-mode {
+  color: white;
+}
+
+.anime-appearances.dark-mode {
+  color: white;
+}
+
+.anime-appearances.dark-mode .anime-info .anime-role {
+  color: #cbd5e0;
+}
+
+.loading.dark-mode {
+  background-color: #1a202c;
+}
+
+.dark-mode p {
+  color: white;
+}
+
+.dark-mode .spinner {
+  border: 4px solid #4a5568;
+  border-top: 4px solid #90cdf4;
 }
 
 @media (prefers-color-scheme: dark) {

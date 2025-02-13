@@ -2,6 +2,7 @@
 import { useRoute } from 'vue-router'
 import { onMounted, onUnmounted, computed, defineComponent, ref } from 'vue'
 import Setting from './components/Setting.vue'
+import { isDarkMode } from './utils/settings'
 
 export default defineComponent({
   components: {
@@ -45,13 +46,14 @@ export default defineComponent({
       isStatusPage,
       isOpenSetting,
       closeSettings,
+      isDarkMode,
     }
   },
 })
 </script>
 
 <template>
-  <div class="app-container">
+  <div class="app-container" :class="{ 'dark-mode': isDarkMode }">
     <header>
       <nav class="navbar" :class="{ 'reader-page': isReaderPage }">
         <router-link to="/">
@@ -116,6 +118,16 @@ export default defineComponent({
 <style scoped>
 main {
   position: relative;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-container.dark-mode {
+  background-color: #1a202c;
 }
 
 .navbar {
