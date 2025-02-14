@@ -1,5 +1,5 @@
 <template>
-  <div class="manga-card" @click="navigateToDetail">
+  <div class="manga-card" @click="navigateToDetail" :class="{ 'dark-mode': isDarkMode }">
     <div class="manga-cover">
       <img :src="manga.coverImage" :alt="manga.title" class="cover-image" />
       <div class="manga-rating" v-if="manga.rating">
@@ -12,7 +12,7 @@
         {{ formatRating(manga.rating) }}
       </div>
     </div>
-    <div class="manga-info">
+    <div class="manga-info" :class="{ 'dark-mode': isDarkMode }">
       <h3 class="manga-title">{{ manga.title }}</h3>
       <div class="manga-genres">
         <span v-for="(genre, index) in limitedGenres" :key="index" class="genre-tag">
@@ -31,6 +31,7 @@ import { defineComponent, computed } from 'vue'
 import type { PropType } from 'vue'
 import { useRouter } from 'vue-router'
 import type { Manga } from '@/types/manga'
+import { isDarkMode } from '@/utils/settings'
 
 export default defineComponent({
   name: 'MangaCard',
@@ -70,6 +71,7 @@ export default defineComponent({
       formatRating,
       formatStatus,
       navigateToDetail,
+      isDarkMode,
     }
   },
 })
@@ -131,7 +133,7 @@ export default defineComponent({
 .manga-title {
   font-size: 1.1rem;
   font-weight: 600;
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.75rem;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -180,6 +182,14 @@ export default defineComponent({
 .manga-status.cancelled {
   background: #ffebee;
   color: #c62828;
+}
+
+.manga-card.dark-mode {
+  background-color: #2d3748;
+}
+
+.dark-mode .manga-title {
+  color: white;
 }
 
 @media (prefers-color-scheme: dark) {

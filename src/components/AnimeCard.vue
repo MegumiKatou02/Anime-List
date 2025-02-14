@@ -64,6 +64,7 @@ const goToAnimeDetail = () => {
   background-color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  height: 100%;
 }
 
 .anime-card:hover {
@@ -79,6 +80,7 @@ const goToAnimeDetail = () => {
 
 .anime-info {
   padding: 1rem;
+  height: 100%;
 }
 
 .anime-stats {
@@ -109,9 +111,13 @@ const goToAnimeDetail = () => {
 }
 
 .anime-card.dark-mode {
-  /* background-color: #1a202c; */
   border-color: #2d3748;
   background-color: white;
+  border: 1px solid #2d3748;
+}
+
+.anime-title {
+  font-weight: 500;
 }
 
 .dark-mode .anime-title {
@@ -124,6 +130,19 @@ const goToAnimeDetail = () => {
 
 .dark-mode .anime-synopsis {
   color: #2d3748;
+}
+
+.dark-mode.anime-info {
+  background-color: #2d3748;
+}
+.dark-mode.anime-info .anime-title {
+  color: white;
+  font-weight: 500;
+}
+
+.dark-mode.anime-info .anime-stats,
+.dark-mode.anime-info .anime-synopsis {
+  color: #fff;
 }
 
 @media (prefers-color-scheme: dark) {
