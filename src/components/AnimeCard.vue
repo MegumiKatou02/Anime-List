@@ -60,7 +60,7 @@ const goToAnimeDetail = () => {
   border: 1px solid #ddd;
   border-radius: 8px;
   overflow: hidden;
-  margin: 1rem;
+  /* margin: 1rem;   */
   background-color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
