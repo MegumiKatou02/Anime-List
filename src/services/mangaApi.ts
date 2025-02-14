@@ -314,6 +314,7 @@ export class MangaService {
     {
       id: string
       number: string
+      volume: string
     }[]
   > {
     try {
@@ -347,9 +348,12 @@ export class MangaService {
         throw new Error('No chapters found for this manga')
       }
 
+      console.log(chapters)
+
       return chapters.map((chapter) => ({
         id: chapter.id,
         number: chapter.attributes.chapter || 'oneshot',
+        volume: chapter.attributes.volume,
       }))
     } catch (error) {
       console.error('failed to fetch chapter list', error)

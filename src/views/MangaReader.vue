@@ -78,7 +78,7 @@
                 :class="{ active: chapter.number === currentChapter }"
                 @click="selectChapter(chapter.id)"
               >
-                Chương {{ chapter.number }}
+                {{ chapter.volume ? `Tập ${chapter.volume}` : '' }} Chương {{ chapter.number }}
               </button>
             </div>
           </div>
@@ -150,7 +150,7 @@ export default defineComponent({
     const totalPages = ref(0)
 
     const showChapterList = ref(false)
-    const availableChapters = ref<{ id: string; number: string }[]>([])
+    const availableChapters = ref<{ id: string; number: string; volume: string }[]>([])
 
     const toggleChapterList = () => {
       showChapterList.value = !showChapterList.value
