@@ -1,8 +1,8 @@
 <template>
-  <div class="about-container">
+  <div class="about-container" :class="{ 'dark-mode': isDarkMode }">
     <div class="split-container">
       <div class="left-column">
-        <section class="api-section card">
+        <section class="api-section card" :class="{ 'dark-mode': isDarkMode }">
           <h2 class="section-title">Dữ Liệu API</h2>
           <div class="api-grid">
             <div v-for="api in apis" :key="api.name" class="api-card">
@@ -66,6 +66,8 @@
 </template>
 
 <script setup lang="ts">
+import { isDarkMode } from '@/utils/settings'
+
 const apis = [
   {
     name: 'MyAnimeList',
@@ -84,7 +86,7 @@ const apis = [
 
 <style scoped>
 .about-container {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background-color: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   min-height: 100vh;
   padding: 2rem 1rem;
 }
@@ -209,6 +211,10 @@ const apis = [
   max-width: 100%;
   border-radius: 1rem;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.about-container.dark-mode {
+  background-color: #1a202c;
 }
 
 @media (max-width: 800px) {
