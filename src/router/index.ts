@@ -49,4 +49,9 @@ const router = createRouter({
   },
 })
 
+router.beforeEach((to, from, next) => {
+  document.title = to.meta.title?.toString() || 'Anime List'
+  next()
+})
+
 export default router

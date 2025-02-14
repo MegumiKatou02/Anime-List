@@ -109,6 +109,8 @@ import type { Manga, Chapter } from '@/types/manga'
 import { MangaService } from '@/services/mangaApi'
 import ChapterModal from '../components/ChapterModal.vue'
 import { isDarkMode } from '@/utils/settings'
+import { updateMetaTags, resetMetaTags } from '@/utils/metaTags'
+import { onUnmounted } from 'vue'
 
 export default defineComponent({
   name: 'MangaDetail',
@@ -161,6 +163,7 @@ export default defineComponent({
           mangaData.description = cleanDescription(mangaData.description)
         }
         manga.value = mangaData
+        document.title = manga.value.title || 'Anime List'
 
         statistics.value = await mangaService.getStatisticsManga(mangaId)
 
@@ -171,6 +174,13 @@ export default defineComponent({
         } else {
           newChapters.value = mangaById.attributes.lastChapter
         }
+
+        updateMetaTags({
+          title: `${manga.value.title} - Anime List`,
+          description: manga.value.description || 'Xem thông tin chi tiết manga này tại Anime List',
+          image: manga.value.coverImage,
+          type: 'article',
+        })
       } catch (error) {
         console.error('Error loading manga data:', error)
       }
@@ -195,6 +205,10 @@ export default defineComponent({
     onMounted(() => {
       loadMangaData()
       loadChapters()
+    })
+
+    onUnmounted(() => {
+      resetMetaTags()
     })
 
     return {
