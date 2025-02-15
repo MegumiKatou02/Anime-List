@@ -176,7 +176,7 @@ export default defineComponent({
         }
 
         updateMetaTags({
-          title: `${manga.value.title} - Anime List`,
+          title: `${manga.value.title}`,
           description: manga.value.description || 'Xem thông tin chi tiết manga này tại Anime List',
           image: manga.value.coverImage,
           type: 'article',

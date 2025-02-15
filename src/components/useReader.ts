@@ -1,4 +1,5 @@
 import { ref, onMounted, onUnmounted } from 'vue'
+import _ from 'lodash'
 
 export function useReader() {
   const hideUI = ref(false)
@@ -11,24 +12,9 @@ export function useReader() {
   const handleMouseMove = (e: MouseEvent) => {
     const mouseY = e.clientY
     hideHeader.value = mouseY > 90
-
-    // resetAutoHideTimer()
   }
 
-  // const resetAutoHideTimer = () => {
-  //   if (uiHideTimeout.value) {
-  //     window.clearTimeout(uiHideTimeout.value)
-  //   }
-
-  //   uiHideTimeout.value = window.setTimeout(() => {
-  //     hideHeader.value = true
-  //     if (!isAtBottom.value) {
-  //       hideFooter.value = true
-  //     }
-  //   }, 3000)
-  // }
-
-  const handleScroll = () => {
+  const handleScroll = _.debounce(() => {
     const currentScrollY = window.scrollY
     const windowHeight = window.innerHeight
     const documentHeight = document.documentElement.scrollHeight
@@ -42,8 +28,7 @@ export function useReader() {
     }
 
     lastScrollY.value = currentScrollY
-    // resetAutoHideTimer()
-  }
+  }, 100)
 
   const handleKeyPress = (e: KeyboardEvent) => {
     if (['ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
