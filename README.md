@@ -1,4 +1,4 @@
-# Anime List Search Web
+# Anime List
 A web app that allows users to search for anime, view detailed information, and explore characters and trailers. Built with Vue.js and powered by the Jikan API and Myanimelist API
 # Features
 - 🔍 Search Anime: Quickly find your favorite anime by title
