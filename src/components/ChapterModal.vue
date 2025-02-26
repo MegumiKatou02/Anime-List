@@ -12,7 +12,7 @@
         <div class="chapters-container">
           <div v-if="Object.keys(groupedChapters).length === 0">
             <p class="no-chapters-message">
-              Không có chương nào. Hãy thử đổi ngôn ngữ trong phần cài đặt và tải lại trang.
+              Không có chương nào. Hãy thử đổi ngôn ngữ trong phần tuỳ chỉnh và tải lại trang.
             </p>
           </div>
           <div
@@ -241,6 +241,11 @@ export default defineComponent({
 .chapters-container {
   overflow-y: auto;
   padding: 1rem;
+}
+
+.no-chapters-message {
+  display: flex;
+  justify-content: center;
 }
 
 .volume-section {
