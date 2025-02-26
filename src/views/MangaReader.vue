@@ -235,10 +235,16 @@ export default defineComponent({
 
     const loadNextChapter = async () => {
       loadChapter(adjacentChapters.value.next || (route.params.id as string))
+      router.push({
+        path: adjacentChapters.value.next || (route.params.id as string),
+      })
     }
 
     const loadPreviousChapter = async () => {
       loadChapter(adjacentChapters.value.prev || (route.params.id as string))
+      router.push({
+        path: adjacentChapters.value.prev || (route.params.id as string),
+      })
     }
 
     const toggleReadingDirection = () => {
