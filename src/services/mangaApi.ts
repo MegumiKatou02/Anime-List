@@ -261,7 +261,7 @@ export class MangaService {
     }
   }
 
-  async getChapter(chapterId: string): Promise<Chapter> {
+  async getChapter(chapterId: string): Promise<{ chapterData: Chapter; mangaId: string }> {
     try {
       const response = await fetch(
         `${this.baseUrl}/chapter/${chapterId}?includes[]=manga&includes[]=scanlation_group`,
@@ -271,21 +271,26 @@ export class MangaService {
       const data = await response.json()
       const chapter = data.data
 
+      const mangaId = chapter.relationships.find((rel: Relationship) => rel.type == 'manga').id
+
       const mangaTitle =
         chapter.relationships.find((rel: Relationship) => rel.type === 'manga')?.attributes?.title
           ?.en || 'Unknown'
 
       return {
-        id: chapter.id,
-        number: chapter.attributes.chapter || '0',
-        volume: chapter.attributes.volume,
-        language: chapter.attributes.translatedLanguage,
-        publishedAt: chapter.attributes.publishAt,
-        scanlation_group:
-          chapter.relationships.find((rel: Relationship) => rel.type === 'scanlation_group')
-            ?.attributes?.name || 'Unknown',
-        mangaTitle,
-        title: chapter.attributes.title || 'Unknown Title',
+        chapterData: {
+          id: chapter.id,
+          number: chapter.attributes.chapter || '0',
+          volume: chapter.attributes.volume,
+          language: chapter.attributes.translatedLanguage,
+          publishedAt: chapter.attributes.publishAt,
+          scanlation_group:
+            chapter.relationships.find((rel: Relationship) => rel.type === 'scanlation_group')
+              ?.attributes?.name || 'Unknown',
+          mangaTitle,
+          title: chapter.attributes.title || 'Unknown Title',
+        },
+        mangaId,
       }
     } catch (error) {
       console.error('Error fetching chapter:', error)

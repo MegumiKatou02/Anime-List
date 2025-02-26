@@ -16,7 +16,7 @@
         </div>
       </div>
       <div class="settings-section">
-        <h4>Chế độ:</h4>
+        <h4>Màn hình:</h4>
         <div class="slider-container">
           <span>Tối</span>
           <input
