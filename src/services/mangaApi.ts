@@ -348,8 +348,6 @@ export class MangaService {
         throw new Error('No chapters found for this manga')
       }
 
-      console.log(chapters)
-
       return chapters.map((chapter) => ({
         id: chapter.id,
         number: chapter.attributes.chapter || 'oneshot',
