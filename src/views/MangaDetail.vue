@@ -1,5 +1,10 @@
 <template>
-  <div class="manga-detail-container" :class="{ 'dark-mode': isDarkMode }" v-if="manga">
+  <div v-if="loading" class="loading" :class="{ 'dark-mode': isDarkMode }">
+    <div class="spinner"></div>
+    <p>Đang tải manga...</p>
+  </div>
+
+  <div v-else-if="manga" class="manga-detail-container" :class="{ 'dark-mode': isDarkMode }">
     <div class="manga-header">
       <div class="manga-cover">
         <img :src="manga.coverImage" :alt="manga.title" />
@@ -124,6 +129,7 @@ export default defineComponent({
     const newChapters = ref('')
     const statistics = ref()
     const chapters = ref<Chapter[]>([])
+    const loading = ref(true)
 
     const loadChapters = async () => {
       try {
@@ -202,9 +208,9 @@ export default defineComponent({
       return `https://mangadex.org/title/${mangaDexId}`
     }
 
-    onMounted(() => {
-      loadMangaData()
-      loadChapters()
+    onMounted(async () => {
+      await Promise.all([loadMangaData(), loadChapters()])
+      loading.value = false
     })
 
     onUnmounted(() => {
@@ -220,6 +226,7 @@ export default defineComponent({
       statistics,
       chapters,
       isDarkMode,
+      loading,
     }
   },
 })
@@ -383,6 +390,41 @@ export default defineComponent({
   flex-wrap: wrap;
 }
 
+.loading {
+  text-align: center;
+  padding: 4rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #2d5996;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading.dark-mode {
+  background-color: #1a202c;
+}
+
+.dark-mode p {
+  color: white;
+}
+
 .manga-detail-container.dark-mode {
   background-color: #1a202c;
 }
@@ -414,6 +456,10 @@ export default defineComponent({
 
   .description,
   .label {
+    color: #fff;
+  }
+
+  .loading {
     color: #fff;
   }
 }
