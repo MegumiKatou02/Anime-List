@@ -141,6 +141,7 @@ export default defineComponent({
     const uiHideTimeout = ref<number | null>(null)
     const hasNextChapter = ref(false)
     const hasPreviousChapter = ref(false)
+    const mangaId = ref('')
 
     const adjacentChapters = ref<{
       next: string | null
@@ -172,7 +173,8 @@ export default defineComponent({
         loading.value = true
         error.value = null
 
-        const chapterData = await mangaService.getChapter(chapterId)
+        const { chapterData, mangaId: fetchedMangaId } = await mangaService.getChapter(chapterId)
+        mangaId.value = fetchedMangaId
         currentChapter.value = chapterData.number
         mangaTitle.value = chapterData.mangaTitle || 'Manga'
 
@@ -252,7 +254,8 @@ export default defineComponent({
     }
 
     const goBack = () => {
-      router.back()
+      // router.back()
+      router.push(`/manga/${mangaId.value}`)
     }
 
     const retryLoading = () => {

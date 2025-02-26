@@ -28,7 +28,7 @@ export function useReader() {
     }
 
     lastScrollY.value = currentScrollY
-  }, 100)
+  }, 70)
 
   const handleKeyPress = (e: KeyboardEvent) => {
     if (['ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
