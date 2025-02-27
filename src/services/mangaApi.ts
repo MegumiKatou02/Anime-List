@@ -271,11 +271,15 @@ export class MangaService {
       const data = await response.json()
       const chapter = data.data
 
-      const mangaId = chapter.relationships.find((rel: Relationship) => rel.type == 'manga').id
-
+      const mangaData: MangaData = chapter.relationships.find(
+        (rel: Relationship) => rel.type == 'manga',
+      )
       const mangaTitle =
-        chapter.relationships.find((rel: Relationship) => rel.type === 'manga')?.attributes?.title
-          ?.en || 'Unknown'
+        mangaData.attributes.altTitles.find((title) => title.vi)?.vi ||
+        mangaData.attributes.title.en ||
+        mangaData.attributes.title['ja-ro'] ||
+        'Unknown Title'
+      const mangaId = chapter.relationships.find((rel: Relationship) => rel.type == 'manga').id
 
       return {
         chapterData: {

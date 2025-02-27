@@ -94,6 +94,8 @@ onMounted(async () => {
     const characterResponse = await axios.get(`https://api.jikan.moe/v4/characters/${characterId}`)
     character.value = characterResponse.data.data
 
+    document.title = character.value?.name || 'Anime List'
+
     const appearancesResponse = await axios.get(
       `https://api.jikan.moe/v4/characters/${characterId}/anime`,
     )

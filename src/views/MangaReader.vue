@@ -10,7 +10,7 @@
         </button>
         <div class="chapter-info">
           <h1>{{ mangaTitle }}</h1>
-          <p>Chapter {{ currentChapter }}</p>
+          <p>Chương {{ currentChapter }}</p>
         </div>
         <div class="chapter-navigation">
           <button class="nav-button" @click="loadPreviousChapter" :disabled="!hasPreviousChapter">
@@ -177,6 +177,8 @@ export default defineComponent({
         mangaId.value = fetchedMangaId
         currentChapter.value = chapterData.number
         mangaTitle.value = chapterData.mangaTitle || 'Manga'
+
+        document.title = `Đọc Chương ${currentChapter.value} - ${mangaTitle.value}`
 
         const chapterPages = await mangaService.getChapterPages(chapterId)
         pages.value = chapterPages.map((url, index) => ({
