@@ -48,11 +48,12 @@
           </div>
         </div>
 
-        <div class="anime-genres">
+        <div class="anime-genres" style="margin-bottom: 2rem">
           <span v-for="genre in anime.genres" :key="genre.mal_id" class="genre-tag">
             {{ genre.name }}
           </span>
         </div>
+        <SaveModel @data="sendData" :type="'Anime'" />
       </div>
     </div>
 
@@ -115,6 +116,10 @@ import axios from 'axios'
 import moment from 'moment-timezone'
 import type { AnimeJikan, Character } from '@/types/anime'
 import { isDarkMode } from '@/utils/settings'
+import SaveModel from '@/components/SaveModel.vue'
+import type { User } from '@/types/discord'
+import { getDiscordUser, refreshToken } from '@/services/discordApi'
+import { saveToFirestore } from '@/services/firestoreService'
 
 const route = useRoute()
 const router = useRouter()
@@ -122,6 +127,20 @@ const anime = ref<AnimeJikan | null>(null)
 const characters = ref<Character[]>([])
 const loading = ref(true)
 const error = ref('')
+
+const sendData = async () => {
+  let token = localStorage.getItem('discord_token') || ''
+  const tokenExpiry = parseInt(localStorage.getItem('token_expiry') || '0')
+  if (!token || Date.now() >= tokenExpiry) {
+    token = await refreshToken()
+  }
+  const user: User = await getDiscordUser(token)
+  const title = anime.value?.title || 'Ukknown'
+  const url = window.location.href
+  const id = (anime.value?.mal_id || route.params.id) as string
+
+  await saveToFirestore(user.id, 'anime', title, url, id)
+}
 
 const trailerVideoId = ref('XBNWo25izJ8')
 

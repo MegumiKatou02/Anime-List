@@ -29,3 +29,31 @@ export const getDiscordUser = async (access_token: string) => {
   if (!response) throw new Error('Không thể lấy thông tin user')
   return response.data
 }
+
+export const refreshToken = async () => {
+  const refresh_token = localStorage.getItem('refresh_token') || ''
+  if (!refresh_token) {
+    console.error('Không có refresh token!')
+    return null
+  }
+
+  try {
+    const response = await axios.post(`https://discord.com/api/oauth2/token`, {
+      client_id: clientId,
+      client_secret: clientSecret,
+      grant_type: 'refresh_token',
+      refresh_token,
+    })
+
+    const { access_token, expires_in, refresh_token: new_refresh_token } = response.data
+
+    localStorage.setItem('discord_token', access_token)
+    localStorage.setItem('refresh_token', new_refresh_token)
+    localStorage.setItem('token_expiry', (Date.now() + expires_in * 1000).toString())
+
+    return access_token
+  } catch (error) {
+    console.error('Lỗi refresh token:', error)
+    return null
+  }
+}

@@ -101,7 +101,7 @@
             Đọc trên MangaDex
           </a>
           <ChapterModal :chapters="chapters" />
-          <SaveModel :type="'Manga'" />
+          <SaveModel @data="sendData" :type="'Manga'" />
         </div>
       </div>
     </div>
@@ -118,6 +118,9 @@ import { isDarkMode } from '@/utils/settings'
 import { updateMetaTags, resetMetaTags } from '@/utils/metaTags'
 import { onUnmounted } from 'vue'
 import SaveModel from '@/components/SaveModel.vue'
+import { saveToFirestore } from '@/services/firestoreService'
+import { getDiscordUser, refreshToken } from '@/services/discordApi'
+import type { User } from '@/types/discord'
 
 export default defineComponent({
   name: 'MangaDetail',
@@ -133,6 +136,19 @@ export default defineComponent({
     const statistics = ref()
     const chapters = ref<Chapter[]>([])
     const loading = ref(true)
+
+    const sendData = async () => {
+      let token = localStorage.getItem('discord_token') || ''
+      const tokenExpiry = parseInt(localStorage.getItem('token_expiry') || '0')
+      if (!token || Date.now() >= tokenExpiry) {
+        token = await refreshToken()
+      }
+      const user: User = await getDiscordUser(token)
+      const url = window.location.href
+      const id = manga.value?.id || (route.params.id as string)
+
+      await saveToFirestore(user.id, 'manga', manga.value?.title || 'Ukknown', url, id)
+    }
 
     const loadChapters = async () => {
       try {
@@ -221,6 +237,7 @@ export default defineComponent({
     })
 
     return {
+      sendData,
       manga,
       newChapters,
       formatStatus,
