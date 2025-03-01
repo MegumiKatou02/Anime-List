@@ -3,7 +3,8 @@
     <div class="login-container" @click.stop>
       <div class="login-header">
         <i class="fab fa-discord"></i>
-        <h2>Đăng nhập với Discord</h2>
+        <h2 v-if="isLogin">{{ name }}</h2>
+        <h2 v-else>Đăng nhập với Discord</h2>
         <p class="subtitle">Kết nối tài khoản Discord của bạn để tiếp tục</p>
       </div>
 
@@ -14,7 +15,7 @@
           <span class="icon"><i class="fas fa-bookmark"></i></span>
           <span>Đã lưu</span>
         </button>
-        <a :href="loginUrl" class="button login-button">
+        <a v-if="!isLogin" :href="loginUrl" class="button login-button">
           <span class="icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon-svg">
               <path
@@ -24,6 +25,17 @@
             </svg>
           </span>
           <span>Đăng nhập</span>
+        </a>
+        <a v-else @click="logOut" class="button login-button">
+          <span class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon-svg">
+              <path
+                fill="currentColor"
+                d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"
+              />
+            </svg>
+          </span>
+          <span>Đăng xuất</span>
         </a>
       </div>
 
@@ -37,14 +49,26 @@
 </template>
 
 <script lang="ts">
+import { ref } from 'vue'
 import { computed } from 'vue'
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted } from 'vue'
 export default defineComponent({
   name: 'LoginPage',
   setup(_, { emit }) {
     const closeLogin = () => {
       emit('close')
     }
+
+    const logOut = () => {
+      localStorage.removeItem('discord_token')
+      localStorage.removeItem('refresh_token')
+      localStorage.removeItem('discord_name')
+
+      emit('close')
+    }
+
+    const name = ref('')
+    const isLogin = ref(false)
 
     const loginUrl = computed(() => {
       const clientID = import.meta.env.VITE_DISCORD_CLIENT_ID
@@ -53,9 +77,22 @@ export default defineComponent({
       return `https://discord.com/oauth2/authorize?client_id=${clientID}&response_type=code&redirect_uri=${redirectUri}&scope=identify`
     })
 
+    onMounted(() => {
+      const isToken = localStorage.getItem('discord_token')
+      name.value = localStorage.getItem('discord_name') || ''
+      if (isToken) {
+        isLogin.value = true
+      } else {
+        isLogin.value = false
+      }
+    })
+
     return {
       closeLogin,
       loginUrl,
+      isLogin,
+      name,
+      logOut,
     }
   },
 })
@@ -103,6 +140,7 @@ export default defineComponent({
   flex-direction: column;
   align-items: center;
   margin-bottom: 1.5rem;
+  flex-wrap: wrap;
 }
 
 .fa-discord {

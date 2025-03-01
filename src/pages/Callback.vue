@@ -31,8 +31,11 @@ export default defineComponent({
       localStorage.setItem('token_expiry', (Date.now() + expires_in * 1000).toString())
 
       const user: User = await getDiscordUser(access_token)
+
+      localStorage.setItem('discord_name', user.username)
+
       await createUserInFirestore(user)
-      console.log(user)
+      // console.log(user)
 
       this.$router.push({
         path: '/',
