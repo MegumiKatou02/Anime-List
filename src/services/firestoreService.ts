@@ -13,3 +13,19 @@ export const createUserInFirestore = async (user: User) => {
     { merge: true },
   )
 }
+
+export const saveToFirestore = async (
+  discordUserId: string,
+  type: string,
+  name: string,
+  link: string,
+  Id: string,
+) => {
+  try {
+    const animeMangaRef = doc(db, `users/${discordUserId}/anime_manga/${Id}`)
+
+    await setDoc(animeMangaRef, { type, name, link }, { merge: true })
+  } catch (error) {
+    console.error('Lỗi khi lưu vào Firestore:', error)
+  }
+}

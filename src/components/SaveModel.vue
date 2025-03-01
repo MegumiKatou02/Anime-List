@@ -8,7 +8,6 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
 import Login from './Login.vue'
-import { useRouter } from 'vue-router'
 export default defineComponent({
   name: 'SaveModel',
   components: {
@@ -20,13 +19,14 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {
+
+  emits: ['data'],
+  setup(_, { emit }) {
     const isActive = ref(false)
     const isLogin = ref(false)
-    const router = useRouter()
 
     const saveAction = () => {
-      router.go(0)
+      emit('data')
     }
 
     const closeLogin = () => {
