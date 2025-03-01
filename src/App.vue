@@ -3,10 +3,12 @@ import { useRoute } from 'vue-router'
 import { onMounted, onUnmounted, computed, defineComponent, ref } from 'vue'
 import Setting from './components/Setting.vue'
 import { isDarkMode } from './utils/settings'
+import Login from './components/Login.vue'
 
 export default defineComponent({
   components: {
     Setting,
+    Login,
   },
   setup() {
     const route = useRoute()
@@ -19,9 +21,13 @@ export default defineComponent({
     })
 
     const isOpenSetting = ref(false)
+    const isOpenLogin = ref(false)
 
     const closeSettings = () => {
       isOpenSetting.value = false
+    }
+    const closeLogin = () => {
+      isOpenLogin.value = false
     }
 
     const handleScroll = () => {
@@ -45,7 +51,9 @@ export default defineComponent({
       isReaderPage,
       isStatusPage,
       isOpenSetting,
+      isOpenLogin,
       closeSettings,
+      closeLogin,
       isDarkMode,
     }
   },
@@ -72,6 +80,7 @@ export default defineComponent({
         <div class="nav-links">
           <router-link to="/" class="nav-link">Trang chủ</router-link>
           <router-link to="/about" class="nav-link">Thông tin</router-link>
+          <i class="fab fa-discord fa-2x" @click="isOpenLogin = !isOpenLogin"></i>
           <button class="icon-button" @click="isOpenSetting = !isOpenSetting">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24">
               <path
@@ -84,6 +93,7 @@ export default defineComponent({
     </header>
 
     <main>
+      <Login v-if="isOpenLogin" @close="closeLogin" />
       <Setting v-if="isOpenSetting" @close="closeSettings" />
       <RouterView />
     </main>
@@ -263,6 +273,12 @@ main {
   fill: currentColor;
 }
 
+.fa-discord {
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
 @media (max-width: 768px) {
   .navbar {
     padding: 1rem 5%;
@@ -279,6 +295,12 @@ main {
   .nav-link {
     padding: 0.6rem 0.8rem;
     font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 590px) {
+  .fa-discord {
+    display: none;
   }
 }
 
