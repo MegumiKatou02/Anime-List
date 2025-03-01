@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button @click="showModal = true" class="read-here-button">Đọc tại đây (beta)</button>
+    <button @click="showModal = true" class="read-here-button">Đọc tại đây</button>
 
     <div v-if="showModal" class="modal-overlay" @click="showModal = false">
       <div class="modal-content" :class="{ 'dark-mode': isDarkMode }" @click.stop>
