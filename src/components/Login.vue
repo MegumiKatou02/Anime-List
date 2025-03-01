@@ -12,7 +12,7 @@
       <div class="divider"></div>
 
       <div class="login-options">
-        <button class="button saved-button">
+        <button @click="goToSavedItems" class="button saved-button">
           <span class="icon"><i class="fas fa-bookmark"></i></span>
           <span>Đã lưu</span>
         </button>
@@ -76,6 +76,16 @@ export default defineComponent({
     const name = ref('')
     const isLogin = ref(false)
 
+    const goToSavedItems = () => {
+      if (!localStorage.getItem('discord_token')) {
+        alert('Vui lòng đăng nhập để xem danh sách đã lưu')
+        return
+      }
+
+      closeLogin()
+      router.push('/saved')
+    }
+
     const loginUrl = computed(() => {
       const clientID = import.meta.env.VITE_DISCORD_CLIENT_ID
       const redirectUri = encodeURIComponent(import.meta.env.VITE_DISCORD_REDIRECT_URI)
@@ -94,6 +104,7 @@ export default defineComponent({
     })
 
     return {
+      goToSavedItems,
       closeLogin,
       loginUrl,
       isLogin,
