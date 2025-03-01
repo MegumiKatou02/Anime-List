@@ -101,6 +101,7 @@
             Đọc trên MangaDex
           </a>
           <ChapterModal :chapters="chapters" />
+          <SaveModel :type="'Manga'" />
         </div>
       </div>
     </div>
@@ -116,11 +117,13 @@ import ChapterModal from '../components/ChapterModal.vue'
 import { isDarkMode } from '@/utils/settings'
 import { updateMetaTags, resetMetaTags } from '@/utils/metaTags'
 import { onUnmounted } from 'vue'
+import SaveModel from '@/components/SaveModel.vue'
 
 export default defineComponent({
   name: 'MangaDetail',
   components: {
     ChapterModal,
+    SaveModel,
   },
   setup() {
     const route = useRoute()

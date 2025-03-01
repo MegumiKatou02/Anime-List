@@ -35,11 +35,9 @@ export default defineComponent({
       localStorage.setItem('discord_name', user.username)
 
       await createUserInFirestore(user)
-      // console.log(user)
 
-      this.$router.push({
-        path: '/',
-      })
+      // -1: /callback -> -2
+      this.$router.go(-2)
     } catch (error) {
       console.error('Error during login:', error)
     }

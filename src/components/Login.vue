@@ -52,9 +52,12 @@
 import { ref } from 'vue'
 import { computed } from 'vue'
 import { defineComponent, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 export default defineComponent({
   name: 'LoginPage',
   setup(_, { emit }) {
+    const router = useRouter()
+
     const closeLogin = () => {
       emit('close')
     }
@@ -65,6 +68,7 @@ export default defineComponent({
       localStorage.removeItem('discord_name')
 
       emit('close')
+      router.go(0)
     }
 
     const name = ref('')
