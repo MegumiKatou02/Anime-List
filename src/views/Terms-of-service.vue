@@ -9,7 +9,7 @@
 import { defineComponent } from 'vue'
 import { isDarkMode } from '@/utils/settings'
 export default defineComponent({
-  name: 'TOS',
+  name: 'TermsOfService',
   setup() {
     return {
       isDarkMode,

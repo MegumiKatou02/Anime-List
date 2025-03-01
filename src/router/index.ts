@@ -41,7 +41,7 @@ const router = createRouter({
     },
     {
       path: '/terms',
-      name: 'TOS',
+      name: 'TermsOfService',
       component: () => import('../views/Terms-of-service.vue'),
     },
     {
