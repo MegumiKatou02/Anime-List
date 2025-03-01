@@ -35,6 +35,16 @@ const router = createRouter({
       component: () => import('../views/MangaReader.vue'),
     },
     {
+      path: '/callback',
+      name: 'Callback',
+      component: () => import('../pages/Callback.vue'),
+    },
+    {
+      path: '/terms',
+      name: 'TOS',
+      component: () => import('../views/Terms-of-service.vue'),
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
       component: () => import('../views/NotFound.vue'),
