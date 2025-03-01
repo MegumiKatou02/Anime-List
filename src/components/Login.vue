@@ -5,7 +5,8 @@
         <i class="fab fa-discord"></i>
         <h2 v-if="isLogin">{{ name }}</h2>
         <h2 v-else>Đăng nhập với Discord</h2>
-        <p class="subtitle">Kết nối tài khoản Discord của bạn để tiếp tục</p>
+        <p v-if="isLogin" class="subtitle">{{ name }} đã kết nối tài khoản Discord</p>
+        <p v-else class="subtitle">Kết nối tài khoản Discord của bạn để tiếp tục</p>
       </div>
 
       <div class="divider"></div>
@@ -66,6 +67,7 @@ export default defineComponent({
       localStorage.removeItem('discord_token')
       localStorage.removeItem('refresh_token')
       localStorage.removeItem('discord_name')
+      localStorage.removeItem('token_expiry')
 
       emit('close')
       router.go(0)
