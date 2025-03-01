@@ -8,7 +8,7 @@
           </svg>
           Back
         </button>
-        <div class="chapter-info">
+        <div class="chapter-info" @click="goBack">
           <h1>{{ mangaTitle }}</h1>
           <p>Chương {{ currentChapter }}</p>
         </div>
@@ -354,6 +354,7 @@ export default defineComponent({
 
 .chapter-info {
   text-align: center;
+  cursor: pointer;
 }
 
 .chapter-info h1 {
