@@ -1,5 +1,5 @@
 <template>
-  <div class="filter-container">
+  <div class="filter-container" :class="{ 'dark-mode': isDarkMode }">
     <button
       @click="toggleFilter"
       :class="['filter-button', { 'dark-mode': isDarkMode }, { 'active-filter': isFilterActive }]"
@@ -21,8 +21,8 @@
       <!-- <div>Bộ lọc</div> -->
     </button>
 
-    <div v-if="isOpen" class="filter-modal">
-      <div class="filter-content dark:bg-gray-800">
+    <div v-if="isOpen" class="filter-modal" @click="toggleFilter">
+      <div class="filter-content dark:bg-gray-800" @click.stop>
         <div class="filter-header">
           <h3 class="dark:text-white">Bộ lọc</h3>
           <button @click="toggleFilter" class="close-button">&times;</button>
@@ -76,6 +76,10 @@ import { isDarkMode } from '@/utils/settings'
 
 const isOpen = ref(false)
 const activeTab = ref('status')
+
+const mainStatus = ref('')
+const mainGenres = ref<number[]>([])
+
 const selectedStatus = ref('')
 const selectedGenres = ref<number[]>([])
 const genres = ref<Genres[]>([])
@@ -89,6 +93,12 @@ const statuses = [
 const emit = defineEmits(['filter'])
 
 const toggleFilter = () => {
+  if (!equalGenres()) {
+    selectedGenres.value = mainGenres.value
+  }
+  if (mainStatus.value !== selectedStatus.value) {
+    selectedStatus.value = mainStatus.value
+  }
   isOpen.value = !isOpen.value
 }
 
@@ -102,8 +112,29 @@ const clearFilters = () => {
   // emit('filter', { status: '', genres: [] })
 }
 
+const equalGenres = () => {
+  const setMainGenres = new Set(mainGenres.value)
+  const setSelectedGenres = new Set(selectedGenres.value)
+
+  if (setMainGenres.size !== setSelectedGenres.size) {
+    return false
+  }
+
+  for (const genre of setMainGenres) {
+    if (!setSelectedGenres.has(genre)) {
+      return false
+    }
+  }
+
+  return true
+}
+
 const applyFilters = () => {
   isOpen.value = false
+
+  mainGenres.value = selectedGenres.value
+  mainStatus.value = selectedStatus.value
+
   emit('filter', {
     status: selectedStatus.value,
     genres: selectedGenres.value,
@@ -120,7 +151,7 @@ onMounted(async () => {
 })
 
 const isFilterActive = computed(() => {
-  return selectedStatus.value !== '' || selectedGenres.value.length > 0
+  return mainStatus.value != '' || mainGenres.value.length > 0
 })
 </script>
 
@@ -173,6 +204,11 @@ const isFilterActive = computed(() => {
   padding: 1.5rem;
 }
 
+.dark-mode .filter-content {
+  background-color: #1b2234;
+  color: white;
+}
+
 .filter-header {
   display: flex;
   justify-content: space-between;
@@ -185,6 +221,10 @@ const isFilterActive = computed(() => {
   background: none;
   border: none;
   cursor: pointer;
+}
+
+.dark-mode .close-button {
+  color: white;
 }
 
 .filter-tabs {
@@ -238,6 +278,10 @@ const isFilterActive = computed(() => {
 .clear-button {
   background: none;
   border: 1px solid #ddd;
+}
+
+.dark-mode .clear-button {
+  color: white;
 }
 
 .apply-button {
