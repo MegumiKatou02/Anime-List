@@ -32,10 +32,18 @@
     </div>
 
     <div v-else class="anime-grid">
-      <template v-for="item in mediaList" :key="item.id">
+      <template v-for="item in displayedItems" :key="item.id">
         <AnimeCard v-if="mediaType === 'anime'" :anime="item as Anime" class="media-card" />
         <MangaCard v-else :manga="item as Manga" class="media-card" />
       </template>
+    </div>
+
+    <div v-if="!loading && hasMoreItems" class="load-more-container">
+      <div ref="loadMoreTrigger" class="load-more-trigger"></div>
+      <div v-if="loadingMore" class="loading-more">
+        <div class="spinner spinner-small"></div>
+        <p>Đang tải thêm...</p>
+      </div>
     </div>
 
     <div
@@ -56,7 +64,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, watch } from 'vue'
+import { defineComponent, ref, onMounted, watch, onUnmounted, computed } from 'vue'
 import { useRouter, useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { AnimeService } from '@/services/animeApi'
 import { MangaService } from '@/services/mangaApi'
@@ -87,15 +95,32 @@ export default defineComponent({
     const mediaList = ref<MediaItem[]>([])
     const mediaListTotal = ref<MediaItem[]>([])
     const loading = ref(true)
+    const loadingMore = ref(false)
     const searchQuery = ref(route.query.q?.toString() || '')
     const mediaType = ref<'anime' | 'manga'>((route.query.type as 'anime' | 'manga') || 'anime')
     const searchCache = new Map<string, MediaItem[]>()
+
+    // Lazy loading
+    const loadMoreTrigger = ref<HTMLElement | null>(null)
+    const itemsPerPage = 12
+    const currentPage = ref(1)
+    const observer = ref<IntersectionObserver | null>(null)
+
+    const displayedItems = computed(() => {
+      const endIndex = currentPage.value * itemsPerPage
+      return mediaList.value.slice(0, endIndex)
+    })
+
+    const hasMoreItems = computed(() => {
+      return displayedItems.value.length < mediaList.value.length
+    })
 
     const loadInitialData = async () => {
       try {
         loading.value = true
         mediaListTotal.value = []
         mediaList.value = []
+        currentPage.value = 1
 
         if (mediaType.value === 'anime') {
           mediaListTotal.value = await animeService.getShuffledAnimeListFromAPI()
@@ -117,6 +142,7 @@ export default defineComponent({
       searchQuery.value = ''
       mediaList.value = []
       mediaListTotal.value = []
+      currentPage.value = 1
 
       await router.push({
         query: {
@@ -135,6 +161,7 @@ export default defineComponent({
       if (searchCache.has(cacheKey)) {
         mediaListTotal.value = [...(searchCache.get(cacheKey) || [])]
         mediaList.value = [...mediaListTotal.value]
+        currentPage.value = 1
         return
       }
 
@@ -142,6 +169,7 @@ export default defineComponent({
         loading.value = true
         mediaListTotal.value = []
         mediaList.value = []
+        currentPage.value = 1
 
         if (mediaType.value === 'anime') {
           mediaListTotal.value = await animeService.searchAnime(query)
@@ -169,7 +197,8 @@ export default defineComponent({
 
     const handleFilter = async (filter: { status: string; genres: number[] | string[] }) => {
       const { status, genres } = filter
-      // const query = route.query
+      currentPage.value = 1
+
       if (mediaType.value === 'anime') {
         // tạm thời bỏ qua
         // if (!query.q) {
@@ -193,6 +222,37 @@ export default defineComponent({
       }
     }
 
+    const loadMoreItems = () => {
+      if (loadingMore.value || !hasMoreItems.value) return
+
+      loadingMore.value = true
+      setTimeout(() => {
+        currentPage.value++
+        loadingMore.value = false
+      }, 500)
+    }
+
+    const setupIntersectionObserver = () => {
+      if (observer.value) observer.value.disconnect()
+
+      observer.value = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0]
+          if (entry.isIntersecting && !loading.value) {
+            loadMoreItems()
+          }
+        },
+        {
+          rootMargin: '200px',
+          threshold: 0.1,
+        },
+      )
+
+      if (loadMoreTrigger.value) {
+        observer.value.observe(loadMoreTrigger.value)
+      }
+    }
+
     watch(
       () => route.query,
       async (newQuery) => {
@@ -211,6 +271,15 @@ export default defineComponent({
       { deep: true },
     )
 
+    watch(
+      () => loadMoreTrigger.value,
+      () => {
+        if (loadMoreTrigger.value) {
+          setupIntersectionObserver()
+        }
+      },
+    )
+
     onMounted(async () => {
       window.scrollTo(0, 0)
       const mediaType = localStorage.getItem('activeTab')
@@ -220,6 +289,14 @@ export default defineComponent({
         await performSearch(route.query.q.toString())
       } else {
         await loadInitialData()
+      }
+
+      setupIntersectionObserver()
+    })
+
+    onUnmounted(() => {
+      if (observer.value) {
+        observer.value.disconnect()
       }
     })
 
@@ -238,8 +315,12 @@ export default defineComponent({
       MangaCard,
       mediaType,
       mediaList,
+      displayedItems,
+      hasMoreItems,
       loading,
+      loadingMore,
       searchQuery,
+      loadMoreTrigger,
       handleSearch: debounce(handleSearch, 300),
       handleFilter,
       handleMediaTypeChange,
@@ -394,6 +475,12 @@ export default defineComponent({
   animation: spin 1s linear infinite;
 }
 
+.spinner-small {
+  width: 30px;
+  height: 30px;
+  border-width: 3px;
+}
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -434,6 +521,33 @@ p.dark-mode {
 .empty-state.dark-mode svg,
 .empty-state.dark-mode {
   color: white;
+}
+
+.load-more-container {
+  padding: 2rem 0;
+  text-align: center;
+}
+
+.load-more-trigger {
+  height: 10px;
+  width: 100%;
+}
+
+.loading-more {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0;
+  color: #666;
+}
+
+.dark-mode .loading-more {
+  color: white;
+}
+
+.loading-more p {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
 }
 
 @media (max-width: 768px) {
