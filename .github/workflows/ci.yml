@@ -22,7 +22,12 @@ jobs:
           node-version: '16'
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          npm install
+          npm install --save-dev crypto-browserify
 
       - name: Run tests
-        run: npm run test:unit
+        run: |
+          npm run test:unit
+        env:
+          CI: true
