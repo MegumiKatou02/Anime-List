@@ -68,7 +68,6 @@ import { defineComponent, ref, onMounted, watch, onUnmounted, computed } from 'v
 import { useRouter, useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { AnimeService } from '@/services/animeApi'
 import { MangaService } from '@/services/mangaApi'
-import AnimeFilter from '@/components/AnimeFilter.vue'
 import MediaTypeSwitcher from '@/components/MediaTypeSwitcher.vue'
 import { debounce } from 'lodash'
 import type { Anime } from '@/types/anime'
@@ -80,6 +79,7 @@ type MediaItem = Anime | Manga
 
 const AnimeCard = defineAsyncComponent(() => import('@/components/AnimeCard.vue'))
 const MangaCard = defineAsyncComponent(() => import('@/components/MangaCard.vue'))
+const AnimeFilter = defineAsyncComponent(() => import('@/components/AnimeFilter.vue'))
 
 export default defineComponent({
   name: 'HomePage',
@@ -201,11 +201,22 @@ export default defineComponent({
       const { status, genres } = filter
       currentPage.value = 1
 
+      const query = route.query
       if (mediaType.value === 'anime') {
         // tạm thời bỏ qua
-        // if (!query.q) {
-        // mediaListTotal.value = await animeService.getShuffledAnimeListFromAPI(status)
-        // mediaList.value = [...mediaListTotal.value]
+        if (!query.q && !status && !genres) {
+          mediaList.value = await animeService.getShuffledAnimeListFromAPI()
+          mediaListTotal.value = [...mediaList.value]
+          return
+        }
+        if (!query.q && status) {
+          mediaListTotal.value = await animeService.getShuffledAnimeListFromAPI(status)
+        }
+
+        // if (!query.q && status) {
+        // mediaList.value = await animeService.getShuffledAnimeListFromAPI(status)
+        //   // mediaList.value = [...mediaListTotal.value]
+        //   return
         // }
 
         mediaList.value = animeService.searchAnimeWithFilter(
@@ -214,13 +225,27 @@ export default defineComponent({
           genres as number[],
         )
       } else {
+        if (query.q) {
+          mediaList.value = mangaService.searchFilterManga(
+            mediaListTotal.value as Manga[],
+            status,
+            genres as string[],
+          )
+          // mediaList.value = [...mediaListTotal.value]
+          return
+        }
+        if (!query.q && !status && !genres) {
+          mediaList.value = mediaListTotal.value
+          return
+        }
+
         const mangaList: Manga[] = await mangaService.searchMangaWithFilter(
           status,
           genres as string[],
         )
 
         mediaList.value = mangaList as Manga[]
-        mediaListTotal.value = mediaList.value
+        // mediaListTotal.value = mediaList.value
       }
     }
 

@@ -495,6 +495,7 @@ export class MangaService {
         genres: manga.attributes.tags
           .filter((tag: Tag) => tag.attributes.group === 'genre')
           .map((tag: Tag) => tag.attributes.name.en),
+        tags: manga.attributes.tags.map((tag: Tag) => tag.id),
         author: manga.attributes.author || 'Unknown Author',
         releaseYear: new Date(manga.attributes.createdAt).getFullYear(),
         mangaDexId: manga.id,
@@ -539,9 +540,8 @@ export class MangaService {
       description: mangaData.attributes.description.en || 'No description available',
       status: mangaData.attributes.status,
       rating: mangaData.attributes.rating?.average || 0,
-      genres: mangaData.attributes.tags
-        // .filter((tag: Tag) => tag.attributes.group === 'genre')
-        .map((tag: Tag) => tag.attributes.name.en),
+      genres: mangaData.attributes.tags.map((tag: Tag) => tag.attributes.name.en),
+      tags: mangaData.attributes.tags.map((tag: Tag) => tag.id),
       author: mangaData.relationships[0].attributes?.name || 'Unknown Author',
       releaseYear: new Date(mangaData.attributes.createdAt).getFullYear(),
       mangaDexId: mangaData.id,
@@ -560,6 +560,8 @@ export class MangaService {
   }
 
   async searchMangaWithFilter(status: string, tags: string[]): Promise<Manga[]> {
+    console.log('lock in')
+
     const params: Record<string, number | string | string[]> = {
       limit: 50,
       'includes[]': 'cover_art',
@@ -582,5 +584,19 @@ export class MangaService {
       console.error('Error fetching manga:', error)
       return []
     }
+  }
+  searchFilterManga(mangaList: Manga[], status: string, tags: string[]): Manga[] {
+    const filteredAnime = mangaList.filter((manga: Manga) => {
+      const isStatusMatching = status.length === 0 || manga.status === status
+
+      const isGenreMatching =
+        tags.length === 0 ||
+        (manga.tags &&
+          Array.isArray(manga.tags) &&
+          tags.every((tagId: string) => manga.tags.some((tag: string) => tag === tagId)))
+      return isStatusMatching && isGenreMatching
+    })
+
+    return filteredAnime
   }
 }
