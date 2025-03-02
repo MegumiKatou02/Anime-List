@@ -298,17 +298,19 @@ main {
   }
 }
 
-@media (max-width: 590px) {
+@media (max-width: 385px) {
   .fa-discord {
     display: none;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 570px) {
   .nav-brand h1 {
     display: none;
   }
+}
 
+@media (max-width: 480px) {
   .nav-links {
     gap: 0.8rem;
   }

@@ -44,13 +44,18 @@ export class AnimeService {
   }
 
   searchAnimeWithFilter(animeList: Anime[], status: string, genres: number[]) {
-    const filteredAnime = animeList.filter((anime) => {
+    const filteredAnime = animeList.filter((anime: Anime) => {
       const isStatusMatching = status.length === 0 || anime.status === status
+
       const isGenreMatching =
-        genres.length === 0 || anime.genres.some((genre) => genres.includes(genre.id))
+        genres.length === 0 ||
+        (anime.genres &&
+          Array.isArray(anime.genres) &&
+          genres.every((genreId) => anime.genres.some((genre) => genre.id === genreId)))
 
       return isStatusMatching && isGenreMatching
     })
+
     return filteredAnime
   }
 

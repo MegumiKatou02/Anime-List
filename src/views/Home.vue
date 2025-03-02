@@ -169,6 +169,8 @@ export default defineComponent({
     }
 
     const handleFilter = async (filter: { status: string; genres: number[] }) => {
+      console.log(filter.status, filter.genres)
+
       if (mediaType.value !== 'anime') return
 
       const { status, genres } = filter

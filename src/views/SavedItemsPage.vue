@@ -151,8 +151,6 @@ export default defineComponent({
           items.push(item)
         })
 
-        console.log(items)
-
         savedItems.value = items
       } catch (error) {
         console.error('Error fetching saved items:', error)
