@@ -81,6 +81,11 @@ import { ref, onMounted, computed, defineComponent, watch } from 'vue'
 import axios from 'axios'
 import { isDarkMode } from '@/utils/settings'
 
+interface Genre {
+  id: string
+  name: string
+}
+
 interface Tag {
   id: string
   attributes: {
@@ -102,7 +107,7 @@ export default defineComponent({
 
     const selectedStatus = ref('')
     const selectedGenres = ref<number[]>([])
-    const genres = ref([])
+    const genres = ref<Genre[]>([])
     const tabSwitch = ref('anime')
 
     const animeStatuses = [
