@@ -548,6 +548,17 @@ export class MangaService {
       alternativeTitles,
     }
   }
+
+  async getTagsManga() {
+    try {
+      const response = await this.api.get('/manga/tag')
+
+      return response
+    } catch (error) {
+      throw new Error(error as string)
+    }
+  }
+
   async searchMangaWithFilter(status: string, tags: string[]): Promise<Manga[]> {
     const params: Record<string, number | string | string[]> = {
       limit: 50,
