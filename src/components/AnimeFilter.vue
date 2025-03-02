@@ -1,6 +1,7 @@
 <template>
   <div class="filter-container" :class="{ 'dark-mode': isDarkMode }">
     <button
+      v-if="tabSwitch === 'anime' || tabSwitch === 'manga'"
       @click="toggleFilter"
       :class="['filter-button', { 'dark-mode': isDarkMode }, { 'active-filter': isFilterActive }]"
     >
@@ -18,7 +19,6 @@
           d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"
         />
       </svg>
-      <!-- <div>Bộ lọc</div> -->
     </button>
 
     <div v-if="isOpen" class="filter-modal" @click="toggleFilter">
@@ -45,15 +45,23 @@
 
         <div class="filter-body">
           <div v-if="activeTab === 'status'" class="status-filters">
-            <label v-for="status in statuses" :key="status.value" class="filter-option">
+            <label v-for="status in getStatusOptions" :key="status.value" class="filter-option">
               <input type="radio" :value="status.value" v-model="selectedStatus" />
               {{ status.label }}
             </label>
           </div>
 
           <div v-else class="genre-filters">
-            <label v-for="genre in genres" :key="genre.mal_id" class="filter-option">
-              <input type="checkbox" :value="genre.mal_id" v-model="selectedGenres" />
+            <label
+              v-for="genre in genres"
+              :key="tabSwitch === 'manga' ? genre.id : genre.mal_id"
+              class="filter-option"
+            >
+              <input
+                type="checkbox"
+                :value="tabSwitch === 'manga' ? genre.id : genre.mal_id"
+                v-model="selectedGenres"
+              />
               {{ genre.name }}
             </label>
           </div>
@@ -69,10 +77,19 @@
 </template>
 
 <script lang="ts">
-import { ref, onMounted, computed, defineComponent } from 'vue'
+import { ref, onMounted, computed, defineComponent, watch } from 'vue'
 import axios from 'axios'
-import type { Genres } from '@/types/anime'
 import { isDarkMode } from '@/utils/settings'
+
+interface Tag {
+  id: string
+  attributes: {
+    name: {
+      en: string
+      vi: string
+    }
+  }
+}
 
 export default defineComponent({
   emits: ['filter'],
@@ -85,13 +102,25 @@ export default defineComponent({
 
     const selectedStatus = ref('')
     const selectedGenres = ref<number[]>([])
-    const genres = ref<Genres[]>([])
+    const genres = ref([])
+    const tabSwitch = ref('anime')
 
-    const statuses = [
+    const animeStatuses = [
       { value: 'currently_airing', label: 'Đang chiếu' },
       { value: 'finished_airing', label: 'Đã chiếu' },
       { value: 'not_yet_aired', label: 'Sắp chiếu' },
     ]
+
+    const mangaStatuses = [
+      { value: 'ongoing', label: 'Đang cập nhật' },
+      { value: 'completed', label: 'Hoàn thành' },
+      { value: 'hiatus', label: 'Tạm ngưng' },
+      { value: 'cancelled', label: 'Đã huỷ' },
+    ]
+
+    const getStatusOptions = computed(() => {
+      return tabSwitch.value === 'manga' ? mangaStatuses : animeStatuses
+    })
 
     const toggleFilter = () => {
       if (!equalGenres()) {
@@ -99,6 +128,10 @@ export default defineComponent({
       }
       if (mainStatus.value !== selectedStatus.value) {
         selectedStatus.value = mainStatus.value
+      }
+      if (!isOpen.value) {
+        tabSwitch.value = localStorage.getItem('activeTab') || 'anime'
+        fetchGenres()
       }
       isOpen.value = !isOpen.value
     }
@@ -138,16 +171,43 @@ export default defineComponent({
       emit('filter', {
         status: selectedStatus.value,
         genres: selectedGenres.value,
+        type: tabSwitch.value,
       })
     }
 
-    onMounted(async () => {
+    const fetchGenres = async () => {
       try {
-        const response = await axios.get('https://api.jikan.moe/v4/genres/anime')
-        genres.value = response.data.data
+        if (tabSwitch.value === 'anime') {
+          const response = await axios.get('https://api.jikan.moe/v4/genres/anime')
+          genres.value = response.data.data
+        } else if (tabSwitch.value === 'manga') {
+          const response = await axios.get('https://api.mangadex.org/manga/tag')
+          genres.value = response.data.data.map((tag: Tag) => ({
+            id: tag.id,
+            name: tag.attributes.name.vi || tag.attributes.name.en,
+          }))
+        }
       } catch (error) {
-        console.error('Error fetching genres:', error)
+        console.error(`Error fetching ${tabSwitch.value} genres:`, error)
       }
+    }
+
+    watch(
+      () => tabSwitch.value,
+      () => {
+        if (isOpen.value) {
+          fetchGenres()
+          selectedStatus.value = ''
+          selectedGenres.value = []
+          mainStatus.value = ''
+          mainGenres.value = []
+        }
+      },
+    )
+
+    onMounted(async () => {
+      tabSwitch.value = localStorage.getItem('activeTab') || 'anime'
+      await fetchGenres()
     })
 
     const isFilterActive = computed(() => {
@@ -158,11 +218,15 @@ export default defineComponent({
       isOpen,
       isDarkMode,
       activeTab,
-      statuses,
+      getStatusOptions,
+      genres,
+      tabSwitch,
       toggleFilter,
       clearFilters,
       applyFilters,
       isFilterActive,
+      selectedStatus,
+      selectedGenres,
     }
   },
 })
@@ -311,9 +375,6 @@ export default defineComponent({
 .filter-button.active-filter.dark-mode {
   color: red;
 }
-
-/* .filter-button.dark-mode:hover {
-} */
 
 @media (prefers-color-scheme: dark) {
   .filter-button {

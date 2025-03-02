@@ -1,6 +1,6 @@
 <template>
   <div class="home" :class="{ 'dark-mode': isDarkMode }">
-    <div style="display: flex; justify-content: center; align-items: center; gap: 0.5rem">
+    <div class="header">
       <MediaTypeSwitcher @change="handleMediaTypeChange" />
       <AnimeFilter @filter="handleFilter" />
     </div>
@@ -167,24 +167,33 @@ export default defineComponent({
       })
     }
 
-    const handleFilter = async (filter: { status: string; genres: number[] }) => {
+    const handleFilter = async (filter: { status: string; genres: number[] | string[] }) => {
+      console.log(filter.status, filter.genres)
+
+      const { status, genres } = filter
+      // const query = route.query
       if (mediaType.value === 'anime') {
-        const { status, genres } = filter
-        const query = route.query
+        // tạm thời bỏ qua
+        // if (!query.q) {
+        // mediaListTotal.value = await animeService.getShuffledAnimeListFromAPI(status)
+        // mediaList.value = [...mediaListTotal.value]
+        // }
 
-        if (!query.q) {
-          mediaListTotal.value = await animeService.getShuffledAnimeListFromAPI(status)
-          mediaList.value = [...mediaListTotal.value]
-        }
+        mediaList.value = animeService.searchAnimeWithFilter(
+          mediaListTotal.value as Anime[],
+          status,
+          genres as number[],
+        )
+      } else {
+        const mangaList: Manga[] = await mangaService.searchMangaWithFilter(
+          status,
+          genres as string[],
+        )
 
-        if (mediaType.value === 'anime') {
-          mediaList.value = animeService.searchAnimeWithFilter(
-            mediaListTotal.value as Anime[],
-            status,
-            genres,
-          )
-        }
+        mediaList.value = mangaList as Manga[]
+        mediaListTotal.value = mediaList.value
       }
+      console.log(mediaType.value + ' what the hell')
     }
 
     watch(
@@ -207,7 +216,6 @@ export default defineComponent({
 
     onMounted(async () => {
       window.scrollTo(0, 0)
-      // localStorage.setItem('activeTab', 'anime')
       const mediaType = localStorage.getItem('activeTab')
       handleMediaTypeChange(mediaType === 'anime' || mediaType === 'manga' ? mediaType : 'anime')
 
@@ -249,6 +257,13 @@ export default defineComponent({
   padding: 2rem;
   max-width: 1400px;
   margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .search-container {

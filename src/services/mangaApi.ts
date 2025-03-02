@@ -548,4 +548,28 @@ export class MangaService {
       alternativeTitles,
     }
   }
+  async searchMangaWithFilter(status: string, tags: string[]): Promise<Manga[]> {
+    const params: Record<string, number | string | string[]> = {
+      limit: 50,
+      'includes[]': 'cover_art',
+    }
+
+    if (tags.length > 0) {
+      params['includedTags[]'] = tags
+    }
+
+    if (status.length > 0) {
+      params['status[]'] = status
+    }
+    try {
+      const response = await axios.get('https://api.mangadex.org/manga', { params })
+
+      const mangaList: MangaData[] = response.data.data
+
+      return this.transformMangaData(mangaList)
+    } catch (error) {
+      console.error('Error fetching manga:', error)
+      return []
+    }
+  }
 }

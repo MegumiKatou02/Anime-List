@@ -181,6 +181,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
+      document.title = ' danh sách Anime/Manga đã lưu'
       fetchSavedItems()
     })
 
