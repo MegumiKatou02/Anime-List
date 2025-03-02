@@ -119,7 +119,7 @@ import { updateMetaTags, resetMetaTags } from '@/utils/metaTags'
 import { onUnmounted } from 'vue'
 import SaveModel from '@/components/SaveModel.vue'
 import { saveToFirestore } from '@/services/firestoreService'
-import { getDiscordUser, refreshToken } from '@/services/discordApi'
+import { checkToken, getDiscordUser, refreshToken } from '@/services/discordApi'
 import type { User } from '@/types/discord'
 
 export default defineComponent({
@@ -138,7 +138,11 @@ export default defineComponent({
     const loading = ref(true)
 
     const sendData = async () => {
-      let token = localStorage.getItem('discord_token') || ''
+      let token = localStorage.getItem('discord_token')
+      if (!checkToken(token)) {
+        // router.error
+        return
+      }
       const tokenExpiry = parseInt(localStorage.getItem('token_expiry') || '0')
       if (!token || Date.now() >= tokenExpiry) {
         token = await refreshToken()

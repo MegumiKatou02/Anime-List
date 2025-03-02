@@ -75,6 +75,7 @@ router.beforeEach((to, from, next) => {
 
     if (!isLoggedIn) {
       next('/')
+      alert('Chưa đăng nhập mà đòi vào')
     } else {
       next()
     }

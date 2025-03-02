@@ -118,7 +118,7 @@ import type { AnimeJikan, Character } from '@/types/anime'
 import { isDarkMode } from '@/utils/settings'
 import SaveModel from '@/components/SaveModel.vue'
 import type { User } from '@/types/discord'
-import { getDiscordUser, refreshToken } from '@/services/discordApi'
+import { checkToken, getDiscordUser, refreshToken } from '@/services/discordApi'
 import { saveToFirestore } from '@/services/firestoreService'
 
 const route = useRoute()
@@ -129,8 +129,12 @@ const loading = ref(true)
 const error = ref('')
 
 const sendData = async () => {
-  let token = localStorage.getItem('discord_token') || ''
+  let token = localStorage.getItem('discord_token')
   const tokenExpiry = parseInt(localStorage.getItem('token_expiry') || '0')
+  if (!checkToken(token)) {
+    // router.error
+    return
+  }
   if (!token || Date.now() >= tokenExpiry) {
     token = await refreshToken()
   }
