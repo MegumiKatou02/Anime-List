@@ -22,7 +22,7 @@ export const getAccessToken = async (code: string) => {
   return response.data
 }
 
-export const getDiscordUser = async (access_token: string) => {
+export const getDiscordUser = async (access_token: string | null) => {
   const response = await axios.get('https://discord.com/api/users/@me', {
     headers: { Authorization: `Bearer ${access_token}` },
   })
@@ -31,7 +31,7 @@ export const getDiscordUser = async (access_token: string) => {
 }
 
 export const refreshToken = async () => {
-  const refresh_token = localStorage.getItem('refresh_token') || ''
+  const refresh_token = localStorage.getItem('refresh_token')
   if (!refresh_token) {
     console.error('Không có refresh token!')
     return null
@@ -56,4 +56,30 @@ export const refreshToken = async () => {
     console.error('Lỗi refresh token:', error)
     return null
   }
+}
+
+export const checkToken = async (token: string | null): Promise<boolean> => {
+  if (!token) {
+    return false
+  }
+  try {
+    const response = await axios.get('https://discord.com/api/v10/users/@me', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    if (response.status === 200) {
+      return true
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error('Error while checking token', error.message)
+    } else {
+      console.error('Error while checking token')
+    }
+    return false
+  }
+
+  return false
 }

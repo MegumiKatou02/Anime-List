@@ -53,6 +53,11 @@ const router = createRouter({
       },
     },
     {
+      path: '/error',
+      name: 'ErrorPage',
+      component: () => import('../views/404.vue'),
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
       component: () => import('../views/NotFound.vue'),
@@ -75,6 +80,7 @@ router.beforeEach((to, from, next) => {
 
     if (!isLoggedIn) {
       next('/')
+      alert('Chưa đăng nhập mà đòi vào')
     } else {
       next()
     }
