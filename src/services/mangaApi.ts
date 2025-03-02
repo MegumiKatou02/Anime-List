@@ -573,7 +573,7 @@ export class MangaService {
       params['status[]'] = status
     }
     try {
-      const response = await axios.get('https://api.mangadex.org/manga', { params })
+      const response = await this.api.get('/manga', { params })
 
       const mangaList: MangaData[] = response.data.data
 
