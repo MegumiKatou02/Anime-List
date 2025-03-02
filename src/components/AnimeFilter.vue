@@ -52,17 +52,9 @@
           </div>
 
           <div v-else class="genre-filters">
-            <label
-              v-for="genre in genres"
-              :key="tabSwitch === 'manga' ? genre.id : genre.mal_id"
-              class="filter-option"
-            >
-              <input
-                type="checkbox"
-                :value="tabSwitch === 'manga' ? genre.id : genre.mal_id"
-                v-model="selectedGenres"
-              />
-              {{ genre.name }}
+            <label v-for="genre in genres" :key="getGenreId(genre)" class="filter-option">
+              <input type="checkbox" :value="getGenreId(genre)" v-model="selectedGenres" />
+              {{ getGenreName(genre) }}
             </label>
           </div>
         </div>
@@ -81,19 +73,36 @@ import { ref, onMounted, computed, defineComponent, watch } from 'vue'
 import axios from 'axios'
 import { isDarkMode } from '@/utils/settings'
 
-interface Genre {
-  id: string
+interface AnimeGenre {
+  mal_id: number
   name: string
+  type?: string
+  url?: string
 }
 
-interface Tag {
+interface MangaTag {
   id: string
+  type: string
   attributes: {
     name: {
       en: string
-      vi: string
+      vi?: string
+      [key: string]: string | undefined
     }
+    description?: {
+      [key: string]: string
+    }
+    group: string
+    version: number
   }
+  // relationships?: any[]
+}
+
+type Genre = AnimeGenre | MangaTag
+
+interface StatusOption {
+  value: string
+  label: string
 }
 
 export default defineComponent({
@@ -103,33 +112,51 @@ export default defineComponent({
     const activeTab = ref('status')
 
     const mainStatus = ref('')
-    const mainGenres = ref<number[]>([])
+    const mainGenres = ref<(string | number)[]>([])
 
     const selectedStatus = ref('')
-    const selectedGenres = ref<number[]>([])
+    const selectedGenres = ref<(string | number)[]>([])
     const genres = ref<Genre[]>([])
     const tabSwitch = ref('anime')
 
-    const animeStatuses = [
+    const animeStatuses: StatusOption[] = [
       { value: 'currently_airing', label: 'Đang chiếu' },
       { value: 'finished_airing', label: 'Đã chiếu' },
       { value: 'not_yet_aired', label: 'Sắp chiếu' },
     ]
 
-    const mangaStatuses = [
+    const mangaStatuses: StatusOption[] = [
       { value: 'ongoing', label: 'Đang cập nhật' },
       { value: 'completed', label: 'Hoàn thành' },
       { value: 'hiatus', label: 'Tạm ngưng' },
       { value: 'cancelled', label: 'Đã huỷ' },
     ]
 
-    const getStatusOptions = computed(() => {
+    const getGenreId = (genre: Genre): string | number => {
+      if ('mal_id' in genre) {
+        return genre.mal_id
+      } else if ('id' in genre) {
+        return genre.id
+      }
+      return ''
+    }
+
+    const getGenreName = (genre: Genre): string => {
+      if ('name' in genre && typeof genre.name === 'string') {
+        return genre.name
+      } else if ('attributes' in genre && genre.attributes && genre.attributes.name) {
+        return genre.attributes.name.vi || genre.attributes.name.en || ''
+      }
+      return ''
+    }
+
+    const getStatusOptions = computed((): StatusOption[] => {
       return tabSwitch.value === 'manga' ? mangaStatuses : animeStatuses
     })
 
     const toggleFilter = () => {
       if (!equalGenres()) {
-        selectedGenres.value = mainGenres.value
+        selectedGenres.value = [...mainGenres.value]
       }
       if (mainStatus.value !== selectedStatus.value) {
         selectedStatus.value = mainStatus.value
@@ -170,7 +197,7 @@ export default defineComponent({
     const applyFilters = () => {
       isOpen.value = false
 
-      mainGenres.value = selectedGenres.value
+      mainGenres.value = [...selectedGenres.value]
       mainStatus.value = selectedStatus.value
 
       emit('filter', {
@@ -184,13 +211,10 @@ export default defineComponent({
       try {
         if (tabSwitch.value === 'anime') {
           const response = await axios.get('https://api.jikan.moe/v4/genres/anime')
-          genres.value = response.data.data
+          genres.value = response.data.data as AnimeGenre[]
         } else if (tabSwitch.value === 'manga') {
           const response = await axios.get('https://api.mangadex.org/manga/tag')
-          genres.value = response.data.data.map((tag: Tag) => ({
-            id: tag.id,
-            name: tag.attributes.name.vi || tag.attributes.name.en,
-          }))
+          genres.value = response.data.data as MangaTag[]
         }
       } catch (error) {
         console.error(`Error fetching ${tabSwitch.value} genres:`, error)
@@ -216,7 +240,7 @@ export default defineComponent({
     })
 
     const isFilterActive = computed(() => {
-      return mainStatus.value != '' || mainGenres.value.length > 0
+      return mainStatus.value !== '' || mainGenres.value.length > 0
     })
 
     return {
@@ -232,6 +256,8 @@ export default defineComponent({
       isFilterActive,
       selectedStatus,
       selectedGenres,
+      getGenreId,
+      getGenreName,
     }
   },
 })
