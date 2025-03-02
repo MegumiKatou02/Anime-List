@@ -39,6 +39,13 @@ export default defineComponent({
       }
     }
 
+    const directUrl = computed(() => {
+      if (route.query.type) {
+        return { path: '/', query: { type: route.query.type } }
+      }
+      return '/'
+    })
+
     onMounted(() => {
       window.addEventListener('scroll', handleScroll)
     })
@@ -55,6 +62,7 @@ export default defineComponent({
       closeSettings,
       closeLogin,
       isDarkMode,
+      directUrl,
     }
   },
 })
@@ -64,7 +72,7 @@ export default defineComponent({
   <div class="app-container" :class="{ 'dark-mode': isDarkMode }">
     <header>
       <nav class="navbar" :class="{ 'reader-page': isReaderPage }">
-        <router-link to="/">
+        <router-link :to="directUrl">
           <div class="nav-brand">
             <img
               alt="Anime Search Logo"
@@ -78,7 +86,7 @@ export default defineComponent({
         </router-link>
 
         <div class="nav-links">
-          <router-link to="/" class="nav-link">Trang chủ</router-link>
+          <router-link :to="directUrl" class="nav-link">Trang chủ</router-link>
           <router-link to="/about" class="nav-link">Thông tin</router-link>
           <i class="fab fa-discord fa-2x" @click="isOpenLogin = !isOpenLogin"></i>
           <button class="icon-button" @click="isOpenSetting = !isOpenSetting">
@@ -298,17 +306,19 @@ main {
   }
 }
 
-@media (max-width: 590px) {
+@media (max-width: 385px) {
   .fa-discord {
     display: none;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 570px) {
   .nav-brand h1 {
     display: none;
   }
+}
 
+@media (max-width: 480px) {
   .nav-links {
     gap: 0.8rem;
   }

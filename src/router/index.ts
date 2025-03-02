@@ -73,7 +73,8 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  document.title = to.meta.title?.toString() || 'Anime List'
+  document.title =
+    to.meta.title?.toString() || 'Anime List - Trang web Anime/Manga đầu hàng Việt Nam'
 
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     const isLoggedIn = localStorage.getItem('discord_token')
