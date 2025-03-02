@@ -8,12 +8,14 @@ export interface Manga {
   rating: number
   status: 'ongoing' | 'completed' | 'hiatus' | 'cancelled'
   genres: string[]
+  tags: string[]
   mangaDexId: string
   alternativeTitles?: string[]
   lastUpdated?: string
 }
 
 export interface Tag {
+  id: string
   attributes: {
     group: string
     name: {
