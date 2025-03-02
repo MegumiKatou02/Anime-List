@@ -130,11 +130,16 @@ const error = ref('')
 
 const sendData = async () => {
   let token = localStorage.getItem('discord_token')
-  const tokenExpiry = parseInt(localStorage.getItem('token_expiry') || '0')
-  if (!checkToken(token)) {
+  if (!(await checkToken(token)) || !localStorage.getItem('token_expiry')) {
     // router.error
+    router.push({
+      path: '/error',
+      query: { message: 'Không tìm thấy mã xác thực' },
+    })
     return
   }
+
+  const tokenExpiry = parseInt(localStorage.getItem('token_expiry') as string)
   if (!token || Date.now() >= tokenExpiry) {
     token = await refreshToken()
   }

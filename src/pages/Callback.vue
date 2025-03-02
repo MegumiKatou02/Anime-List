@@ -11,15 +11,18 @@ import { createUserInFirestore } from '@/services/firestoreService'
 import type { User } from '@/types/discord'
 import { isDarkMode } from '@/utils/settings'
 import { defineComponent } from 'vue'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'CallBack',
 
   async mounted() {
     const code = new URLSearchParams(window.location.search).get('code')
+    const router = useRouter()
 
     if (!code) {
-      console.log('ERROR ROI !')
+      // huỷ trong khi đang xác thực
+      router.go(-2)
       return
     }
 

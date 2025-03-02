@@ -53,6 +53,11 @@ const router = createRouter({
       },
     },
     {
+      path: '/error',
+      name: 'ErrorPage',
+      component: () => import('../views/404.vue'),
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
       component: () => import('../views/NotFound.vue'),

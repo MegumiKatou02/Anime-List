@@ -31,7 +31,7 @@ export const getDiscordUser = async (access_token: string | null) => {
 }
 
 export const refreshToken = async () => {
-  const refresh_token = localStorage.getItem('refresh_token') || ''
+  const refresh_token = localStorage.getItem('refresh_token')
   if (!refresh_token) {
     console.error('Không có refresh token!')
     return null
@@ -73,7 +73,12 @@ export const checkToken = async (token: string | null): Promise<boolean> => {
       return true
     }
   } catch (error) {
-    console.error('Error while checking token:', error)
+    if (error instanceof Error) {
+      console.error('Error while checking token', error.message)
+    } else {
+      console.error('Error while checking token')
+    }
+    return false
   }
 
   return false
