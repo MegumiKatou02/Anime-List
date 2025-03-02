@@ -168,8 +168,6 @@ export default defineComponent({
     }
 
     const handleFilter = async (filter: { status: string; genres: number[] | string[] }) => {
-      console.log(filter.status, filter.genres)
-
       const { status, genres } = filter
       // const query = route.query
       if (mediaType.value === 'anime') {
@@ -193,7 +191,6 @@ export default defineComponent({
         mediaList.value = mangaList as Manga[]
         mediaListTotal.value = mediaList.value
       }
-      console.log(mediaType.value + ' what the hell')
     }
 
     watch(

@@ -72,6 +72,7 @@
 import { ref, onMounted, computed, defineComponent, watch } from 'vue'
 import axios from 'axios'
 import { isDarkMode } from '@/utils/settings'
+import { MangaService } from '@/services/mangaApi'
 
 interface AnimeGenre {
   mal_id: number
@@ -118,6 +119,8 @@ export default defineComponent({
     const selectedGenres = ref<(string | number)[]>([])
     const genres = ref<Genre[]>([])
     const tabSwitch = ref('anime')
+
+    const mangaService = new MangaService()
 
     const animeStatuses: StatusOption[] = [
       { value: 'currently_airing', label: 'Đang chiếu' },
@@ -213,7 +216,7 @@ export default defineComponent({
           const response = await axios.get('https://api.jikan.moe/v4/genres/anime')
           genres.value = response.data.data as AnimeGenre[]
         } else if (tabSwitch.value === 'manga') {
-          const response = await axios.get('https://api.mangadex.org/manga/tag')
+          const response = await mangaService.getTagsManga()
           genres.value = response.data.data as MangaTag[]
         }
       } catch (error) {
