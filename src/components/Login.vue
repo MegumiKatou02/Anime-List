@@ -1,5 +1,5 @@
 <template>
-  <div class="login-overlay" @click="closeLogin">
+  <div class="login-overlay" :class="{ 'dark-mode': isDarkMode }" @click="closeLogin">
     <div class="login-container" @click.stop>
       <div class="login-header">
         <i class="fab fa-discord"></i>
@@ -50,6 +50,7 @@
 </template>
 
 <script lang="ts">
+import { isDarkMode } from '@/utils/settings'
 import { ref } from 'vue'
 import { computed } from 'vue'
 import { defineComponent, onMounted } from 'vue'
@@ -110,6 +111,7 @@ export default defineComponent({
       isLogin,
       name,
       logOut,
+      isDarkMode,
     }
   },
 })
@@ -131,7 +133,7 @@ export default defineComponent({
 }
 
 .login-container {
-  background: linear-gradient(145deg, #1a2234, #222c42);
+  background: white;
   border-radius: 12px;
   padding: 2rem;
   width: 350px;
@@ -141,6 +143,10 @@ export default defineComponent({
   color: white;
   z-index: 1000;
   transition: transform 0.3s ease;
+}
+
+.dark-mode .login-container {
+  background: linear-gradient(145deg, #1a2234, #222c42);
 }
 
 .icon-svg {
@@ -171,19 +177,32 @@ h2 {
   margin: 0.5rem 0;
   font-size: 1.6rem;
   font-weight: 700;
+  color: black;
+}
+
+.dark-mode h2 {
+  color: white;
 }
 
 .subtitle {
-  color: #a1a5b7;
+  color: #676a75;
   margin-top: 0.5rem;
   text-align: center;
   font-size: 0.9rem;
 }
 
+.dark-mode .subtitle {
+  color: #a1a5b7;
+}
+
 .divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
   margin: 1rem 0 1.5rem;
+}
+
+.dark-mode .divider {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
 }
 
 .login-options {
@@ -211,11 +230,20 @@ h2 {
 }
 
 .saved-button {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.54);
   border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3 ease-in-out;
+}
+
+.dark-mode .saved-button {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .saved-button:hover {
+  background: rgba(0, 0, 0, 0.68);
+}
+
+.dark-mode .saved-button:hover {
   background: rgba(255, 255, 255, 0.15);
 }
 
@@ -241,8 +269,12 @@ h2 {
 .privacy-notice {
   text-align: center;
   font-size: 0.8rem;
-  color: #6d7283;
+  color: #676a75;
   margin-top: 1rem;
+}
+
+.dark-mode .privacy-notice {
+  color: #6d7283;
 }
 
 .link {

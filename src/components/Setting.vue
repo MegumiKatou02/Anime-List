@@ -1,5 +1,5 @@
 <template>
-  <div class="settings-overlay" @click="closeDropDown">
+  <div class="settings-overlay" :class="{ 'dark-mode': isDarkMode }" @click="closeDropDown">
     <div class="settings-container" @click.stop>
       <div class="settings-header">
         <h3 class="settings-title">Tùy chỉnh</h3>
@@ -92,6 +92,7 @@ export default defineComponent({
       selectedTheme,
       selectedLanguage,
       closeDropDown,
+      isDarkMode,
     }
   },
 })
@@ -104,7 +105,8 @@ export default defineComponent({
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -112,14 +114,19 @@ export default defineComponent({
 }
 
 .settings-container {
-  background: #1a2234;
-  border-radius: 8px;
+  background: white;
+  border-radius: 12px;
   padding: 1.5rem;
   box-shadow:
     0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  color: white;
+  color: black;
   z-index: 1000;
+}
+
+.dark-mode .settings-container {
+  background: #1a2234;
+  color: white;
 }
 
 .settings-header {
@@ -139,6 +146,10 @@ export default defineComponent({
 }
 
 .close-button:hover {
+  color: #333;
+}
+
+.dark-mode .close-button:hover {
   color: #fff;
 }
 
@@ -150,8 +161,12 @@ export default defineComponent({
 
 .settings-subtitle {
   font-size: 0.875rem;
-  color: #9ca3af;
+  color: #676a75;
   margin-bottom: 1.5rem;
+}
+
+.dark-mode .settings-subtitle {
+  color: #9ca3af;
 }
 
 .settings-section {
@@ -160,6 +175,7 @@ export default defineComponent({
 
 .settings-section h4 {
   font-size: 1rem;
+  font-weight: 500;
   margin-bottom: 0.75rem;
 }
 
@@ -189,11 +205,15 @@ export default defineComponent({
 .reset-button {
   padding: 0.5rem 1rem;
   background: transparent;
-  color: white;
+  color: black;
   border: 1px solid #4a5568;
   border-radius: 4px;
   cursor: pointer;
   font-weight: 500;
+}
+
+.dark-mode .reset-button {
+  color: white;
 }
 
 .save-button:hover {
