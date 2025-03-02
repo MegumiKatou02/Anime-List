@@ -69,9 +69,10 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   document.title = to.meta.title?.toString() || 'Anime List'
-  next()
+
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     const isLoggedIn = localStorage.getItem('discord_token')
+
     if (!isLoggedIn) {
       next('/')
     } else {
