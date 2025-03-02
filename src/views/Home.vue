@@ -68,16 +68,18 @@ import { defineComponent, ref, onMounted, watch, onUnmounted, computed } from 'v
 import { useRouter, useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { AnimeService } from '@/services/animeApi'
 import { MangaService } from '@/services/mangaApi'
-import AnimeCard from '@/components/AnimeCard.vue'
-import MangaCard from '@/components/MangaCard.vue'
 import AnimeFilter from '@/components/AnimeFilter.vue'
 import MediaTypeSwitcher from '@/components/MediaTypeSwitcher.vue'
 import { debounce } from 'lodash'
 import type { Anime } from '@/types/anime'
 import type { Manga } from '@/types/manga'
 import { isDarkMode } from '@/utils/settings'
+import { defineAsyncComponent } from 'vue'
 
 type MediaItem = Anime | Manga
+
+const AnimeCard = defineAsyncComponent(() => import('@/components/AnimeCard.vue'))
+const MangaCard = defineAsyncComponent(() => import('@/components/MangaCard.vue'))
 
 export default defineComponent({
   name: 'HomePage',
