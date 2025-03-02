@@ -2,7 +2,7 @@
   <div class="home" :class="{ 'dark-mode': isDarkMode }">
     <div style="display: flex; justify-content: center; align-items: center; gap: 0.5rem">
       <MediaTypeSwitcher @change="handleMediaTypeChange" />
-      <AnimeFilter v-if="mediaType === 'anime'" @filter="handleFilter" />
+      <AnimeFilter @filter="handleFilter" />
     </div>
 
     <div class="search-container">
@@ -23,7 +23,6 @@
             />
           </svg>
         </div>
-        <!-- <AnimeFilter v-if="mediaType === 'anime'" @filter="handleFilter" /> -->
       </div>
     </div>
 
@@ -169,24 +168,22 @@ export default defineComponent({
     }
 
     const handleFilter = async (filter: { status: string; genres: number[] }) => {
-      console.log(filter.status, filter.genres)
-
-      if (mediaType.value !== 'anime') return
-
-      const { status, genres } = filter
-      const query = route.query
-
-      if (!query.q) {
-        mediaListTotal.value = await animeService.getShuffledAnimeListFromAPI(status)
-        mediaList.value = [...mediaListTotal.value]
-      }
-
       if (mediaType.value === 'anime') {
-        mediaList.value = animeService.searchAnimeWithFilter(
-          mediaListTotal.value as Anime[],
-          status,
-          genres,
-        )
+        const { status, genres } = filter
+        const query = route.query
+
+        if (!query.q) {
+          mediaListTotal.value = await animeService.getShuffledAnimeListFromAPI(status)
+          mediaList.value = [...mediaListTotal.value]
+        }
+
+        if (mediaType.value === 'anime') {
+          mediaList.value = animeService.searchAnimeWithFilter(
+            mediaListTotal.value as Anime[],
+            status,
+            genres,
+          )
+        }
       }
     }
 

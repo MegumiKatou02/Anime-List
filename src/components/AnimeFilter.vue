@@ -68,90 +68,103 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+<script lang="ts">
+import { ref, onMounted, computed, defineComponent } from 'vue'
 import axios from 'axios'
 import type { Genres } from '@/types/anime'
 import { isDarkMode } from '@/utils/settings'
 
-const isOpen = ref(false)
-const activeTab = ref('status')
+export default defineComponent({
+  emits: ['filter'],
+  setup(_, { emit }) {
+    const isOpen = ref(false)
+    const activeTab = ref('status')
 
-const mainStatus = ref('')
-const mainGenres = ref<number[]>([])
+    const mainStatus = ref('')
+    const mainGenres = ref<number[]>([])
 
-const selectedStatus = ref('')
-const selectedGenres = ref<number[]>([])
-const genres = ref<Genres[]>([])
+    const selectedStatus = ref('')
+    const selectedGenres = ref<number[]>([])
+    const genres = ref<Genres[]>([])
 
-const statuses = [
-  { value: 'currently_airing', label: 'Đang chiếu' },
-  { value: 'finished_airing', label: 'Đã chiếu' },
-  { value: 'not_yet_aired', label: 'Sắp chiếu' },
-]
+    const statuses = [
+      { value: 'currently_airing', label: 'Đang chiếu' },
+      { value: 'finished_airing', label: 'Đã chiếu' },
+      { value: 'not_yet_aired', label: 'Sắp chiếu' },
+    ]
 
-const emit = defineEmits(['filter'])
-
-const toggleFilter = () => {
-  if (!equalGenres()) {
-    selectedGenres.value = mainGenres.value
-  }
-  if (mainStatus.value !== selectedStatus.value) {
-    selectedStatus.value = mainStatus.value
-  }
-  isOpen.value = !isOpen.value
-}
-
-const clearFilters = () => {
-  if (selectedStatus.value === '' && selectedGenres.value.length === 0) {
-    return
-  }
-
-  selectedStatus.value = ''
-  selectedGenres.value = []
-  // emit('filter', { status: '', genres: [] })
-}
-
-const equalGenres = () => {
-  const setMainGenres = new Set(mainGenres.value)
-  const setSelectedGenres = new Set(selectedGenres.value)
-
-  if (setMainGenres.size !== setSelectedGenres.size) {
-    return false
-  }
-
-  for (const genre of setMainGenres) {
-    if (!setSelectedGenres.has(genre)) {
-      return false
+    const toggleFilter = () => {
+      if (!equalGenres()) {
+        selectedGenres.value = mainGenres.value
+      }
+      if (mainStatus.value !== selectedStatus.value) {
+        selectedStatus.value = mainStatus.value
+      }
+      isOpen.value = !isOpen.value
     }
-  }
 
-  return true
-}
+    const clearFilters = () => {
+      if (selectedStatus.value === '' && selectedGenres.value.length === 0) {
+        return
+      }
 
-const applyFilters = () => {
-  isOpen.value = false
+      selectedStatus.value = ''
+      selectedGenres.value = []
+    }
 
-  mainGenres.value = selectedGenres.value
-  mainStatus.value = selectedStatus.value
+    const equalGenres = () => {
+      const setMainGenres = new Set(mainGenres.value)
+      const setSelectedGenres = new Set(selectedGenres.value)
 
-  emit('filter', {
-    status: selectedStatus.value,
-    genres: selectedGenres.value,
-  })
-}
+      if (setMainGenres.size !== setSelectedGenres.size) {
+        return false
+      }
 
-onMounted(async () => {
-  try {
-    const response = await axios.get('https://api.jikan.moe/v4/genres/anime')
-    genres.value = response.data.data
-  } catch (error) {
-    console.error('Error fetching genres:', error)
-  }
-})
+      for (const genre of setMainGenres) {
+        if (!setSelectedGenres.has(genre)) {
+          return false
+        }
+      }
 
-const isFilterActive = computed(() => {
-  return mainStatus.value != '' || mainGenres.value.length > 0
+      return true
+    }
+
+    const applyFilters = () => {
+      isOpen.value = false
+
+      mainGenres.value = selectedGenres.value
+      mainStatus.value = selectedStatus.value
+
+      emit('filter', {
+        status: selectedStatus.value,
+        genres: selectedGenres.value,
+      })
+    }
+
+    onMounted(async () => {
+      try {
+        const response = await axios.get('https://api.jikan.moe/v4/genres/anime')
+        genres.value = response.data.data
+      } catch (error) {
+        console.error('Error fetching genres:', error)
+      }
+    })
+
+    const isFilterActive = computed(() => {
+      return mainStatus.value != '' || mainGenres.value.length > 0
+    })
+
+    return {
+      isOpen,
+      isDarkMode,
+      activeTab,
+      statuses,
+      toggleFilter,
+      clearFilters,
+      applyFilters,
+      isFilterActive,
+    }
+  },
 })
 </script>
 
