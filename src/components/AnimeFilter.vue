@@ -720,8 +720,13 @@ export default defineComponent({
 
 @media (prefers-color-scheme: dark) {
   .filter-button {
-    background-color: #1a202c;
+    /* background-color: #1a202c; */
+    color: black;
+  }
+
+  .filter-button.dark-mode {
     color: white;
+    /* background-color: #1a202c; */
   }
 
   .filter-button.active-filter {
