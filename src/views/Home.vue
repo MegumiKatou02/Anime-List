@@ -213,12 +213,6 @@ export default defineComponent({
           mediaListTotal.value = await animeService.getShuffledAnimeListFromAPI(status)
         }
 
-        // if (!query.q && status) {
-        // mediaList.value = await animeService.getShuffledAnimeListFromAPI(status)
-        //   // mediaList.value = [...mediaListTotal.value]
-        //   return
-        // }
-
         mediaList.value = animeService.searchAnimeWithFilter(
           mediaListTotal.value as Anime[],
           status,
@@ -231,14 +225,12 @@ export default defineComponent({
             status,
             genres as string[],
           )
-          // mediaList.value = [...mediaListTotal.value]
+
           return
         }
         if (!query.q && !status && genres.length === 0) {
           mediaList.value = mediaListTotal.value
 
-          // mediaListTotal.value = await mangaService.getTopManga()
-          // mediaList.value = [...mediaListTotal.value]
           return
         }
 
