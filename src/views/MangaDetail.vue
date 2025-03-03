@@ -167,7 +167,7 @@ export default defineComponent({
 
         chapters.value = chaptersData
       } catch (error) {
-        console.error('Error loading chapters:', error)
+        console.error(`Lỗi khi tải các chương: (${error})`)
       }
     }
 
@@ -209,8 +209,13 @@ export default defineComponent({
         } else {
           newChapters.value = mangaById.attributes.lastChapter
         }
-      } catch (error) {
-        console.error('Error loading manga data:', error)
+      } catch (error: unknown) {
+        router.push({
+          path: '/error',
+          query: {
+            message: error instanceof Error ? error.message : String(error),
+          },
+        })
       }
     }
 
@@ -231,7 +236,11 @@ export default defineComponent({
     }
 
     onMounted(async () => {
-      await Promise.all([loadMangaData(), loadChapters()])
+      try {
+        await Promise.all([loadMangaData(), loadChapters()])
+      } catch (error) {
+        console.error('Lỗi khi tải dữ liệu:', error)
+      }
       loading.value = false
     })
 

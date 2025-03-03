@@ -22,7 +22,7 @@ export default defineComponent({
 
     const isOpenSetting = ref(false)
     const isOpenLogin = ref(false)
-    const isHomePage = computed(() => route.path === '/')
+    const isViewPage = computed(() => route.path === '/')
 
     const mainRef = ref<HTMLElement | null>(null)
 
@@ -76,7 +76,7 @@ export default defineComponent({
       closeLogin,
       isDarkMode,
       directUrl,
-      isHomePage,
+      isViewPage,
       mainRef,
     }
   },
@@ -85,7 +85,7 @@ export default defineComponent({
 
 <template>
   <div class="app-container" :class="{ 'dark-mode': isDarkMode }">
-    <header v-if="!isHomePage">
+    <header v-if="!isViewPage">
       <nav class="navbar" :class="{ 'reader-page': isReaderPage }">
         <router-link :to="directUrl">
           <div class="nav-brand">
@@ -121,7 +121,7 @@ export default defineComponent({
       <RouterView />
     </main>
 
-    <footer v-if="!isHomePage" :class="{ 'status-page': isStatusPage }">
+    <footer v-if="!isViewPage" :class="{ 'status-page': isStatusPage }">
       <div class="footer-content">
         <div class="footer-text">
           <p>Được hỗ trợ bởi</p>

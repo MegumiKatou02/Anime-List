@@ -199,9 +199,15 @@ export default defineComponent({
 
         loading.value = false
       } catch (err) {
-        error.value = 'Failed to load chapter. Please try again.'
-        console.error('Failed to load chapter. Please try again.', err)
+        error.value = 'Tải chương manga thất bại'
+        console.error(error.value, err)
         loading.value = false
+        router.push({
+          path: '/error',
+          query: {
+            message: error.value,
+          },
+        })
       }
     }
 

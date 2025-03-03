@@ -213,11 +213,17 @@ onMounted(async () => {
     characters.value = charactersResponse.data.data.slice(0, 10)
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {
-      error.value = err.response?.data?.message || 'Failed to load anime details'
+      error.value = 'Lỗi khi tải thông tin anime'
     } else {
-      error.value = 'An unknown error occurred'
+      error.value = 'Lỗi không xác định'
     }
     console.error('Error fetching anime details:', err)
+    router.push({
+      path: '/error',
+      query: {
+        message: error.value,
+      },
+    })
   } finally {
     loading.value = false
   }

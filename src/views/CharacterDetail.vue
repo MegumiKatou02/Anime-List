@@ -102,11 +102,17 @@ onMounted(async () => {
     animeAppearances.value = appearancesResponse.data.data
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {
-      error.value = err.response?.data?.message || 'Failed to load character details'
+      error.value = 'Lỗi khi tải thông tin chi tiết nhân vật'
     } else {
-      error.value = 'An unknown error occurred'
+      error.value = 'Lối không xác định'
     }
-    console.error('Error fetching character details:', err)
+    console.error(error.value, err)
+    router.push({
+      path: '/error',
+      query: {
+        message: error.value,
+      },
+    })
   } finally {
     loading.value = false
   }
