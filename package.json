@@ -16,6 +16,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@vueuse/head": "^2.0.0",
     "axios": "^1.7.9",
     "firebase": "^11.4.0",
     "lodash": "^4.17.21",
