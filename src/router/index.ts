@@ -5,6 +5,11 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      name: 'main',
+      component: () => import('../views/Main.vue'),
+    },
+    {
+      path: '/home',
       name: 'home',
       component: () => import('../views/Home.vue'),
     },
@@ -80,7 +85,7 @@ router.beforeEach((to, from, next) => {
     const isLoggedIn = localStorage.getItem('discord_token')
 
     if (!isLoggedIn) {
-      next('/')
+      next('/home')
       alert('Chưa đăng nhập mà đòi vào')
     } else {
       next()

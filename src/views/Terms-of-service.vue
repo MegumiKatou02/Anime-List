@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h1 :class="{ 'dark-mode': isDarkMode }">
-      Hiện tại website chưa có điều khoản dịch vụ :penguin:
+      Hiện tại website chưa có điều khoản sử dụng hay chính sách bảo mật nào :penguin:
     </h1>
   </div>
 </template>

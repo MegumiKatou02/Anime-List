@@ -1,6 +1,6 @@
 <script lang="ts">
 import { useRoute } from 'vue-router'
-import { onMounted, onUnmounted, computed, defineComponent, ref } from 'vue'
+import { onMounted, onUnmounted, computed, defineComponent, ref, watchEffect } from 'vue'
 import Setting from './components/Setting.vue'
 import { isDarkMode } from './utils/settings'
 import Login from './components/Login.vue'
@@ -22,6 +22,19 @@ export default defineComponent({
 
     const isOpenSetting = ref(false)
     const isOpenLogin = ref(false)
+    const isHomePage = computed(() => route.path === '/')
+
+    const mainRef = ref<HTMLElement | null>(null)
+
+    watchEffect(() => {
+      if (mainRef.value) {
+        if (route.path === '/') {
+          mainRef.value.style.marginTop = '-2rem'
+        } else {
+          mainRef.value.style.marginTop = ''
+        }
+      }
+    })
 
     const closeSettings = () => {
       isOpenSetting.value = false
@@ -41,9 +54,9 @@ export default defineComponent({
 
     const directUrl = computed(() => {
       if (route.query.type) {
-        return { path: '/', query: { type: route.query.type } }
+        return { path: '/home', query: { type: route.query.type } }
       }
-      return '/'
+      return '/home'
     })
 
     onMounted(() => {
@@ -63,6 +76,8 @@ export default defineComponent({
       closeLogin,
       isDarkMode,
       directUrl,
+      isHomePage,
+      mainRef,
     }
   },
 })
@@ -70,7 +85,7 @@ export default defineComponent({
 
 <template>
   <div class="app-container" :class="{ 'dark-mode': isDarkMode }">
-    <header>
+    <header v-if="!isHomePage">
       <nav class="navbar" :class="{ 'reader-page': isReaderPage }">
         <router-link :to="directUrl">
           <div class="nav-brand">
@@ -100,13 +115,13 @@ export default defineComponent({
       </nav>
     </header>
 
-    <main>
+    <main ref="mainRef">
       <Login v-if="isOpenLogin" @close="closeLogin" />
       <Setting v-if="isOpenSetting" @close="closeSettings" />
       <RouterView />
     </main>
 
-    <footer :class="{ 'status-page': isStatusPage }">
+    <footer v-if="!isHomePage" :class="{ 'status-page': isStatusPage }">
       <div class="footer-content">
         <div class="footer-text">
           <p>Được hỗ trợ bởi</p>
