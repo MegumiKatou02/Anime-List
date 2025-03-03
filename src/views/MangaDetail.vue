@@ -115,7 +115,6 @@ import type { Manga, Chapter } from '@/types/manga'
 import { MangaService } from '@/services/mangaApi'
 import ChapterModal from '../components/ChapterModal.vue'
 import { isDarkMode } from '@/utils/settings'
-import { updateMetaTags, resetMetaTags } from '@/utils/metaTags'
 import { onUnmounted } from 'vue'
 import SaveModel from '@/components/SaveModel.vue'
 import { saveToFirestore } from '@/services/firestoreService'
@@ -220,13 +219,6 @@ export default defineComponent({
         } else {
           newChapters.value = mangaById.attributes.lastChapter
         }
-
-        updateMetaTags({
-          title: `${manga.value.title}`,
-          description: manga.value.description || 'Xem thông tin chi tiết manga này tại Anime List',
-          image: manga.value.coverImage,
-          type: 'article',
-        })
       } catch (error) {
         console.error('Error loading manga data:', error)
       }
@@ -253,9 +245,7 @@ export default defineComponent({
       loading.value = false
     })
 
-    onUnmounted(() => {
-      resetMetaTags()
-    })
+    onUnmounted(() => {})
 
     return {
       sendData,
