@@ -204,7 +204,7 @@ export default defineComponent({
       const query = route.query
       if (mediaType.value === 'anime') {
         // tạm thời bỏ qua
-        if (!query.q && !status && !genres) {
+        if (!query.q && !status && genres.length === 0) {
           mediaList.value = await animeService.getShuffledAnimeListFromAPI()
           mediaListTotal.value = [...mediaList.value]
           return
@@ -234,8 +234,11 @@ export default defineComponent({
           // mediaList.value = [...mediaListTotal.value]
           return
         }
-        if (!query.q && !status && !genres) {
+        if (!query.q && !status && genres.length === 0) {
           mediaList.value = mediaListTotal.value
+
+          // mediaListTotal.value = await mangaService.getTopManga()
+          // mediaList.value = [...mediaListTotal.value]
           return
         }
 
