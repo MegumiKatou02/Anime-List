@@ -69,6 +69,7 @@ export class AnimeService {
     }
 
     try {
+      const randomOffset = Math.floor(Math.random() * 101)
       const response = await axios.get(`${BASE_URL}/anime/ranking`, {
         headers: this.getHeaders(),
         params: {
@@ -76,6 +77,7 @@ export class AnimeService {
           limit: 100,
           fields:
             'status,id,title,main_picture,mean,rank,popularity,synopsis,start_date,end_date,genres',
+          offset: randomOffset,
         },
       })
 

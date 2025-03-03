@@ -120,7 +120,6 @@ import SaveModel from '@/components/SaveModel.vue'
 import { saveToFirestore } from '@/services/firestoreService'
 import { checkToken, getDiscordUser, refreshToken } from '@/services/discordApi'
 import type { User } from '@/types/discord'
-import { useMeta } from '@/pages/useMeta'
 
 export default defineComponent({
   name: 'MangaDetail',
@@ -200,15 +199,6 @@ export default defineComponent({
         }
         manga.value = mangaData
         document.title = manga.value.title || 'Anime List'
-
-        const metaInfo = {
-          title: manga.value.title || 'Không có tiêu đề',
-          description: manga.value.description || 'Xem thông tin chi tiết manga này tại Anime List',
-          image: `https://og.mangadex.org/og-image/manga/${manga.value.id}`,
-          url: window.location.href,
-        }
-
-        useMeta(metaInfo)
 
         statistics.value = await mangaService.getStatisticsManga(mangaId)
 

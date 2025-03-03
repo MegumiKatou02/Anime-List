@@ -241,16 +241,17 @@ export class MangaService {
    */
   async getTopManga(): Promise<Manga[]> {
     try {
-      const response = await fetch(
-        `${this.baseUrl}/manga?limit=100&order[rating]=desc&includes[]=cover_art`,
-        {
-          headers: {
-            Referer: 'https://mangadex.org',
-            'Cache-Control': 'no-cache',
-          },
+      const randomOffset = Math.floor(Math.random() * 201)
+      const response = await this.api.get('/manga', {
+        params: {
+          limit: 100,
+          'order[rating]': 'desc',
+          'includes[]': 'cover_art',
+          offset: randomOffset,
         },
-      )
-      const data = await response.json()
+      })
+
+      const data = response.data
 
       const topManga: Manga[] = this.transformMangaData(data.data)
 
@@ -560,10 +561,11 @@ export class MangaService {
   }
 
   async searchMangaWithFilter(status: string, tags: string[]): Promise<Manga[]> {
-    console.log('lock in')
+    const randomOffet = Math.floor(Math.random() * 10)
 
     const params: Record<string, number | string | string[]> = {
-      limit: 50,
+      limit: 70,
+      offset: randomOffet,
       'includes[]': 'cover_art',
     }
 
