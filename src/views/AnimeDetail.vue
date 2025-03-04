@@ -210,7 +210,7 @@ onMounted(async () => {
     const charactersResponse = await axios.get(
       `https://api.jikan.moe/v4/anime/${animeId}/characters`,
     )
-    characters.value = charactersResponse.data.data.slice(0, 10)
+    characters.value = charactersResponse.data.data.slice(0, 12)
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {
       error.value = 'Lỗi khi tải thông tin anime'
