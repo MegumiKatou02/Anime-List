@@ -4,7 +4,7 @@
     <h1>4 lẻ 4 nót phao</h1>
     <h2 class="a2">Trang không tồn tại</h2>
     <p>Đường dẫn bạn đang tìm kiếm không tồn tại.</p>
-    <router-link to="/">Quay về trang chủ</router-link>
+    <router-link to="/" class="btn">Quay về trang chủ</router-link>
   </div>
 </template>
 
@@ -44,6 +44,7 @@ export default defineComponent({
 }
 
 .error-image {
+  margin-top: 5rem;
   margin-bottom: 2rem;
 }
 
@@ -52,7 +53,27 @@ export default defineComponent({
 }
 
 .dark-mode a {
-  color: rgb(120, 120, 255);
+  color: white;
+}
+
+.btn {
+  background-color: #1e40af;
+  color: #fff;
+  padding: 10px 20px;
+  margin: 20px 10px 0px;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #3b82f6;
+}
+
+a {
+  color: #1e40af;
 }
 
 @media (max-width: 700px) {
