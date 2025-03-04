@@ -7,6 +7,7 @@ export const mainInformation: Information = {
       myanimelist: 'https://myanimelist.net/',
       mangadex: 'https://mangadex.org/',
       github: 'https://github.com/MegumiKatou02/Anime-List',
+      github_issues: 'https://github.com/MegumiKatou02/Anime-List/issues',
     },
     social: {
       facebook: 'https://web.facebook.com/profile.php?id=100015444163739',

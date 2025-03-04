@@ -5,6 +5,7 @@ export interface Information {
       myanimelist: string
       mangadex: string
       github: string
+      github_issues: string
     }
     social: {
       facebook: string

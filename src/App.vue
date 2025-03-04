@@ -22,13 +22,15 @@ export default defineComponent({
 
     const isOpenSetting = ref(false)
     const isOpenLogin = ref(false)
-    const isViewPage = computed(() => route.path === '/')
+    const isViewPage = computed(
+      () => route.path === '/' || route.path === '/error' || route.query.status === 'error',
+    )
 
     const mainRef = ref<HTMLElement | null>(null)
 
     watchEffect(() => {
       if (mainRef.value) {
-        if (route.path === '/') {
+        if (isViewPage.value) {
           mainRef.value.style.marginTop = '-2rem'
         } else {
           mainRef.value.style.marginTop = ''

@@ -30,7 +30,7 @@ export class MangaService {
         console.error('API Error:', error)
 
         if (error.response?.status === 404) {
-          throw new Error('Lôi không tìm thấy dữ liệu Manga')
+          throw new Error('Lỗi không tìm thấy dữ liệu Manga')
         }
         if (error.response?.status === 429) {
           throw new Error('Quá nhiều yêu cầu. Vui lòng thử lại sau')
