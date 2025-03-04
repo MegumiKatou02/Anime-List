@@ -1,7 +1,8 @@
 <template>
   <div class="manga-card" @click="navigateToDetail" :class="{ 'dark-mode': isDarkMode }">
     <div class="manga-cover">
-      <img :src="manga.coverImage" :alt="manga.title" class="cover-image" />
+      <img v-if="manga.coverImage" :src="manga.coverImage" :alt="manga.title" class="cover-image" />
+      <img v-else src="@/assets/256x364.png" :alt="manga.title" class="cover-image" />
       <div class="manga-rating" v-if="manga.rating">
         <svg viewBox="0 0 24 24" class="star-icon">
           <path

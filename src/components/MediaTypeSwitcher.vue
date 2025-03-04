@@ -41,15 +41,23 @@ export default defineComponent({
     ]
 
     const activeTab = ref(localStorage.getItem('activeTab') || 'anime')
+    const isChanging = ref(false)
 
     const indicatorStyle = computed(() => ({
       transform: `translateX(${activeTab.value === 'anime' ? '0%' : '100%'})`,
     }))
 
     const handleTabChange = (tabId: string) => {
-      activeTab.value = tabId
-      emit('change', tabId)
-      localStorage.setItem('activeTab', tabId)
+      if (isChanging.value) return
+
+      isChanging.value = true
+
+      setTimeout(() => {
+        activeTab.value = tabId
+        emit('change', tabId)
+        localStorage.setItem('activeTab', tabId)
+        isChanging.value = false
+      }, 500)
     }
 
     return {
