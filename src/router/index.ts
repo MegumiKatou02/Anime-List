@@ -85,7 +85,7 @@ router.beforeEach((to, from, next) => {
     const isLoggedIn = localStorage.getItem('discord_token')
 
     if (!isLoggedIn) {
-      next('/home')
+      next('/')
       alert('Chưa đăng nhập mà đòi vào')
     } else {
       next()
