@@ -1,230 +1,307 @@
 <template>
-  <div class="about-container" :class="{ 'dark-mode': isDarkMode }">
-    <div class="split-container">
-      <div class="left-column">
-        <section class="api-section card" :class="{ 'dark-mode': isDarkMode }">
-          <h2 class="section-title">Dữ Liệu API</h2>
-          <div class="api-grid">
-            <div v-for="api in apis" :key="api.name" class="api-card">
-              <div class="api-info">
-                <h3 class="api-name">{{ api.name }}</h3>
-                <p class="api-description">{{ api.description }}</p>
-              </div>
+  <div class="about-container">
+    <section class="about-hero">
+      <div class="about-hero-content">
+        <h1 class="about-hero-title">Thông tin <span class="text-accent">AnimeList</span></h1>
+        <p class="about-hero-description">Website anime/manga đầu hàng Việt Nam</p>
+        <router-link to="/" class="btn-primary">Trang chủ chính thức</router-link>
+      </div>
+    </section>
+
+    <section class="about">
+      <div class="about-content">
+        <div class="about-image">
+          <div class="slideshow-container">
+            <div class="slideshow-images">
+              <img src="@/assets/logo-large.jpg" alt="AnimeList Logo" class="slide-image active" />
+              <img src="@/assets/logo-large2.jpg" alt="AnimeList Logo" class="slide-image" />
+              <img src="@/assets/logo-large3.jpg" alt="AnimeList Logo" class="slide-image" />
+              <img src="@/assets/logo-large4.jpg" alt="AnimeList Logo" class="slide-image" />
             </div>
           </div>
-        </section>
-        <section class="anime-image-section card">
-          <img
-            src="https://i.pinimg.com/736x/0c/6f/9f/0c6f9f0e9843c3d009240248dcf135ea.jpg"
-            alt="Anime Image"
-            class="anime-image"
-          />
-        </section>
-      </div>
-
-      <div class="right-column">
-        <section class="contact-section card">
-          <h2 class="section-title">Liên Hệ & Hỗ Trợ</h2>
-          <div class="social-grid">
-            <a
-              href="https://github.com/MegumiKatou02/Anime-List/issues"
-              target="_blank"
-              class="social-card"
-            >
-              <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-                />
-              </svg>
-              <span class="social-name">GitHub Issues</span>
-            </a>
-
-            <a
-              href="https://www.facebook.com/profile.php?id=100015444163739"
-              target="_blank"
-              class="social-card"
-            >
-              <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm3 8h-1.35c-.538 0-.65.221-.65.778v1.222h2l-.209 2h-1.791v7h-3v-7h-2v-2h2v-2.308c0-1.769.931-2.692 3.029-2.692h1.971v3z"
-                />
-              </svg>
-              <span class="social-name">Facebook</span>
-            </a>
+        </div>
+        <div class="about-text">
+          <h2 class="section-title">Tóm tắt trang web</h2>
+          <p>
+            Nghèo nghèo nghèo nghèo nghèo nghèo nghèo nghèo nghèo nghèo nghèo nghèo nghèo nghèo
+            nghèo nghèo nghèo nghèo nghèo nghèo nghèo nghèo nghèo nghèo nghèo nghèo nghèo nghèo
+          </p>
+          <div class="about-stats">
+            <div class="stat-item">
+              <span class="stat-number"> <AnimatedNumber :end="100" suffix="+" />+ </span>
+              <span class="stat-label">Tính năng (boc phet day)</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">24/7</span>
+              <span class="stat-label">Hỗ trợ cộng đồng</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">∞</span>
+              <span class="stat-label">Đam mê</span>
+            </div>
           </div>
-        </section>
-        <section class="anime-image-section card">
-          <img
-            src="https://i.pinimg.com/736x/a7/ac/f8/a7acf87893d766056a3e97aa06500780.jpg"
-            alt="Anime Image"
-            class="anime-image"
-          />
-        </section>
+        </div>
       </div>
-    </div>
+    </section>
+
+    <WaifuShowcase />
+
+    <section class="about-contribution">
+      <h2 class="section-title">Đóng Góp Cộng Đồng</h2>
+      <div class="contribution-content">
+        <div class="contribution-text">
+          <p>
+            AnimeList là dự án mã nguồn mở. Mình hoan nghênh mọi đóng góp từ cộng đồng, cho dù bạn
+            là lập trình viên, designer, hay chỉ đơn giản là một fan anime.
+          </p>
+          <a
+            :href="mainInformation.link.web.github"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-contribute"
+            >Đóng Góp Ngay</a
+          >
+        </div>
+        <div class="contribution-image">
+          <img src="@/assets/contribute.png" alt="Community Contribution" width="500px" />
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
-<script setup lang="ts">
-import { isDarkMode } from '@/utils/settings'
+<script lang="ts">
+import { defineComponent } from 'vue'
+import AnimatedNumber from '@/components/AnimatedNumber.vue'
+import WaifuShowcase from '@/components/WaifuShowcase.vue'
+import { mainInformation } from '@/configs/config'
 
-const apis = [
-  {
-    name: 'MyAnimeList',
-    description: 'Cung cấp thông tin xếp hạng và tìm kiếm anime',
+export default defineComponent({
+  name: 'AboutView',
+  components: {
+    AnimatedNumber,
+    WaifuShowcase,
   },
-  {
-    name: 'Jikan API',
-    description: 'Cung cấp chi tiết anime, nhân vật và thông tin mở rộng',
+  data() {
+    return {
+      mainInformation,
+      currentSlide: 0,
+      totalSlides: 4,
+      slideInterval: undefined as number | undefined,
+    }
   },
-  {
-    name: 'Mangadex API',
-    description: 'Cung cấp chi tiết dữ liệu manga, chapters',
+  mounted() {
+    this.startSlideshow()
   },
-]
+  beforeUnmount() {
+    this.stopSlideshow()
+  },
+  methods: {
+    startSlideshow() {
+      this.slideInterval = setInterval(() => {
+        this.nextSlide()
+      }, 5000)
+    },
+    stopSlideshow() {
+      clearInterval(this.slideInterval)
+    },
+    nextSlide() {
+      const slides = document.querySelectorAll('.slide-image')
+      slides[this.currentSlide].classList.remove('active')
+      this.currentSlide = (this.currentSlide + 1) % this.totalSlides
+      slides[this.currentSlide].classList.add('active')
+    },
+  },
+})
 </script>
 
 <style scoped>
 .about-container {
-  background-color: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background-color: #0f172a;
+  color: #e2e8f0;
   min-height: 100vh;
-  padding: 2rem 1rem;
 }
 
-.split-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
+.about-hero {
+  background-color: #1e293b;
+  padding: 4rem 2rem;
+  text-align: center;
 }
 
-.left-column,
-.right-column {
-  flex: 1;
-  min-width: 300px;
+.about-hero-title {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
 }
 
-.card {
-  background: #fff;
-  border-radius: 1.5rem;
-  padding: 2rem;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-  margin-bottom: 2rem;
+.text-accent {
+  color: #6366f1;
 }
 
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.12);
+.about-hero-description {
+  font-size: 1.25rem;
+  opacity: 0.8;
+  margin-bottom: 2.4rem;
+}
+
+.btn-primary {
+  margin-top: 200px;
+  background-color: #6366f1;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: larger;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #4f46e5;
 }
 
 .section-title {
-  font-size: 1.6rem;
-  margin-bottom: 1.5rem;
-  color: #1a365d;
-  font-weight: 600;
   text-align: center;
+  font-size: 2.25rem;
+  margin-bottom: 3rem;
+  color: white;
 }
 
-.api-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+.about {
+  padding: 5rem 2rem;
 }
 
-.api-card {
-  padding: 0.75rem;
-  background: #f8fafc;
-  border-radius: 1rem;
-  border: 1px solid #e2e8f0;
-  text-align: center;
-  color: #1a365d;
-  transition: background 0.3s ease;
-}
-
-.api-card:hover {
-  background: rgba(44, 62, 80, 0.9);
-  color: #fff;
-}
-
-.api-name {
-  font-size: 1.4rem;
-  margin-bottom: 0.5rem;
-  color: inherit;
-}
-
-.api-description {
-  font-size: 1rem;
-  color: inherit;
-}
-
-.social-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  align-items: center;
-}
-
-.social-card {
+.about-content {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 1.5rem;
-  background: #f8fafc;
-  border-radius: 0.75rem;
-  text-decoration: none;
-  color: #1a365d;
-  border: 1px solid #e2e8f0;
-  transition:
-    background 0.3s ease,
-    transform 0.3s ease;
-  width: 100%;
-  max-width: 300px;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 4rem;
 }
 
-.social-card:hover {
-  background: rgba(44, 62, 80, 0.9);
-  color: #fff;
-  transform: translateY(-3px);
-}
-
-.social-icon {
-  width: 28px;
-  height: 28px;
-  flex-shrink: 0;
-}
-
-.social-name {
-  font-size: 1.2rem;
-  font-weight: 500;
-}
-
-.anime-image-section {
-  text-align: center;
-  margin-top: 1rem;
-}
-
-.anime-image {
+.about-image img {
   max-width: 100%;
   border-radius: 1rem;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
-.about-container.dark-mode {
-  background-color: #1a202c;
+.about-text p {
+  line-height: 1.8;
+  margin-bottom: 2rem;
 }
 
-@media (max-width: 800px) {
-  .split-container {
-    flex-direction: column;
-    align-items: center;
+.about-stats {
+  display: flex;
+  justify-content: space-between;
+}
+
+.slideshow-container {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.slideshow-images {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 50rem;
+}
+
+.slide-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  opacity: 0;
+  transform: scale(1.05);
+  transition:
+    opacity 1s ease-in-out,
+    transform 1.5s ease-in-out;
+  border-radius: 1rem;
+}
+
+.slide-image.active {
+  opacity: 1;
+  transform: scale(1);
+  position: relative;
+}
+
+.logo-animation {
+  max-width: 100%;
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
   }
-  .left-column,
-  .right-column {
-    width: 100%;
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #6366f1;
+}
+
+.stat-label {
+  opacity: 0.7;
+}
+
+.about-contribution {
+  background-color: #1e293b;
+  padding: 5rem 2rem;
+}
+
+.contribution-content {
+  display: flex;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 4rem;
+}
+
+.contribution-text {
+  flex: 1;
+}
+
+.btn-contribute {
+  display: inline-block;
+  background-color: #6366f1;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  margin-top: 1.5rem;
+  text-decoration: none;
+}
+
+.contribution-image img {
+  max-width: 100%;
+  border-radius: 1rem;
+}
+
+@media (max-width: 768px) {
+  .journey-content,
+  .contribution-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .slideshow-images {
+    max-width: 20rem;
   }
 }
 </style>
