@@ -63,6 +63,7 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .error-container {
@@ -89,6 +90,16 @@ span {
 
 .action-buttons {
   margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+  .action-buttons a {
+    margin-bottom: 1rem;
+  }
 }
 
 a {

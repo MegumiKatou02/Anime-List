@@ -36,7 +36,7 @@ export class MangaService {
           throw new Error('Quá nhiều yêu cầu. Vui lòng thử lại sau')
         }
 
-        throw new Error('Lỗi kkhông xác định trong khi lấy dữ liệu Manga')
+        throw new Error('Lỗi không xác định trong khi lấy dữ liệu Manga')
       },
     )
   }

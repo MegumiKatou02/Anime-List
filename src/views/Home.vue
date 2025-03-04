@@ -146,6 +146,9 @@ export default defineComponent({
       mediaListTotal.value = []
       currentPage.value = 1
 
+      loading.value = true
+      loadingMore.value = false
+
       await router.push({
         query: {
           type,
