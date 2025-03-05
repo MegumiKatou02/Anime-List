@@ -14,7 +14,7 @@
       <p class="anime-synopsis dark:text-white">{{ truncatedSynopsis }}</p>
       <div class="anime-genres">
         <span
-          v-for="genre in anime.genres"
+          v-for="genre in limitedGenres"
           :key="genre.id"
           class="genre-tag dark:bg-gray-700 dark:text-white"
         >
@@ -39,6 +39,10 @@ const props = defineProps({
     type: Object as PropType<Anime>,
     required: true,
   },
+})
+
+const limitedGenres = computed(() => {
+  return props.anime.genres.slice(0, 5)
 })
 
 const truncatedSynopsis = computed(() => {
@@ -74,26 +78,35 @@ const goToAnimeDetail = () => {
 
 .anime-image {
   width: 100%;
-  height: 200px;
+  height: 300px;
   object-fit: cover;
 }
 
 .anime-info {
   padding: 1rem;
   height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
 .anime-stats {
   display: flex;
   gap: 1rem;
-  margin: 0.5rem 0;
+  margin: 0.2rem 0;
   color: #666;
 }
 
 .anime-synopsis {
   font-size: 0.9rem;
   color: #444;
-  margin: 0.5rem 0;
+  margin: 0.2rem 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .anime-genres {
@@ -164,8 +177,8 @@ const goToAnimeDetail = () => {
   }
 
   .genre-tag {
-    background: #2d3748;
-    color: #fff;
+    background: #f0f0f0;
+    color: black;
   }
 }
 </style>
