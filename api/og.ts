@@ -23,7 +23,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         </head>
         <body>
             <script>
-                window.location.href = "/#/anime/${id}";
+                window.location.href = "/#/manga/${id}";
             </script>
         </body>
         </html>
