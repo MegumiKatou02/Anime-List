@@ -88,9 +88,15 @@ export interface Anime {
     name: string
   }>
   status: string
+  studios: Studio[]
 }
 
 export interface Genres {
   mal_id: number
+  name: string
+}
+
+export interface Studio {
+  id: number
   name: string
 }
