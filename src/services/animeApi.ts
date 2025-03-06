@@ -102,4 +102,25 @@ export class AnimeService {
     })
     return response.data.data.map((item: { node: Anime }) => item.node)
   }
+
+  // Jikan
+  async getAnimeDetail(animeId: string) {
+    try {
+      const { data } = await axios.get(`https://api.jikan.moe/v4/anime/${animeId}`)
+
+      return data
+    } catch {
+      throw new Error('Lỗi khi tải thông tin anime')
+    }
+  }
+
+  async getAnimeCharacterDetail(animeId: string) {
+    try {
+      const { data } = await axios.get(`https://api.jikan.moe/v4/anime/${animeId}/characters`)
+
+      return data
+    } catch {
+      throw new Error('Lỗi khi tải thông tin nhân vật')
+    }
+  }
 }

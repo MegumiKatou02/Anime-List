@@ -48,6 +48,10 @@
           </div>
         </div>
 
+        <div class="type-info" :class="{ 'dark-mode': isDarkMode }">
+          <div v-if="anime.type" class="type-item"><strong>Type:</strong> {{ anime.type }}</div>
+        </div>
+
         <div class="anime-genres" style="margin-bottom: 2rem">
           <span v-for="genre in anime.genres" :key="genre.mal_id" class="genre-tag">
             {{ genre.name }}
@@ -120,6 +124,7 @@ import SaveModel from '@/components/SaveModel.vue'
 import type { User } from '@/types/discord'
 import { checkToken, getDiscordUser, refreshToken } from '@/services/discordApi'
 import { saveToFirestore } from '@/services/firestoreService'
+import { AnimeService } from '@/services/animeApi'
 
 const route = useRoute()
 const router = useRouter()
@@ -127,6 +132,7 @@ const anime = ref<AnimeJikan | null>(null)
 const characters = ref<Character[]>([])
 const loading = ref(true)
 const error = ref('')
+const animeService = new AnimeService()
 
 const sendData = async () => {
   let token = localStorage.getItem('discord_token')
@@ -201,16 +207,16 @@ onMounted(async () => {
   try {
     const animeId = route.params.id
 
-    const animeResponse = await axios.get(`https://api.jikan.moe/v4/anime/${animeId}`)
-    anime.value = animeResponse.data.data
+    const animeResponse = await animeService.getAnimeDetail(animeId as string)
+    anime.value = animeResponse.data
+
     document.title = anime.value?.title || 'Anime List'
 
-    trailerVideoId.value = animeResponse.data.data.trailer.youtube_id
+    trailerVideoId.value = animeResponse.data.trailer.youtube_id
 
-    const charactersResponse = await axios.get(
-      `https://api.jikan.moe/v4/anime/${animeId}/characters`,
-    )
-    characters.value = charactersResponse.data.data.slice(0, 12)
+    const charactersResponse = await animeService.getAnimeCharacterDetail(animeId as string)
+
+    characters.value = charactersResponse.data.slice(0, 12)
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {
       error.value = 'Lỗi khi tải thông tin anime'
@@ -275,19 +281,21 @@ h2 {
 }
 
 .anime-meta,
-.broadcast-info {
+.broadcast-info,
+.type-info {
   display: flex;
   gap: 1rem;
   margin-bottom: 1rem;
   flex-wrap: wrap;
 }
 
-.broadcast-info {
+.type-info {
   margin-bottom: 2rem;
 }
 
 .meta-item,
-.broadcast-item {
+.broadcast-item,
+.type-item {
   background-color: #e9ecef;
   padding: 0.5rem;
   border-radius: 4px;
@@ -302,9 +310,9 @@ h2 {
 .genre-tag {
   background-color: #f0f0f0;
   color: #666;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.9rem;
 }
 
 .anime-synopsis {
@@ -430,7 +438,8 @@ h2.dark-mode {
 }
 
 .dark-mode .meta-item:not(:first-child),
-.dark-mode .broadcast-item {
+.dark-mode .broadcast-item,
+.dark-mode .type-item {
   background-color: #2d3748;
   color: #fff;
 }
@@ -493,14 +502,17 @@ h3.dark-mode {
     grid-template-columns: 1fr;
   }
 
-  .anime-poster {
-    max-width: 200px;
-    margin-bottom: 1rem;
-  }
-
   .characters-grid {
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     gap: 0.5rem;
+  }
+}
+
+@media (max-width: 867px) {
+  .anime-poster {
+    max-width: 300px;
+    max-height: 410px;
+    margin-bottom: 1rem;
   }
 }
 
@@ -510,7 +522,8 @@ h3.dark-mode {
   }
 
   .meta-item,
-  .broadcast-item {
+  .broadcast-item,
+  .type-item {
     background-color: #2d3748;
     color: #fff;
   }
