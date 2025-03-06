@@ -36,12 +36,15 @@ export class AnimeService {
       headers: this.getHeaders(),
       params: {
         q: query,
-        limit: 20,
+        nsfw: true,
+        limit: 100,
         fields:
-          'status,id,title,main_picture,mean,rank,popularity,synopsis,start_date,end_date,genres',
+          'status,id,alternative_titles,title,main_picture,mean,rank,popularity,synopsis,start_date,end_date,genres',
       },
     })
-    return response.data.data.map((item: { node: Anime }) => item.node)
+    const animeData = response.data.data
+
+    return animeData.map((item: { node: Anime }) => item.node)
   }
 
   searchAnimeWithFilter(animeList: Anime[], status: string, genres: number[]) {
@@ -76,6 +79,7 @@ export class AnimeService {
         params: {
           ranking_type: type,
           limit: 115,
+          nsfw: true,
           fields:
             'status,id,title,main_picture,mean,rank,popularity,synopsis,start_date,end_date,genres,studios,media_type',
           offset: randomOffset,
