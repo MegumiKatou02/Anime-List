@@ -33,8 +33,9 @@
 
     <div v-else class="anime-grid">
       <template v-for="item in displayedItems" :key="item.id">
-        <AnimeCard v-if="mediaType === 'anime'" :anime="item as Anime" class="media-card" />
-        <MangaCard v-else :manga="item as Manga" class="media-card" />
+        <div style="display: none" v-if="mediaType === 'anime'"></div>
+        <AnimeCard v-if="item && mediaType === 'anime'" :anime="item as Anime" class="media-card" />
+        <MangaCard v-if="item && mediaType === 'manga'" :manga="item as Manga" class="media-card" />
       </template>
     </div>
 

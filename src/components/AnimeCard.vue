@@ -4,7 +4,13 @@
     :class="{ 'dark-mode': isDarkMode }"
     @click="goToAnimeDetail"
   >
-    <img :src="anime.main_picture.large" :alt="anime.title" class="anime-image" />
+    <img
+      v-if="anime.main_picture.large"
+      :src="anime.main_picture.large"
+      :alt="anime.title"
+      class="anime-image"
+    />
+    <img v-else src="@/assets/256x364.png" :alt="anime.title" class="anime-image" />
     <div class="anime-info" :class="{ 'dark-mode': isDarkMode }">
       <h3 class="anime-title dark:text-white">{{ anime.title }}</h3>
       <div class="anime-stats">
