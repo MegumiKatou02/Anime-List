@@ -16,6 +16,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@vercel/node": "^5.1.12",
     "@vueuse/head": "^2.0.0",
     "axios": "^1.7.9",
     "firebase": "^11.4.0",
