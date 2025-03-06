@@ -13,10 +13,6 @@
       "destination": "https://uploads.mangadex.org/:path*"
     },
     {
-      "source": "/manga/:id",
-      "destination": "/api/og?id=:id"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
