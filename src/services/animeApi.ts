@@ -1,6 +1,7 @@
 import axios from 'axios'
-import type { Anime } from '@/types/anime'
+import type { Anime, Studio } from '@/types/anime'
 import { ArrayUtils } from '@/utils/array'
+import { ChineseStudios } from '@/utils/studios'
 
 const BASE_URL = '/api'
 
@@ -74,14 +75,26 @@ export class AnimeService {
         headers: this.getHeaders(),
         params: {
           ranking_type: type,
-          limit: 100,
+          limit: 115,
           fields:
-            'status,id,title,main_picture,mean,rank,popularity,synopsis,start_date,end_date,genres',
+            'status,id,title,main_picture,mean,rank,popularity,synopsis,start_date,end_date,genres,studios,media_type',
           offset: randomOffset,
         },
       })
 
-      let animeList = response.data.data.map((item: { node: Anime }) => item.node)
+      // Không lọc hết nổi mấy thằng tung của :(
+      const isJapaneseAnime = (anime: Anime) => {
+        return (
+          anime.start_date &&
+          parseInt(anime.start_date.slice(0, 4)) >= 2000 &&
+          anime.studios &&
+          anime.studios.every((studio: Studio) => !ChineseStudios.includes(studio.name))
+        )
+      }
+
+      let animeList = response.data.data
+        .map((item: { node: Anime }) => item.node)
+        .filter(isJapaneseAnime)
 
       animeList = ArrayUtils.FisherYatesShuffle<Anime>(animeList)
 
