@@ -173,6 +173,7 @@ export default defineComponent({
 .about-content {
   display: flex;
   align-items: center;
+  justify-content: center;
   max-width: 1200px;
   margin: 0 auto;
   gap: 4rem;
@@ -299,9 +300,21 @@ export default defineComponent({
     flex-direction: column;
     text-align: center;
   }
+}
 
-  .slideshow-images {
+@media (max-width: 784px) {
+  .about-content {
+    flex-wrap: wrap;
+  }
+
+  .about-image img {
     max-width: 20rem;
+  }
+}
+
+@media (max-width: 456px) {
+  .stat-number {
+    font-size: 1.69rem;
   }
 }
 </style>
