@@ -48,6 +48,9 @@ const props = defineProps({
 })
 
 const limitedGenres = computed(() => {
+  if (!props.anime || !props.anime.genres) {
+    return []
+  }
   return props.anime.genres.slice(0, 5)
 })
 
