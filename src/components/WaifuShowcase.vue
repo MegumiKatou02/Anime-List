@@ -66,8 +66,7 @@ export default defineComponent({
         {
           name: 'Kurumi Tokisaki',
           origin: 'Date a Live',
-          image:
-            'https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-6/480026376_1014577197365354_2479535640243023664_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFMpKjyz9qZWgv-Pcoy2mchprixs0Ju-wmmuLGzQm77CYwjfqSrXsV2iSg8Ay7bIF1jYgjUPcOp6f_g-1xq4vA6&_nc_ohc=5B9EhLvOe_gQ7kNvgG8-vel&_nc_oc=AdgkBz7RRyMaF0WHm_vLFyzSTM3CT9kNyYdtUuaQzBGXfApvjaiLq42OipXlzaBU_Z4l29jrXTiZrpUHRuGmSdDh&_nc_zt=23&_nc_ht=scontent.fsgn2-6.fna&_nc_gid=ARXzDJZIk91UznDuDr0EHtw&oh=00_AYCecH_sMi1jcoPDrLbNu7BBh6PX9YMOVROXdQCkbobTeQ&oe=67CD09AE',
+          image: 'https://pbs.twimg.com/media/GjvJwCdbgAA7y6P.jpg',
           charm: 100,
           cuteness: 70,
         },
