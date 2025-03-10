@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="anime-card dark:bg-gray-800 dark:border-gray-700"
-    :class="{ 'dark-mode': isDarkMode }"
-    @click="goToAnimeDetail"
-  >
+  <div class="anime-card" :class="{ 'dark-mode': isDarkMode }" @click="goToAnimeDetail">
     <img
       v-if="anime.main_picture.large"
       :src="anime.main_picture.large"
@@ -12,18 +8,14 @@
     />
     <img v-else src="@/assets/256x364.png" :alt="anime.title" class="anime-image" />
     <div class="anime-info" :class="{ 'dark-mode': isDarkMode }">
-      <h3 class="anime-title dark:text-white">{{ anime.title }}</h3>
+      <h3 class="anime-title">{{ anime.title }}</h3>
       <div class="anime-stats">
-        <span class="dark:text-white">Rank: #{{ anime.rank }}</span>
-        <span class="dark:text-white">Score: {{ anime.mean }}</span>
+        <span>Rank: #{{ anime.rank }}</span>
+        <span>Score: {{ anime.mean }}</span>
       </div>
-      <p class="anime-synopsis dark:text-white">{{ truncatedSynopsis }}</p>
+      <p class="anime-synopsis">{{ truncatedSynopsis }}</p>
       <div class="anime-genres">
-        <span
-          v-for="genre in limitedGenres"
-          :key="genre.id"
-          class="genre-tag dark:bg-gray-700 dark:text-white"
-        >
+        <span v-for="genre in limitedGenres" :key="genre.id" class="genre-tag">
           {{ genre.name }}
         </span>
       </div>
