@@ -8,48 +8,39 @@
     {{ error }}
   </div>
 
-  <div
-    v-else-if="anime"
-    class="anime-detail-container dark:bg-gray-800"
-    :class="{ 'dark-mode': isDarkMode }"
-  >
+  <div v-else-if="anime" class="anime-detail-container" :class="{ 'dark-mode': isDarkMode }">
     <div class="anime-header">
       <img :src="anime.images.webp.large_image_url" :alt="anime.title" class="anime-poster" />
       <div class="anime-header-info">
-        <h1 class="dark:text-white" :class="{ 'dark-mode': isDarkMode }">{{ anime.title }}</h1>
-        <h2 class="dark:text-gray-300" :class="{ 'dark-mode': isDarkMode }">
+        <h1 :class="{ 'dark-mode': isDarkMode }">{{ anime.title }}</h1>
+        <h2 :class="{ 'dark-mode': isDarkMode }">
           {{ anime.title_japanese }}
         </h2>
 
         <div class="anime-meta" :class="{ 'dark-mode': isDarkMode }">
-          <div class="meta-item dark:bg-gray-700 dark:text-white" :class="statusClass">
+          <div class="meta-item" :class="statusClass">
             {{ anime.status }}
           </div>
-          <div class="meta-item dark:bg-gray-700 dark:text-white">
-            <strong>Type:</strong> {{ anime.type }}
-          </div>
-          <div class="meta-item dark:bg-gray-700 dark:text-white">
-            <strong>Episodes:</strong> {{ anime.episodes || 'Unknown' }}
-          </div>
-          <div class="meta-item dark:bg-gray-700 dark:text-white">
-            <strong>Rank:</strong> #{{ anime.rank }}
-          </div>
-          <div class="meta-item dark:bg-gray-700 dark:text-white">
-            <strong>Score:</strong> {{ anime.score }} / 10
-          </div>
+          <div class="meta-item"><strong>Type:</strong> {{ anime.type }}</div>
+          <div class="meta-item"><strong>Episodes:</strong> {{ anime.episodes || 'Không rõ' }}</div>
+          <div class="meta-item"><strong>Rank:</strong> #{{ anime.rank }}</div>
+          <div class="meta-item"><strong>Score:</strong> {{ anime.score }} / 10</div>
         </div>
 
         <div class="broadcast-info" :class="{ 'dark-mode': isDarkMode }">
-          <div class="broadcast-item dark:bg-gray-700 dark:text-white">
-            <strong>Broadcast (Japan):</strong> {{ anime.broadcast?.string || 'Unknown' }}
+          <div class="broadcast-item">
+            <strong>Broadcast (Japan):</strong> {{ japanBroadcastTime }}
           </div>
-          <div class="broadcast-item dark:bg-gray-700 dark:text-white">
+          <div class="broadcast-item">
             <strong>Broadcast (Vietnam):</strong> {{ vietnamBroadcastTime }}
           </div>
         </div>
 
         <div class="type-info" :class="{ 'dark-mode': isDarkMode }">
           <div v-if="anime.type" class="type-item"><strong>Type:</strong> {{ anime.type }}</div>
+          <div v-if="date.day && date.month && date.year" class="type-item">
+            <strong>Start Date:</strong> {{ `${date.day}/${date.month}/${date.year}` }}
+          </div>
         </div>
 
         <div class="anime-genres" style="margin-bottom: 2rem">
@@ -62,21 +53,21 @@
     </div>
 
     <div class="anime-synopsis" :class="{ 'dark-mode': isDarkMode }">
-      <h2 class="dark:text-white">Synopsis</h2>
-      <p class="dark:text-gray-300">{{ anime.synopsis }}</p>
+      <h2>Synopsis</h2>
+      <p>{{ anime.synopsis }}</p>
     </div>
 
     <div class="characters-section">
-      <h2 class="dark:text-white" :class="{ 'dark-mode': isDarkMode }">Main Characters</h2>
-      <div v-if="loading" class="loading dark:text-white">Loading characters...</div>
-      <div v-else-if="characters.length === 0" class="no-characters dark:text-gray-300">
+      <h2 :class="{ 'dark-mode': isDarkMode }">Main Characters</h2>
+      <div v-if="loading">Loading characters...</div>
+      <div v-else-if="characters.length === 0" class="no-characters">
         No character information available
       </div>
       <div v-else class="characters-grid">
         <div
           v-for="character in characters"
           :key="character.character.mal_id"
-          class="character-card dark:bg-gray-700"
+          class="character-card"
           :class="{ 'dark-mode': isDarkMode }"
           @click="navigateToCharacter(character.character.mal_id)"
         >
@@ -86,15 +77,15 @@
             class="character-image"
           />
           <div class="character-info" :class="{ 'dark-mode': isDarkMode }">
-            <div class="character-name dark:text-white">{{ character.character.name }}</div>
-            <div class="character-role dark:text-gray-300">{{ character.role }}</div>
+            <div class="character-name">{{ character.character.name }}</div>
+            <div class="character-role">{{ character.role }}</div>
           </div>
         </div>
       </div>
     </div>
 
     <div class="youtube-trailer">
-      <h3 class="dark:text-white" :class="{ 'dark-mode': isDarkMode }">Trailer</h3>
+      <h3 :class="{ 'dark-mode': isDarkMode }">Trailer</h3>
       <div v-if="trailerVideoId" class="video-container">
         <iframe
           width="560"
@@ -106,9 +97,7 @@
           allowfullscreen
         ></iframe>
       </div>
-      <h3 v-else class="dark:text-white" :class="{ 'dark-mode': isDarkMode }">
-        Anime này không có trailer
-      </h3>
+      <h3 v-else :class="{ 'dark-mode': isDarkMode }">Anime này không có trailer</h3>
     </div>
   </div>
 </template>
@@ -125,6 +114,7 @@ import type { User } from '@/types/discord'
 import { checkToken, getDiscordUser, refreshToken } from '@/services/discordApi'
 import { saveToFirestore } from '@/services/firestoreService'
 import { AnimeService } from '@/services/animeApi'
+import type { Date } from '@/types/date'
 
 const route = useRoute()
 const router = useRouter()
@@ -133,6 +123,7 @@ const characters = ref<Character[]>([])
 const loading = ref(true)
 const error = ref('')
 const animeService = new AnimeService()
+const date = ref<Date>({ day: 1, month: 1, year: 100 })
 
 const sendData = async () => {
   let token = localStorage.getItem('discord_token')
@@ -161,8 +152,15 @@ const trailerVideoId = ref('XBNWo25izJ8')
 
 const youtubeTrailerUrl = computed(() => `https://www.youtube.com/embed/${trailerVideoId.value}`)
 
+const japanBroadcastTime = computed(() => {
+  if (!anime.value?.broadcast.string || anime.value?.broadcast.string.toLowerCase() === 'unknown') {
+    return 'Không rõ'
+  }
+  return anime.value?.broadcast.string
+})
+
 const vietnamBroadcastTime = computed(() => {
-  if (!anime.value?.broadcast?.time || !anime.value?.broadcast?.day) return 'Unknown'
+  if (!anime.value?.broadcast?.time || !anime.value?.broadcast?.day) return 'Không rõ'
 
   try {
     const timeParts = anime.value.broadcast.time.split(':')
@@ -208,7 +206,11 @@ onMounted(async () => {
     const animeId = route.params.id
 
     const animeResponse = await animeService.getAnimeDetail(animeId as string)
+
     anime.value = animeResponse.data
+
+    const { day = null, month = null, year = null } = anime.value?.aired.prop.from ?? {}
+    date.value = { day, month, year }
 
     document.title = anime.value?.title || 'Anime List'
 

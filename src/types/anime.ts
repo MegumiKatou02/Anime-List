@@ -62,12 +62,21 @@ export interface AnimeJikan {
   }>
   rank: number
   broadcast: {
-    day: string
-    time: string
-    timezone: string
+    day?: string
+    time?: string
+    timezone?: string
     string: string
   }
   mal_id: number
+  aired: {
+    prop: {
+      from: {
+        day?: number
+        month?: number
+        year?: number
+      }
+    }
+  }
 }
 
 export interface Anime {
