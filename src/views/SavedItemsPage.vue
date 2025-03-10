@@ -37,7 +37,7 @@
       >
         <i class="fas fa-bookmark"></i>
         <p>Bạn chưa lưu anime/manga nào</p>
-        <router-link to="/" class="browse-link">Khám phá ngay</router-link>
+        <router-link to="/home" class="browse-link">Khám phá ngay</router-link>
       </div>
 
       <div v-else class="saved-items">
