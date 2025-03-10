@@ -16,7 +16,12 @@
           <span class="icon"><i class="fas fa-bookmark"></i></span>
           <span>Đã lưu</span>
         </button>
-        <a v-if="!isLogin" :href="loginUrl" class="button login-button">
+        <a
+          v-if="!isLogin"
+          @click="handleLogin"
+          class="button login-button"
+          :class="{ disabled: !turnstileToken && !isLogin }"
+        >
           <span class="icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon-svg">
               <path
@@ -40,6 +45,10 @@
         </a>
       </div>
 
+      <div v-if="!isLogin" class="turnstile-container">
+        <div ref="turnstileContainer"></div>
+      </div>
+
       <div class="privacy-notice">
         Bằng cách đăng nhập, bạn đồng ý với
         <router-link to="/terms" class="link" @click="closeLogin">điều khoản dịch vụ</router-link>
@@ -51,14 +60,16 @@
 
 <script lang="ts">
 import { isDarkMode } from '@/utils/settings'
-import { ref } from 'vue'
-import { computed } from 'vue'
-import { defineComponent, onMounted } from 'vue'
+import { ref, computed, defineComponent, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+
 export default defineComponent({
   name: 'LoginPage',
   setup(_, { emit }) {
     const router = useRouter()
+    const turnstileContainer = ref(null)
+    const turnstileToken = ref('')
+    const turnstileWidgetId = ref<string | null>(null)
 
     const closeLogin = () => {
       emit('close')
@@ -94,6 +105,39 @@ export default defineComponent({
       return `https://discord.com/oauth2/authorize?client_id=${clientID}&response_type=code&redirect_uri=${redirectUri}&scope=identify`
     })
 
+    const handleLogin = () => {
+      if (turnstileToken.value) {
+        window.location.href = loginUrl.value
+      } else {
+        alert('Vui lòng xác nhận bạn không phải là robot')
+      }
+    }
+
+    const initTurnstile = () => {
+      if (!isLogin.value && turnstileContainer.value) {
+        if (window.turnstile) {
+          turnstileWidgetId.value = window.turnstile.render(turnstileContainer.value, {
+            sitekey: import.meta.env.VITE_TURNSTILE_SITE_KEY,
+            theme: isDarkMode ? 'dark' : 'light',
+            callback: function (token: string) {
+              turnstileToken.value = token
+            },
+            'expired-callback': function () {
+              turnstileToken.value = ''
+            },
+          })
+        }
+      }
+    }
+
+    const removeTurnstile = () => {
+      if (turnstileWidgetId.value) {
+        if (window.turnstile) {
+          window.turnstile.remove(turnstileWidgetId.value)
+        }
+      }
+    }
+
     onMounted(() => {
       const isToken = localStorage.getItem('discord_token')
       name.value = localStorage.getItem('discord_name') || ''
@@ -101,10 +145,29 @@ export default defineComponent({
         isLogin.value = true
       } else {
         isLogin.value = false
+
+        if (!document.getElementById('cloudflare-turnstile-script')) {
+          const script = document.createElement('script')
+          script.id = 'cloudflare-turnstile-script'
+          script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js'
+          script.async = true
+          script.defer = true
+          document.head.appendChild(script)
+
+          script.onload = initTurnstile
+        } else {
+          initTurnstile()
+        }
       }
     })
 
+    onUnmounted(() => {
+      removeTurnstile()
+    })
+
     return {
+      turnstileContainer,
+      turnstileToken,
       goToSavedItems,
       closeLogin,
       loginUrl,
@@ -112,6 +175,7 @@ export default defineComponent({
       name,
       logOut,
       isDarkMode,
+      handleLogin,
     }
   },
 })
@@ -261,6 +325,12 @@ h2 {
   transform: translateY(1px);
 }
 
+.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .icon {
   display: flex;
   align-items: center;
@@ -286,6 +356,12 @@ h2 {
 .link:hover {
   color: #7289da;
   text-decoration: underline;
+}
+
+.turnstile-container {
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0;
 }
 
 @media (max-width: 480px) {
