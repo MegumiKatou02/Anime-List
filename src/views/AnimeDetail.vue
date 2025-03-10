@@ -151,7 +151,7 @@ const sendData = async () => {
   }
   const user: User = await getDiscordUser(token)
   const title = anime.value?.title || 'Ukknown'
-  const url = window.location.href
+  const url = route.path
   const id = (anime.value?.mal_id || route.params.id) as string
 
   await saveToFirestore(user.id, 'anime', title, url, id)

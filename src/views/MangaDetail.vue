@@ -154,7 +154,7 @@ export default defineComponent({
         token = await refreshToken()
       }
       const user: User = await getDiscordUser(token)
-      const url = window.location.href
+      const url = route.path
       const id = manga.value?.id || (route.params.id as string)
 
       await saveToFirestore(user.id, 'manga', manga.value?.title || 'Ukknown', url, id)

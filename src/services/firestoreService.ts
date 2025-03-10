@@ -8,7 +8,7 @@ export const createUserInFirestore = async (user: User) => {
     userRef,
     {
       id: user.id,
-      username: user.username,
+      username: user.global_name,
     },
     { merge: true },
   )

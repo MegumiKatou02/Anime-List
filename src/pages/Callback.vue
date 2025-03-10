@@ -35,7 +35,7 @@ export default defineComponent({
 
       const user: User = await getDiscordUser(access_token)
 
-      localStorage.setItem('discord_name', user.username)
+      localStorage.setItem('discord_name', user.global_name)
 
       await createUserInFirestore(user)
 
