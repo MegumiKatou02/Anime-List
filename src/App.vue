@@ -302,6 +302,11 @@ main {
   color: white;
   font-size: 1.5rem;
   cursor: pointer;
+  position: relative;
+}
+
+.fa-discord:hover {
+  color: #cccbcb;
 }
 
 @media (max-width: 768px) {
