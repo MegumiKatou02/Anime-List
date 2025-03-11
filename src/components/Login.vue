@@ -118,7 +118,7 @@ export default defineComponent({
         if (window.turnstile) {
           turnstileWidgetId.value = window.turnstile.render(turnstileContainer.value, {
             sitekey: import.meta.env.VITE_TURNSTILE_SITE_KEY,
-            theme: isDarkMode ? 'dark' : 'light',
+            theme: isDarkMode.value ? 'dark' : 'light',
             callback: function (token: string) {
               turnstileToken.value = token
             },
