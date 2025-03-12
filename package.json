@@ -21,6 +21,7 @@
     "firebase": "^11.4.0",
     "lodash": "^4.17.21",
     "moment-timezone": "^0.5.47",
+    "pinia": "^3.0.1",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0",
     "vue-turnstile": "^1.0.11"
