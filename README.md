@@ -1,5 +1,7 @@
 # Anime List
 A web app that allows users to search for anime, view detailed information, and explore characters and trailers. Built with Vue.js and powered by the Jikan API and Myanimelist API
+>[!TIP]
+>If you like SSR, you can check it out here: [AnimeList + Nuxt 3](https://github.com/MegumiKatou02/AnimeList-Nuxtjs)
 # Features
 - 🔍 Search Anime: Quickly find your favorite anime by title
 - 📝 Detailed Info: See information such as type, status, episodes, and score
