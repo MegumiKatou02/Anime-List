@@ -76,7 +76,11 @@
             {{ genre }}
           </span>
         </div>
-        <div class="description" :class="{ 'dark-mode': isDarkMode }">{{ manga.description }}</div>
+        <div
+          v-html="processedDescription"
+          class="description"
+          :class="{ 'dark-mode': isDarkMode }"
+        ></div>
         <div class="additional-info" :class="{ 'dark-mode': isDarkMode }">
           <div class="info-item">
             <span class="label">Tác giả:</span>
@@ -109,7 +113,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { Manga, Chapter } from '@/types/manga'
 import { MangaService } from '@/services/mangaApi'
@@ -120,6 +124,7 @@ import SaveModel from '@/components/SaveModel.vue'
 import { saveToFirestore } from '@/services/firestoreService'
 import { checkToken, getDiscordUser, refreshToken } from '@/services/discordApi'
 import type { User } from '@/types/discord'
+import { marked } from 'marked'
 
 export default defineComponent({
   name: 'MangaDetail',
@@ -171,32 +176,12 @@ export default defineComponent({
       }
     }
 
-    const cleanDescription = (text: string) => {
-      text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1')
-
-      text = text.replace(/[*_]{1,2}([^*_]+)[*_]{1,2}/g, '$1')
-
-      text = text.replace(/[*_]/g, '')
-
-      text = text.replace(/\s+/g, ' ')
-
-      text = text
-        .split('\n')
-        .filter((line) => !line.trim().startsWith('-') && !line.trim().startsWith('Links:'))
-        .join(' ')
-
-      return text.trim()
-    }
-
     const loadMangaData = async () => {
       try {
         const mangaId = route.params.id as string
         const mangaById = await mangaService.getMangaById(mangaId)
         const mangaData = mangaService.transformMangaDetail(mangaById)
 
-        if (mangaData.description) {
-          mangaData.description = cleanDescription(mangaData.description)
-        }
         manga.value = mangaData
         document.title = manga.value.title || 'Anime List'
 
@@ -218,6 +203,16 @@ export default defineComponent({
         })
       }
     }
+
+    marked.setOptions({
+      gfm: true,
+    })
+
+    const processedDescription = computed(() => {
+      if (!manga.value?.description) return ''
+
+      return marked.parse(manga.value?.description.replace(/<([^>]+)>/g, '&lt;$1&gt;') || '')
+    })
 
     const formatStatus = (status: string) => {
       const statusMap: Record<string, string> = {
@@ -257,6 +252,7 @@ export default defineComponent({
       chapters,
       isDarkMode,
       loading,
+      processedDescription,
     }
   },
 })
@@ -354,6 +350,26 @@ export default defineComponent({
   line-height: 1.6;
   color: #444;
   margin-bottom: 1.5rem;
+}
+
+::v-deep(.description a) {
+  color: #ff8c69;
+}
+
+::v-deep(.description a:hover) {
+  color: #fa562d;
+  text-decoration: underline;
+}
+
+::v-deep(.description ul) {
+  list-style: none;
+  padding-left: 0;
+}
+
+::v-deep(hr) {
+  color: red;
+  height: 2px;
+  margin: 10px 0;
 }
 
 .additional-info {

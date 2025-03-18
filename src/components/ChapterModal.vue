@@ -236,6 +236,11 @@ export default defineComponent({
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0.5rem;
+  color: black;
+}
+
+.dark-mode .close-button {
+  color: white;
 }
 
 .chapters-container {
