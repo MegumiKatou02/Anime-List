@@ -70,6 +70,7 @@ const goToAnimeDetail = () => {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   height: 100%;
+  cursor: pointer;
 }
 
 .anime-card:hover {
