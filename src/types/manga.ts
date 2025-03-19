@@ -77,6 +77,7 @@ export interface Chapter {
   language: string
   publishedAt: string
   scanlation_group: string
+  scanlation_group_id: string | null
   mangaTitle?: string
   title: string
 }

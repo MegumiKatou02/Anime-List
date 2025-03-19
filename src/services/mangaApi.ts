@@ -202,7 +202,8 @@ export class MangaService {
 
       return data.data.map((chapter) => {
         const group = chapter.relationships.find((rel) => rel.type === 'scanlation_group')
-        const scanlation_group_name = group?.attributes?.name || 'Unknown'
+        const scanlation_group_name = group?.attributes?.name || 'No Group'
+        const scanlation_group_id = group?.id || null
 
         return {
           id: chapter.id,
@@ -212,6 +213,7 @@ export class MangaService {
           language: chapter.attributes.translatedLanguage,
           publishedAt: chapter.attributes.publishAt,
           scanlation_group: scanlation_group_name,
+          scanlation_group_id,
         }
       })
     } catch (error) {
@@ -275,12 +277,16 @@ export class MangaService {
       const mangaData: MangaData = chapter.relationships.find(
         (rel: Relationship) => rel.type == 'manga',
       )
+      const mangaData1: MangaData | null = chapter.relationships.find(
+        (rel: Relationship) => rel.type == 'scanlation_group',
+      )
+
       const mangaTitle =
         mangaData.attributes.altTitles.find((title) => title.vi)?.vi ||
         mangaData.attributes.title.en ||
         mangaData.attributes.title['ja-ro'] ||
         'Unknown Title'
-      const mangaId = chapter.relationships.find((rel: Relationship) => rel.type == 'manga').id
+      const mangaId = mangaData.id
 
       return {
         chapterData: {
@@ -292,6 +298,7 @@ export class MangaService {
           scanlation_group:
             chapter.relationships.find((rel: Relationship) => rel.type === 'scanlation_group')
               ?.attributes?.name || 'Unknown',
+          scanlation_group_id: mangaData1?.id || null,
           mangaTitle,
           title: chapter.attributes.title || 'Unknown Title',
         },
@@ -471,7 +478,10 @@ export class MangaService {
     }
   }
 
-  private transformMangaData(data: MangaData[]): Manga[] {
+  private transformMangaData(
+    data: MangaData[],
+    { genresLen }: { genresLen: number } = { genresLen: 0 },
+  ): Manga[] {
     return data.map((manga) => {
       const coverFile = manga.relationships.find((rel: Relationship) => rel.type === 'cover_art')
         ?.attributes?.fileName
@@ -481,6 +491,14 @@ export class MangaService {
         manga.attributes.title.en ||
         manga.attributes.title['ja-ro'] ||
         'Unknown Title'
+
+      let genres = manga.attributes.tags
+        .filter((tag: Tag) => tag.attributes.group === 'genre')
+        .map((tag: Tag) => tag.attributes.name.en)
+
+      if (genresLen !== 0) {
+        genres = genres.slice(0, genresLen)
+      }
 
       const coverImage = coverFile
         ? `https://mangadex.org/covers/${manga.id}/${coverFile}.256.jpg`
@@ -493,9 +511,7 @@ export class MangaService {
         status: manga.attributes.status,
         coverImage,
         rating: manga.attributes.rating?.average || 0,
-        genres: manga.attributes.tags
-          .filter((tag: Tag) => tag.attributes.group === 'genre')
-          .map((tag: Tag) => tag.attributes.name.en),
+        genres,
         tags: manga.attributes.tags.map((tag: Tag) => tag.id),
         author: manga.attributes.author || 'Unknown Author',
         releaseYear: new Date(manga.attributes.createdAt).getFullYear(),
@@ -600,5 +616,38 @@ export class MangaService {
     })
 
     return filteredAnime
+  }
+
+  // group scanlation :sob:
+  async getScanlationGroup(group_id: string) {
+    try {
+      const response = await this.api.get(`/group/${group_id}`)
+
+      return response.data
+    } catch (error) {
+      console.error('Error fetch scanlation group', error)
+    }
+  }
+
+  async getScalationManga(group_id: string): Promise<Manga[]> {
+    try {
+      const response = await this.api.get(`/manga`, {
+        params: {
+          group: group_id,
+          limit: 100,
+          'order[title]': 'asc',
+          'includes[]': 'cover_art',
+        },
+      })
+
+      const manga = response.data
+
+      const mangaList: Manga[] = this.transformMangaData(manga.data, { genresLen: 2 })
+
+      return mangaList
+    } catch (error) {
+      console.error('Error fetch scanlation group manga', error)
+      return []
+    }
   }
 }
