@@ -8,6 +8,7 @@
     <div class="manga-header">
       <div class="manga-cover">
         <img :src="manga.coverImage" :alt="manga.title" />
+        <RatingDistribution :statistics="statistics" class="rating-distribution" />
       </div>
       <div class="manga-info" :class="{ 'dark-mode': isDarkMode }">
         <h1 class="manga-title">{{ manga.title }}</h1>
@@ -126,12 +127,14 @@ import { saveToFirestore } from '@/services/firestoreService'
 import { checkToken, getDiscordUser, refreshToken } from '@/services/discordApi'
 import type { User } from '@/types/discord'
 import { marked } from 'marked'
+import RatingDistribution from '@/components/RatingDistribution.vue'
 
 export default defineComponent({
   name: 'MangaDetail',
   components: {
     ChapterModal,
     SaveModel,
+    RatingDistribution,
   },
   setup() {
     const route = useRoute()
@@ -493,6 +496,10 @@ export default defineComponent({
   .manga-cover {
     max-width: 300px;
     margin: 0 auto;
+  }
+
+  .rating-distribution {
+    display: none;
   }
 }
 
