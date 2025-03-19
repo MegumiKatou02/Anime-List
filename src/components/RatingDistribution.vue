@@ -51,7 +51,7 @@ export default defineComponent({
       type: Object as () => {
         rating?: {
           distribution?: Record<string, number>
-          bayesian?: number
+          bayesian?: number | null
         }
       },
       required: true,
