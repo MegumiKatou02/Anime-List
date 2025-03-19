@@ -102,11 +102,12 @@
             rel="noopener noreferrer"
             class="read-on-mangadex"
           >
-            Đọc trên MangaDex
+            MangaDex
           </a>
-          <ChapterModal :chapters="chapters" />
+
           <SaveModel @data="sendData" :type="'Manga'" />
         </div>
+        <ChapterModal :chapters="chapters" />
       </div>
     </div>
   </div>
