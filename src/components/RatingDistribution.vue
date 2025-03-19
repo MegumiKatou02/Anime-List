@@ -51,14 +51,14 @@ export default defineComponent({
       type: Object as () => {
         rating?: {
           distribution?: Record<string, number>
-          bayesian?: number | null
+          bayesian?: number | undefined
         }
       },
       required: true,
     },
   },
   setup(props) {
-    const formatRating = (rating: number | null) => {
+    const formatRating = (rating: number | null | undefined) => {
       return rating ? rating.toFixed(2) : '0.00'
     }
 
