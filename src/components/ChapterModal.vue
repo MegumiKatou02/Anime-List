@@ -40,7 +40,6 @@
                 <div class="chapter-info">
                   <div class="chapter-main">
                     <div class="language-flag">
-                      <!-- {{ chapter.language === 'vi' ? '🇻🇳' : '🇬🇧' }} -->
                       <img
                         v-if="chapter.language === 'vi'"
                         class="flag_icon"
@@ -62,8 +61,6 @@
                   <div class="chapter-metadata" :class="{ 'dark-mode': isDarkMode }">
                     <div class="upload-time">
                       <svg
-                        data-v-9ba4cb7e=""
-                        data-v-c031ce93=""
                         xmlns="http://www.w3.org/2000/svg"
                         width="17"
                         height="17"
@@ -82,8 +79,6 @@
                     </div>
                     <div class="scanlation_group">
                       <svg
-                        data-v-9ba4cb7e=""
-                        data-v-c1ca7027=""
                         xmlns="http://www.w3.org/2000/svg"
                         width="17"
                         height="17"
@@ -99,7 +94,16 @@
                           d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2m8-10a4 4 0 1 0 0-8 4 4 0 0 0 0 8m14 10v-2a4 4 0 0 0-3-3.87m-4-12a4 4 0 0 1 0 7.75"
                         ></path>
                       </svg>
-                      <span class="scanlation">{{ chapter.scanlation_group }}</span>
+                      <span
+                        class="scanlation team-link"
+                        v-if="chapter.scanlation_group_id"
+                        @click.stop="navigateToTeam(chapter.scanlation_group_id)"
+                      >
+                        {{ chapter.scanlation_group }}
+                      </span>
+                      <span v-else class="team-link">
+                        {{ chapter.scanlation_group }}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -167,6 +171,11 @@ export default defineComponent({
       showModal.value = false
     }
 
+    const navigateToTeam = (teamId: string) => {
+      showModal.value = false
+      router.push(`/group/${teamId}`)
+    }
+
     return {
       showModal,
       expandedVolumes,
@@ -174,6 +183,7 @@ export default defineComponent({
       toggleVolume,
       formatTime,
       handleChapterClick,
+      navigateToTeam,
       isDarkMode,
     }
   },
@@ -320,6 +330,18 @@ export default defineComponent({
   width: 1.2rem;
 }
 
+.team-link {
+  color: #3b82f6;
+  cursor: pointer;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  text-decoration: underline;
+}
+
+.team-link:hover {
+  color: #2563eb;
+}
+
 .modal-content.dark-mode {
   background: #1a202c;
   color: white;
@@ -335,6 +357,14 @@ export default defineComponent({
 
 .chapter-metadata.dark-mode {
   color: #9ca3af;
+}
+
+.dark-mode .team-link {
+  color: #60a5fa;
+}
+
+.dark-mode .team-link:hover {
+  color: #93c5fd;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -353,6 +383,14 @@ export default defineComponent({
 
   .chapter-metadata {
     color: #9ca3af;
+  }
+
+  .team-link {
+    color: #60a5fa;
+  }
+
+  .team-link:hover {
+    color: #93c5fd;
   }
 }
 

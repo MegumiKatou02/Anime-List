@@ -46,7 +46,7 @@ export default defineComponent({
     const router = useRouter()
 
     const limitedGenres = computed(() => {
-      return props.manga.genres.slice(0, 3)
+      return props.manga.genres?.slice(0, 3) || []
     })
 
     const formatRating = (rating: number) => {
