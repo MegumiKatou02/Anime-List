@@ -112,7 +112,7 @@
 
       <div class="team-description">
         <h2>Giới thiệu</h2>
-        <p v-if="team.description">{{ team.description }}</p>
+        <p v-if="team.description" v-html="processedDescription"></p>
         <p v-else>{{ team.name }} chưa cập nhật thông tin giới thiệu.</p>
       </div>
 
@@ -139,6 +139,7 @@ import { isDarkMode } from '@/utils/settings'
 import { MangaService } from '@/services/mangaApi'
 import type { Manga } from '@/types/manga'
 import MangaCard from '@/components/MangaCard.vue'
+import { marked } from 'marked'
 
 interface Project {
   id: string
@@ -195,9 +196,11 @@ export default defineComponent({
       try {
         isLoading.value = true
         const scanlationGroup = await mangaService.getScanlationGroup(teamId.value)
-        const scanlationManga: Manga[] = await mangaService.getScalationManga(teamId.value)
+        const { data: scanlationManga, total: scanlationTotal } =
+          await mangaService.getScalationManga(teamId.value)
 
         const scanlationData = scanlationGroup.data
+
         mangaList.value = scanlationManga
 
         team.value = {
@@ -207,7 +210,7 @@ export default defineComponent({
           banner: '/images/group-background.jpg',
           description: scanlationData.attributes.description,
           members: scanlationData.relationships.length,
-          projects: scanlationManga.length >= 100 ? 100 : scanlationManga.length,
+          projects: scanlationTotal,
           website: scanlationData.attributes.website,
           discord: scanlationData.attributes.discord
             ? `https://discord.gg/${scanlationGroup.data.attributes.discord}`
@@ -227,13 +230,17 @@ export default defineComponent({
     })
     const handleImageError = (event: Event) => {
       const target = event.target as HTMLImageElement
-      target.src = '/images/default-team-logo.png'
+      target.src = '/images/group-logo.jpg'
     }
 
     const handleCoverError = (event: Event) => {
       const target = event.target as HTMLImageElement
-      target.src = '/images/default-cover.jpg'
+      target.src = '/images/group-background.jpg'
     }
+
+    const processedDescription = computed(() => {
+      return marked.parse(team.value.description || '')
+    })
 
     const formatNumber = (num: number): string => {
       if (num >= 1000000) {
@@ -259,6 +266,7 @@ export default defineComponent({
       mangaList,
       displayMangaList,
       navigaFollow,
+      processedDescription,
     }
   },
 })
@@ -463,6 +471,26 @@ export default defineComponent({
 
 .dark-mode .team-description p {
   color: #d1d5db;
+}
+
+::v-deep(.team-description a) {
+  color: #ff8c69;
+}
+
+::v-deep(.team-description a:hover) {
+  color: #fa562d;
+  text-decoration: underline;
+}
+
+::v-deep(.team-description ul) {
+  list-style: none;
+  padding-left: 0;
+}
+
+::v-deep(hr) {
+  color: red;
+  height: 2px;
+  margin: 10px 0;
 }
 
 .team-projects {
