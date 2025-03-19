@@ -32,7 +32,7 @@
         </div>
         <div v-else>
           <div
-            v-for="(volumeChapters, volumeKey) in groupedChaptersForDisplay"
+            v-for="[volumeKey, volumeChapters] in groupedChaptersForDisplay"
             :key="volumeKey"
             class="volume-section"
           >
@@ -160,13 +160,76 @@
             </button>
 
             <button
-              v-for="page in pageNumbers"
+              class="page-button"
+              :class="{ active: currentPage === 1, 'dark-mode': isDarkMode }"
+              @click="setPage(1)"
+            >
+              1
+            </button>
+
+            <div v-if="showStartEllipsis" class="ellipsis-container">
+              <input
+                v-if="showPageInput"
+                type="text"
+                inputmode="numeric"
+                pattern="[0-9]*"
+                v-model="pageInputValue"
+                class="page-input"
+                :class="{ 'dark-mode': isDarkMode }"
+                @keyup.enter="setPage(parseInt(pageInputValue))"
+                @blur="hidePageInput"
+                ref="pageInput"
+              />
+              <button
+                v-else
+                class="page-button ellipsis"
+                :class="{ 'dark-mode': isDarkMode }"
+                @click="togglePageInput"
+              >
+                ...
+              </button>
+            </div>
+
+            <button
+              v-for="page in middlePages"
               :key="page"
               class="page-button"
               :class="{ active: currentPage === page, 'dark-mode': isDarkMode }"
               @click="setPage(page)"
             >
               {{ page }}
+            </button>
+
+            <div v-if="showEndEllipsis" class="ellipsis-container">
+              <input
+                v-if="showPageInput"
+                type="text"
+                inputmode="numeric"
+                pattern="[0-9]*"
+                v-model="pageInputValue"
+                class="page-input"
+                :class="{ 'dark-mode': isDarkMode }"
+                @keyup.enter="setPage(parseInt(pageInputValue))"
+                @blur="hidePageInput"
+                ref="pageInput"
+              />
+              <button
+                v-else
+                class="page-button ellipsis"
+                :class="{ 'dark-mode': isDarkMode }"
+                @click="togglePageInput"
+              >
+                ...
+              </button>
+            </div>
+
+            <button
+              v-if="totalPages > 1"
+              class="page-button"
+              :class="{ active: currentPage === totalPages, 'dark-mode': isDarkMode }"
+              @click="setPage(totalPages)"
+            >
+              {{ totalPages }}
             </button>
 
             <button
@@ -194,7 +257,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from 'vue'
+import { defineComponent, ref, computed, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import type { Chapter } from '@/types/manga'
 import { isDarkMode } from '@/utils/settings'
@@ -212,62 +275,59 @@ export default defineComponent({
     const chaptersContainer = ref<HTMLElement | null>(null)
     const chaptersPerPage = 10
     const currentPage = ref(1)
-
-    const sortedChapters = computed(() => {
-      return [...props.chapters].sort((a, b) => {
-        return parseFloat(b.number) - parseFloat(a.number)
-      })
-    })
+    const showPageInput = ref(false)
+    const pageInputValue = ref('')
+    const pageInput = ref<HTMLInputElement | null>(null)
 
     const filteredChapters = computed(() => {
       const startIndex = (currentPage.value - 1) * chaptersPerPage
       const endIndex = startIndex + chaptersPerPage
-      return sortedChapters.value.slice(startIndex, endIndex)
+      return props.chapters.slice(startIndex, endIndex)
     })
 
     const totalPages = computed(() => {
-      return Math.ceil(sortedChapters.value.length / chaptersPerPage)
+      return Math.ceil(props.chapters.length / chaptersPerPage)
     })
 
     const groupedChaptersForDisplay = computed(() => {
-      return filteredChapters.value.reduce(
-        (acc, chapter) => {
-          const volumeKey = chapter.volume || 'noVolume'
-          if (!acc[volumeKey]) {
-            acc[volumeKey] = []
-          }
-          acc[volumeKey].push(chapter)
-          return acc
-        },
-        {} as Record<string, Chapter[]>,
-      )
+      const t = new Map<string, Chapter[]>()
+
+      filteredChapters.value.forEach((chapter) => {
+        const volumeKey = chapter.volume || 'noVolume'
+        if (!t.has(volumeKey)) {
+          t.set(volumeKey, [])
+        }
+        t.get(volumeKey)!.push(chapter)
+      })
+
+      return Array.from(t)
     })
 
-    const pageNumbers = computed(() => {
+    const middlePages = computed(() => {
       const totalPagesValue = totalPages.value
       const currentPageValue = currentPage.value
-      const maxVisiblePages = 5
 
-      const pages = []
-
-      if (totalPagesValue <= maxVisiblePages) {
-        for (let i = 1; i <= totalPagesValue; i++) {
-          pages.push(i)
-        }
-      } else {
-        let startPage = Math.max(1, currentPageValue - Math.floor(maxVisiblePages / 2))
-        const endPage = Math.min(totalPagesValue, startPage + maxVisiblePages - 1)
-
-        if (endPage === totalPagesValue) {
-          startPage = Math.max(1, totalPagesValue - maxVisiblePages + 1)
-        }
-
-        for (let i = startPage; i <= endPage; i++) {
-          pages.push(i)
-        }
+      if (totalPagesValue <= 7) {
+        return Array.from({ length: totalPagesValue - 2 }, (_, i) => i + 2)
       }
 
-      return pages
+      if (currentPageValue < 5) {
+        return [2, 3, 4, 5]
+      }
+
+      if (currentPageValue > totalPagesValue - 4) {
+        return [totalPagesValue - 4, totalPagesValue - 3, totalPagesValue - 2, totalPagesValue - 1]
+      }
+
+      return [currentPageValue - 1, currentPageValue, currentPageValue + 1]
+    })
+
+    const showStartEllipsis = computed(() => {
+      return totalPages.value > 7 && currentPage.value >= 5
+    })
+
+    const showEndEllipsis = computed(() => {
+      return totalPages.value > 7 && currentPage.value < totalPages.value - 3
     })
 
     watch(
@@ -279,25 +339,60 @@ export default defineComponent({
     )
 
     const setPage = (page: number) => {
+      const pageNum = Number(page)
       const totalPagesValue = totalPages.value
 
-      if (page < 1) page = 1
-      if (page > totalPagesValue) page = totalPagesValue
+      if (isNaN(pageNum)) return
 
-      currentPage.value = page
+      let validPage = pageNum
+      if (validPage < 1) validPage = 1
+      if (validPage > totalPagesValue) validPage = totalPagesValue
 
-      if (chaptersContainer.value) {
-        // chaptersContainer.value.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      currentPage.value = validPage
+      hidePageInput()
+    }
+
+    const togglePageInput = () => {
+      showPageInput.value = !showPageInput.value
+
+      if (showPageInput.value) {
+        pageInputValue.value = ''
+        nextTick(() => {
+          if (pageInput.value) {
+            pageInput.value.focus()
+          }
+        })
+      }
+    }
+
+    const hidePageInput = () => {
+      showPageInput.value = false
+    }
+
+    const goToInputPage = () => {
+      const pageNum = parseInt(pageInputValue.value, 10)
+
+      if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= totalPages.value) {
+        setPage(pageNum)
       }
     }
 
     const formatTime = (timestamp: string): string => {
       const now = new Date()
       const date = new Date(timestamp)
-      const diffTime = Math.abs(now.getTime() - date.getTime())
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 
-      if (diffDays < 1) return 'Hôm nay'
+      if (
+        now.getFullYear() === date.getFullYear() &&
+        now.getMonth() === date.getMonth() &&
+        now.getDate() === date.getDate()
+      ) {
+        return 'Hôm nay'
+      }
+
+      const diffTime = now.getTime() - date.getTime()
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+
+      if (diffDays === 0) return 'Hôm nay'
       if (diffDays === 1) return 'Hôm qua'
       if (diffDays < 30) return `${diffDays} ngày trước`
       if (diffDays < 365) return `${Math.floor(diffDays / 30)} tháng trước`
@@ -321,9 +416,17 @@ export default defineComponent({
       filteredChapters,
       groupedChaptersForDisplay,
       totalPages,
-      pageNumbers,
+      middlePages,
+      showStartEllipsis,
+      showEndEllipsis,
       currentPage,
       setPage,
+      showPageInput,
+      pageInputValue,
+      pageInput,
+      togglePageInput,
+      hidePageInput,
+      goToInputPage,
     }
   },
 })
@@ -509,6 +612,55 @@ export default defineComponent({
   cursor: not-allowed;
 }
 
+.ellipsis-container {
+  position: relative;
+}
+
+.page-button.ellipsis {
+  font-weight: bold;
+}
+
+.page-input-container {
+  position: absolute;
+  top: -3rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.page-input {
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  text-align: center;
+  font-weight: 500;
+  background: white;
+}
+
+.page-input::-webkit-outer-spin-button,
+.page-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.page-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.page-input.dark-mode {
+  background: #2d3748;
+  color: white;
+  border-color: #4a5568;
+}
+
 .chapters-container.dark-mode {
   background: #1a202c;
   color: white;
@@ -557,6 +709,13 @@ export default defineComponent({
   background: #4299e1;
   color: white;
   border-color: #4299e1;
+}
+
+.page-input.dark-mode,
+.page-input-container.dark-mode {
+  background: #2d3748;
+  color: white;
+  border-color: #4a5568;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -621,6 +780,11 @@ export default defineComponent({
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
+  }
+
+  .page-input-container {
+    top: auto;
+    bottom: 3rem;
   }
 }
 </style>
