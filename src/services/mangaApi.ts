@@ -629,7 +629,7 @@ export class MangaService {
     }
   }
 
-  async getScalationManga(group_id: string): Promise<Manga[]> {
+  async getScalationManga(group_id: string): Promise<{ data: Manga[]; total: number }> {
     try {
       const response = await this.api.get(`/manga`, {
         params: {
@@ -644,10 +644,13 @@ export class MangaService {
 
       const mangaList: Manga[] = this.transformMangaData(manga.data, { genresLen: 2 })
 
-      return mangaList
+      return {
+        data: mangaList,
+        total: manga.total,
+      }
     } catch (error) {
       console.error('Error fetch scanlation group manga', error)
-      return []
+      return { data: [], total: 0 }
     }
   }
 }

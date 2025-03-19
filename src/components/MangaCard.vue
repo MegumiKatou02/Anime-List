@@ -1,5 +1,10 @@
 <template>
-  <div class="manga-card" @click="navigateToDetail" :class="{ 'dark-mode': isDarkMode }">
+  <div
+    class="manga-card"
+    @click="navigateToDetail"
+    :class="{ 'dark-mode': isDarkMode }"
+    @error="handleCoverError"
+  >
     <div class="manga-cover">
       <img v-if="manga.coverImage" :src="manga.coverImage" :alt="manga.title" class="cover-image" />
       <img v-else src="@/assets/256x364.png" :alt="manga.title" class="cover-image" />
@@ -63,6 +68,11 @@ export default defineComponent({
       return statusMap[status.toLowerCase()] || status
     }
 
+    const handleCoverError = (event: Event) => {
+      const target = event.target as HTMLImageElement
+      target.src = '/images/256x364.png'
+    }
+
     const navigateToDetail = () => {
       router.push(`/manga/${props.manga.id}`)
     }
@@ -73,6 +83,7 @@ export default defineComponent({
       formatStatus,
       navigateToDetail,
       isDarkMode,
+      handleCoverError,
     }
   },
 })
