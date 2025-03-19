@@ -32,7 +32,7 @@
         </div>
         <div v-else>
           <div
-            v-for="(volumeChapters, volumeKey) in groupedChaptersForDisplay"
+            v-for="[volumeKey, volumeChapters] in groupedChaptersForDisplay"
             :key="volumeKey"
             class="volume-section"
           >
@@ -213,34 +213,28 @@ export default defineComponent({
     const chaptersPerPage = 10
     const currentPage = ref(1)
 
-    const sortedChapters = computed(() => {
-      return [...props.chapters].sort((a, b) => {
-        return parseFloat(b.number) - parseFloat(a.number)
-      })
-    })
-
     const filteredChapters = computed(() => {
       const startIndex = (currentPage.value - 1) * chaptersPerPage
       const endIndex = startIndex + chaptersPerPage
-      return sortedChapters.value.slice(startIndex, endIndex)
+      return props.chapters.slice(startIndex, endIndex)
     })
 
     const totalPages = computed(() => {
-      return Math.ceil(sortedChapters.value.length / chaptersPerPage)
+      return Math.ceil(props.chapters.length / chaptersPerPage)
     })
 
     const groupedChaptersForDisplay = computed(() => {
-      return filteredChapters.value.reduce(
-        (acc, chapter) => {
-          const volumeKey = chapter.volume || 'noVolume'
-          if (!acc[volumeKey]) {
-            acc[volumeKey] = []
-          }
-          acc[volumeKey].push(chapter)
-          return acc
-        },
-        {} as Record<string, Chapter[]>,
-      )
+      const t = new Map<string, Chapter[]>()
+
+      filteredChapters.value.forEach((chapter) => {
+        const volumeKey = chapter.volume || 'noVolume'
+        if (!t.has(volumeKey)) {
+          t.set(volumeKey, [])
+        }
+        t.get(volumeKey)!.push(chapter)
+      })
+
+      return Array.from(t)
     })
 
     const pageNumbers = computed(() => {
@@ -285,10 +279,6 @@ export default defineComponent({
       if (page > totalPagesValue) page = totalPagesValue
 
       currentPage.value = page
-
-      if (chaptersContainer.value) {
-        // chaptersContainer.value.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }
     }
 
     const formatTime = (timestamp: string): string => {
