@@ -22,7 +22,9 @@ export default defineComponent({
 
     if (!code) {
       // huỷ trong khi đang xác thực
-      router.go(-2)
+      const redirectPath = sessionStorage.getItem('previousPage') || '/'
+      sessionStorage.removeItem('previousPage')
+      router.push(redirectPath)
       return
     }
 
@@ -39,8 +41,10 @@ export default defineComponent({
 
       await createUserInFirestore(user)
 
-      // -1: /callback -> -2
-      this.$router.go(-2)
+      // back lại
+      const redirectPath = sessionStorage.getItem('previousPage') || '/'
+      sessionStorage.removeItem('previousPage')
+      router.push(redirectPath)
     } catch (error) {
       console.error('Error during login:', error)
     }

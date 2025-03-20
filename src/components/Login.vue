@@ -61,11 +61,12 @@
 <script lang="ts">
 import { isDarkMode } from '@/utils/settings'
 import { ref, computed, defineComponent, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'LoginPage',
   setup(_, { emit }) {
+    const route = useRoute()
     const router = useRouter()
     const turnstileContainer = ref(null)
     const turnstileToken = ref('')
@@ -102,6 +103,7 @@ export default defineComponent({
       const clientID = import.meta.env.VITE_DISCORD_CLIENT_ID
       const redirectUri = encodeURIComponent(import.meta.env.VITE_DISCORD_REDIRECT_URI)
 
+      sessionStorage.setItem('previousPage', route.fullPath)
       return `https://discord.com/oauth2/authorize?client_id=${clientID}&response_type=code&redirect_uri=${redirectUri}&scope=identify`
     })
 
