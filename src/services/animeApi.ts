@@ -31,6 +31,29 @@ export class AnimeService {
     return response.data.data.map((item: { node: Anime }) => item.node)
   }
 
+  async getRelatedAnimeMyanimelist(animeId: string) {
+    try {
+      const response = await axios.get(`${BASE_URL}/anime/${animeId}`, {
+        headers: this.getHeaders(),
+        params: {
+          fields: 'related_anime',
+        },
+      })
+
+      return response.data.related_anime.map(
+        (item: { node: Anime; relation_type_formatted: string }) => {
+          return {
+            data: item.node,
+            relation_type_formatted: item.relation_type_formatted,
+          }
+        },
+      )
+    } catch (error) {
+      console.error('Error fetching anime detail:', error)
+      throw error
+    }
+  }
+
   async searchAnime(query: string): Promise<Anime[]> {
     const response = await axios.get(`${BASE_URL}/anime`, {
       headers: this.getHeaders(),
