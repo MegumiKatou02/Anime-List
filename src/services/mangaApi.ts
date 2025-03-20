@@ -95,17 +95,18 @@ export class MangaService {
 
   async searchManga(query: string): Promise<Manga[]> {
     try {
-      const response = await fetch(
-        `${this.baseUrl}/manga?limit=50&title=${encodeURIComponent(query)}&includes[]=cover_art`,
-        {
-          headers: {
-            Referer: 'https://mangadex.org',
-            'Cache-Control': 'no-cache',
-          },
+      const response = await this.api.get(`/manga`, {
+        headers: {
+          'Cache-Control': 'no-cache',
         },
-      )
+        params: {
+          limit: 50,
+          title: query,
+          'includes[]': 'cover_art',
+        },
+      })
 
-      const data = await response.json()
+      const data = response.data
 
       return this.transformMangaData(data.data)
     } catch (error) {
@@ -266,12 +267,13 @@ export class MangaService {
 
   async getChapter(chapterId: string): Promise<{ chapterData: Chapter; mangaId: string }> {
     try {
-      const response = await fetch(
-        `${this.baseUrl}/chapter/${chapterId}?includes[]=manga&includes[]=scanlation_group`,
-      )
-      if (!response.ok) throw new Error('Failed to fetch chapter')
+      const response = await this.api.get(`/chapter/${chapterId}`, {
+        params: {
+          'includes[]': ['manga', 'scanlation_group'],
+        },
+      })
 
-      const data = await response.json()
+      const data = response.data
       const chapter = data.data
 
       const mangaData: MangaData = chapter.relationships.find(
@@ -312,10 +314,9 @@ export class MangaService {
 
   async getChapterPages(chapterId: string): Promise<string[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/at-home/server/${chapterId}`)
-      if (!response.ok) throw new Error('Failed to fetch chapter pages')
+      const response = await this.api.get(`/at-home/server/${chapterId}`)
 
-      const data = await response.json()
+      const data = response.data
       const { baseUrl, chapter } = data
 
       return chapter.dataSaver.map(

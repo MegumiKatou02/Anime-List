@@ -84,11 +84,11 @@
       </div>
     </div>
 
-    <div class="characters-section related-section">
+    <div v-if="relatedAnime.length > 0" class="characters-section related-section">
       <h2 :class="{ 'dark-mode': isDarkMode }">Related Anime</h2>
-      <div v-if="loading">Loading characters...</div>
+      <div v-if="loading">Loading anime...</div>
       <div v-else-if="relatedAnime.length === 0" class="no-characters">
-        No character information available
+        No related anime available
       </div>
       <div v-else class="characters-grid">
         <div
