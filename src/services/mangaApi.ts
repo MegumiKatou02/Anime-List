@@ -207,7 +207,7 @@ export class MangaService {
 
         return {
           id: chapter.id,
-          title: chapter.attributes.title || 'Unknown Title',
+          title: chapter.attributes.title || 'none',
           number: chapter.attributes.chapter || 'oneshot',
           volume: chapter.attributes.volume,
           language: chapter.attributes.translatedLanguage,

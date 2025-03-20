@@ -84,7 +84,10 @@
                     </div>
                     <span class="chapter-title">
                       {{ chapter.language === 'vi' ? 'Chương' : 'Ch.' }} {{ chapter.number }} -
-                      {{ chapter.title }}
+                      <span v-if="chapter.title !== 'none'">
+                        {{ chapter.title }}
+                      </span>
+                      <span v-else style="font-style: italic"> Không có tiêu đề </span>
                     </span>
                   </div>
                   <div class="chapter-metadata" :class="{ 'dark-mode': isDarkMode }">

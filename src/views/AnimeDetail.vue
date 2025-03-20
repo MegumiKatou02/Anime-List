@@ -84,6 +84,33 @@
       </div>
     </div>
 
+    <div class="characters-section related-section">
+      <h2 :class="{ 'dark-mode': isDarkMode }">Related Anime</h2>
+      <div v-if="loading">Loading characters...</div>
+      <div v-else-if="relatedAnime.length === 0" class="no-characters">
+        No character information available
+      </div>
+      <div v-else class="characters-grid">
+        <div
+          v-for="anime in relatedAnime"
+          :key="anime.data.id"
+          class="character-card"
+          :class="{ 'dark-mode': isDarkMode }"
+          @click="navigateToAnime(anime.data.id.toString())"
+        >
+          <img
+            :src="anime.data.main_picture.medium"
+            :alt="anime.data.title"
+            class="character-image"
+          />
+          <div class="character-info" :class="{ 'dark-mode': isDarkMode }">
+            <div class="character-name">{{ anime.data.title }}</div>
+            <div class="character-role">{{ anime.relation_type_formatted }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="youtube-trailer">
       <h3 :class="{ 'dark-mode': isDarkMode }">Trailer</h3>
       <div v-if="trailerVideoId" class="video-container">
@@ -107,7 +134,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
 import moment from 'moment-timezone'
-import type { AnimeJikan, Character } from '@/types/anime'
+import type { Anime, AnimeJikan, Character } from '@/types/anime'
 import { isDarkMode } from '@/utils/settings'
 import SaveModel from '@/components/SaveModel.vue'
 import type { User } from '@/types/discord'
@@ -124,6 +151,7 @@ const loading = ref(true)
 const error = ref('')
 const animeService = new AnimeService()
 const date = ref<Date>({ day: 1, month: 1, year: 100 })
+const relatedAnime = ref<{ data: Anime; relation_type_formatted: string }[]>([])
 
 const sendData = async () => {
   let token = localStorage.getItem('discord_token')
@@ -187,25 +215,19 @@ const navigateToCharacter = (characterId: number) => {
   router.push({ name: 'CharacterDetail', params: { id: characterId } })
 }
 
-const statusClass = computed(() => {
-  if (anime.value?.status === 'Currently Airing') {
-    return 'current-airing'
-  }
-  if (anime.value?.status === 'Not yet aired') {
-    return 'not-yet-aired'
-  }
-  if (anime.value?.status === 'Finished Airing') {
-    return 'finish-airing'
-  }
-  return ''
-})
+const navigateToAnime = async (animeId: string) => {
+  router.push(`/anime/${animeId}`)
+  loading.value = true
+  await loadData(animeId)
+}
 
-onMounted(async () => {
-  window.scrollTo(0, 0)
+const loadData = async (id = route.params.id) => {
   try {
-    const animeId = route.params.id
+    const animeId = id
 
     const animeResponse = await animeService.getAnimeDetail(animeId as string)
+    const realatedAnimeRes = await animeService.getRelatedAnimeMyanimelist(animeId as string)
+    relatedAnime.value = realatedAnimeRes
 
     anime.value = animeResponse.data
 
@@ -235,6 +257,24 @@ onMounted(async () => {
   } finally {
     loading.value = false
   }
+}
+
+const statusClass = computed(() => {
+  if (anime.value?.status === 'Currently Airing') {
+    return 'current-airing'
+  }
+  if (anime.value?.status === 'Not yet aired') {
+    return 'not-yet-aired'
+  }
+  if (anime.value?.status === 'Finished Airing') {
+    return 'finish-airing'
+  }
+  return ''
+})
+
+onMounted(async () => {
+  window.scrollTo(0, 0)
+  await loadData()
 })
 </script>
 
@@ -452,6 +492,10 @@ h2.dark-mode {
 
 .characters-section .dark-mode {
   color: white;
+}
+
+.related-section {
+  margin-top: 3rem;
 }
 
 .character-card.dark-mode {
