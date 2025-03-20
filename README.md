@@ -1,28 +1,32 @@
 # Anime List
 
-A web app that allows users to search for anime, view detailed information, and explore characters and trailers. Built with Vue.js and powered by the Jikan API and Myanimelist API
+A web app that allows users to search for anime/manga, view detailed information, read manga. Built with Vue.js and powered by the Myanimelist API and MangaDex API
 
 > [!TIP]
 > If you like SSR, you can check it out here: [AnimeList + Nuxt 3](https://github.com/MegumiKatou02/AnimeList-Nuxtjs)
 
 # Features
 
-- 🔍 Search Anime: Quickly find your favorite anime by title
+- 🔍 Search Anime/Manga: Quickly find your favorite anime/manga by title, filters
 - 📝 Detailed Info: See information such as type, status, episodes, and score
 - 🌟 Characters: Explore the main characters of each anime
 - 🎥 Trailers: Watch YouTube trailers (if available)
+- 📖 Read Manga: Browse and read manga chapters directly from the app
+- 💾 Save Anime/Manga: Save your favorite anime and manga to your personal list for easy access
 
 # Screenshots
 
-![Anime Home](https://github.com/user-attachments/assets/8387c963-0ba7-4e1b-9a12-255c9da9405e)
-![Anime Trailer](https://github.com/user-attachments/assets/0556922a-d31f-4c97-8853-b7166197a18f)
-![Manga Chapters](https://github.com/user-attachments/assets/fd9537e1-5168-4102-9694-86383be2f725)
+![Home View](https://github.com/user-attachments/assets/fd6d40f5-e5ed-462f-88e4-6386157975d1)
+![Anime Trailer](https://github.com/user-attachments/assets/ee90cdd8-ad99-4935-8aa7-1c72e1df70be)
+![Manga Chapter](https://github.com/user-attachments/assets/2722321a-e191-4603-9fde-c5c165162bfb)
+
 
 # Tech Stack
 
 - Frontend: Vue.js 3, TypeScript
 - Backend API: Jikan API, Myanimelist API, MangaDex API
-- Deployment: [Vercel](https://vercel.com/home)
+- Database: Firebase Firestore
+- Deployment: [Vercel](https://vercel.com/)
 
 # Getting Started
 
