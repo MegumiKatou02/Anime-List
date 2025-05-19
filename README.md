@@ -1,3 +1,7 @@
+> [!WARNING]
+> **Since MangaDex may have been blocked by Internet Service Providers (ISPs) or for other reasons, I’ve decided not to continue developing this website, even though the MyAnimeList API is still available**
+>
+> **MangaDexがインターネットサービスプロバイダー（ISP）によってブロックされた可能性がある、または他の理由により、このウェブサイトの開発を続けないことにしました。MyAnimeListのAPIはまだ利用可能ですが**
 # Anime List
 
 A web app that allows users to search for anime/manga, view detailed information, read manga. Built with Vue.js and powered by the Myanimelist API and MangaDex API
@@ -13,13 +17,6 @@ A web app that allows users to search for anime/manga, view detailed information
 - 🎥 Trailers: Watch YouTube trailers (if available)
 - 📖 Read Manga: Browse and read manga chapters directly from the app
 - 💾 Save Anime/Manga: Save your favorite anime and manga to your personal list for easy access
-
-# Screenshots
-
-![Home View](https://github.com/user-attachments/assets/fd6d40f5-e5ed-462f-88e4-6386157975d1)
-![Anime Trailer](https://github.com/user-attachments/assets/ee90cdd8-ad99-4935-8aa7-1c72e1df70be)
-![Manga Chapter](https://github.com/user-attachments/assets/2722321a-e191-4603-9fde-c5c165162bfb)
-
 
 # Tech Stack
 
