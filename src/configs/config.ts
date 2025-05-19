@@ -10,9 +10,9 @@ export const mainInformation: Information = {
       github_issues: 'https://github.com/MegumiKatou02/Anime-List/issues',
     },
     social: {
-      facebook: 'https://web.facebook.com/profile.php?id=100015444163739',
+      facebook: 'https://web.facebook.com/',
       github: 'https://github.com/MegumiKatou02',
-      twitter: 'https://x.com/yukiooki_',
+      twitter: 'https://x.com/',
       discord: 'https://discord.com/users/604949724788817920',
     },
   },

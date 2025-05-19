@@ -19,6 +19,7 @@ export const getAccessToken = async (code: string) => {
   }
 
   const response = await axios.post(url, data, { headers })
+  console.log(response.data)
   return response.data
 }
 
