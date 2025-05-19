@@ -207,7 +207,7 @@ export default defineComponent({
           id: teamId.value,
           name: scanlationGroup.data.attributes.name,
           logo: 'https://mangadex.org/img/avatar.png',
-          banner: '/images/group-background.jpg',
+          banner: '/images/group-background2.png',
           description: scanlationData.attributes.description,
           members: scanlationData.relationships.length,
           projects: scanlationTotal,
